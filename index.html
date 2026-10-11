@@ -64,6 +64,9 @@
     .program-list li{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #e8dfcf;font:1.1rem/1.4 "Cormorant Garamond",serif;color:#5a5043}
     .program-list li:last-child{border-bottom:none}
     .program-list .time{color:var(--gold);font-weight:500;white-space:nowrap;min-width:70px}
+    .photo-frame{max-width:400px;margin:28px auto 0;border:1px solid #e8dfcf;padding:12px;background:#fffdf8;box-shadow:0 20px 50px rgba(91,74,43,.12)}
+    .photo-frame img{width:100%;height:auto;display:block;object-fit:cover;aspect-ratio:3/4}
+    .photo-caption{margin-top:16px;color:var(--muted);font:1.15rem/1.5 "Cormorant Garamond",serif;font-style:italic}
     .form-box{max-width:480px;margin:32px auto 0;padding:28px 24px;background:#fffdf8;border:1px solid #e8dfcf;box-shadow:0 12px 35px rgba(91,74,43,.08);text-align:left}
     .form-box label{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
     .form-box input,.form-box textarea{width:100%;padding:13px 14px;border:1px solid #e0d5c2;background:#fff;font:1rem "Cormorant Garamond",serif;color:var(--ink);margin-bottom:16px;outline:none;transition:border-color .2s}
@@ -85,7 +88,7 @@
     .confirm-result .role{color:var(--muted);font-size:1.05rem}
     footer{padding:28px 24px;color:#8a8174;background:#f0ebe1;font-size:.68rem;letter-spacing:.14em}
     .music-control{position:fixed;bottom:22px;right:22px;z-index:50}
-    #musicBtn{width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);background:rgba(255,253,248,.93);color:var(--gold);font-size:1.2rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px rgba(91,74,43,.12);transition:all .25s ease}
+    #musicBtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:rgba(255,253,248,.95);color:var(--gold);font-size:1.25rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 20px rgba(91,74,43,.15);transition:all .25s ease}
     #musicBtn:hover,#musicBtn.playing{background:var(--gold);color:#fffdf8}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
   </style>
@@ -135,7 +138,19 @@
       </div>
     </section>
 
+    <!-- PHOTO -->
     <section class="story">
+      <div class="story-inner reveal">
+        <div class="eyebrow">Us</div>
+        <h2>A Moment</h2>
+        <div class="photo-frame">
+          <img src="img1.jpg" alt="Ariel and Kate" loading="lazy" />
+        </div>
+        <p class="photo-caption">Getting ready for forever</p>
+      </div>
+    </section>
+
+    <section class="story story-alt">
       <div class="story-inner reveal">
         <div class="eyebrow">The ceremony</div>
         <h2>Church Wedding</h2>
@@ -147,7 +162,7 @@
       </div>
     </section>
 
-    <section class="story story-alt">
+    <section class="story">
       <div class="story-inner reveal">
         <div class="eyebrow">After the ceremony</div>
         <h2>Reception</h2>
@@ -171,7 +186,7 @@
       </div>
     </section>
 
-    <section class="story">
+    <section class="story story-alt">
       <div class="details-inner reveal">
         <div class="eyebrow">Everything you need</div>
         <h2>Wedding Details</h2>
@@ -189,7 +204,7 @@
       </div>
     </section>
 
-    <section class="story story-alt" id="reserve">
+    <section class="story" id="reserve">
       <div class="story-inner reveal">
         <div class="eyebrow">Your presence</div>
         <h2>Reserve Your Seat</h2>
@@ -209,7 +224,7 @@
       </div>
     </section>
 
-    <section class="story" id="confirmation">
+    <section class="story story-alt" id="confirmation">
       <div class="story-inner reveal">
         <div class="eyebrow">Already reserved?</div>
         <h2>View Your Confirmation</h2>
@@ -226,7 +241,7 @@
       </div>
     </section>
 
-    <section class="story story-alt">
+    <section class="story">
       <div class="story-inner reveal">
         <div class="eyebrow">With love</div>
         <h2>See you there</h2>
@@ -238,9 +253,11 @@
   <footer>WITH LOVE · ARIEL &amp; KATE · 04.25.2027</footer>
 
   <div class="music-control">
-    <button id="musicBtn" aria-label="Play or pause music" title="Background music">♪</button>
+    <button id="musicBtn" aria-label="Play or pause music" title="Play music">♪</button>
   </div>
-  <audio id="bgMusic" loop preload="none"><source src="" type="audio/mpeg"></audio>
+  <audio id="bgMusic" loop preload="auto">
+    <source src="ATY.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygPB7Jd68toZMbVlMJaD1AAOs_ntqHRXzfQREnQcd5BNWDf10Ti3FuXNmgmhi2XV8/exec";
@@ -249,68 +266,50 @@
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=check&name=" + encodeURIComponent(name.trim()));
         return await res.json();
-      } catch (err) {
-        console.error(err);
+      } catch (e) {
+        console.error(e);
         return { found: false, inList: false, error: true };
       }
     }
 
     async function submitReservation(name, contact, message) {
       try {
-        const url = APPS_SCRIPT_URL + "?action=submit" +
-          "&name=" + encodeURIComponent(name.trim()) +
+        const url = APPS_SCRIPT_URL + "?action=submit&name=" + encodeURIComponent(name.trim()) +
           "&contact=" + encodeURIComponent(contact || "") +
           "&message=" + encodeURIComponent(message || "");
         const res = await fetch(url);
         return await res.json();
-      } catch (err) {
-        console.error(err);
+      } catch (e) {
+        console.error(e);
         return { success: false, message: "Network error. Please try again." };
       }
     }
 
-    // RESERVE
     document.getElementById("checkReserveBtn").addEventListener("click", async function () {
       const name = document.getElementById("reserveName").value.trim();
       const contact = document.getElementById("reserveContact").value;
       const message = document.getElementById("reserveMessage").value;
-      const btn = this;
-      const msg = document.getElementById("reserveMsg");
-
-      msg.className = "form-message";
-      msg.style.display = "none";
-      btn.disabled = true;
-      btn.textContent = "Checking...";
+      const btn = this, msg = document.getElementById("reserveMsg");
+      msg.className = "form-message"; msg.style.display = "none";
+      btn.disabled = true; btn.textContent = "Checking...";
 
       if (!name) {
-        msg.className = "form-message error";
-        msg.textContent = "Please enter your full name.";
-        btn.disabled = false;
-        btn.textContent = "Check & Reserve";
-        return;
+        msg.className = "form-message error"; msg.textContent = "Please enter your full name.";
+        btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
-
       const status = await checkSheetStatus(name);
-
       if (!status.inList) {
         msg.className = "form-message error";
         msg.textContent = "Name not found. Please type your full name exactly as it appears on the invitation list.";
-        btn.disabled = false;
-        btn.textContent = "Check & Reserve";
-        return;
+        btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
-
       if (status.found) {
         msg.className = "form-message info";
         msg.innerHTML = "You have already reserved under the name <strong>" + status.name + "</strong> (" + (status.role || "") + "). You may view your confirmation below.";
-        btn.disabled = false;
-        btn.textContent = "Check & Reserve";
-        return;
+        btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
-
       btn.textContent = "Submitting...";
       const result = await submitReservation(status.name, contact, message);
-
       if (result.success) {
         msg.className = "form-message success";
         msg.innerHTML = "<strong>Reservation successful!</strong><br>" + result.name + " — " + (result.role || status.role || "") + "<br><br>Thank you! You may view your confirmation below anytime.";
@@ -318,92 +317,58 @@
         msg.className = "form-message error";
         msg.textContent = result.message || "Something went wrong. Please try again.";
       }
-
-      btn.disabled = false;
-      btn.textContent = "Check & Reserve";
+      btn.disabled = false; btn.textContent = "Check & Reserve";
     });
 
-    // CONFIRMATION
     document.getElementById("viewConfirmBtn").addEventListener("click", async function () {
       const name = document.getElementById("confirmName").value.trim();
-      const btn = this;
-      const msg = document.getElementById("confirmMsg");
-      const resultBox = document.getElementById("confirmResult");
-
-      msg.className = "form-message";
-      msg.style.display = "none";
-      resultBox.style.display = "none";
-      btn.disabled = true;
-      btn.textContent = "Checking...";
+      const btn = this, msg = document.getElementById("confirmMsg"), box = document.getElementById("confirmResult");
+      msg.className = "form-message"; msg.style.display = "none"; box.style.display = "none";
+      btn.disabled = true; btn.textContent = "Checking...";
 
       if (!name) {
-        msg.className = "form-message error";
-        msg.textContent = "Please enter your full name.";
-        btn.disabled = false;
-        btn.textContent = "View Confirmation";
-        return;
+        msg.className = "form-message error"; msg.textContent = "Please enter your full name.";
+        btn.disabled = false; btn.textContent = "View Confirmation"; return;
       }
-
       const status = await checkSheetStatus(name);
-
       if (!status.inList) {
-        msg.className = "form-message error";
-        msg.textContent = "Name not found. Please type your full name exactly.";
-        btn.disabled = false;
-        btn.textContent = "View Confirmation";
-        return;
+        msg.className = "form-message error"; msg.textContent = "Name not found. Please type your full name exactly.";
+        btn.disabled = false; btn.textContent = "View Confirmation"; return;
       }
-
       if (!status.found) {
         msg.className = "form-message info";
         msg.innerHTML = "No reservation found yet for <strong>" + status.name + "</strong>. Please use the Reserve section above first.";
-        btn.disabled = false;
-        btn.textContent = "View Confirmation";
-        return;
+        btn.disabled = false; btn.textContent = "View Confirmation"; return;
       }
-
-      resultBox.style.display = "block";
-      resultBox.innerHTML = "<h4>Your Reservation</h4><p><strong>" + status.name + "</strong></p><p class='role'>" + (status.role || "") + "</p><p style='margin-top:6px;font-size:.95rem;color:#756d60'>" + (status.reservedAt ? "Reserved on " + new Date(status.reservedAt).toLocaleString() : "") + "</p>";
-      btn.disabled = false;
-      btn.textContent = "View Confirmation";
+      box.style.display = "block";
+      box.innerHTML = "<h4>Your Reservation</h4><p><strong>" + status.name + "</strong></p><p class='role'>" + (status.role || "") + "</p><p style='margin-top:6px;font-size:.95rem;color:#756d60'>" + (status.reservedAt ? "Reserved on " + new Date(status.reservedAt).toLocaleString() : "") + "</p>";
+      btn.disabled = false; btn.textContent = "View Confirmation";
     });
 
-    // COUNTDOWN
     const weddingDate = new Date("2027-04-25T15:00:00+08:00").getTime();
     function updateCountdown() {
-      const now = Date.now();
-      const distance = weddingDate - now;
-      const title = document.getElementById("countdownTitle");
+      const now = Date.now(), distance = weddingDate - now, title = document.getElementById("countdownTitle");
       if (distance < 0) {
         document.getElementById("countdown").innerHTML = "<p style='color:var(--gold);font-size:1.3rem'>The day is here! Welcome!</p>";
-        title.textContent = "Today is the day";
-        return;
+        title.textContent = "Today is the day"; return;
       }
-      const days = Math.floor(distance / 86400000);
-      const hours = Math.floor((distance % 86400000) / 3600000);
-      const mins = Math.floor((distance % 3600000) / 60000);
-      const secs = Math.floor((distance % 60000) / 1000);
-      document.getElementById("days").textContent = String(days).padStart(2, "0");
-      document.getElementById("hours").textContent = String(hours).padStart(2, "0");
-      document.getElementById("mins").textContent = String(mins).padStart(2, "0");
-      document.getElementById("secs").textContent = String(secs).padStart(2, "0");
+      const days = Math.floor(distance / 86400000), hours = Math.floor((distance % 86400000) / 3600000),
+            mins = Math.floor((distance % 3600000) / 60000), secs = Math.floor((distance % 60000) / 1000);
+      document.getElementById("days").textContent = String(days).padStart(2,"0");
+      document.getElementById("hours").textContent = String(hours).padStart(2,"0");
+      document.getElementById("mins").textContent = String(mins).padStart(2,"0");
+      document.getElementById("secs").textContent = String(secs).padStart(2,"0");
       if (days > 1) title.textContent = days + " days to go";
       else if (days === 1) title.textContent = "1 day to go";
       else if (hours > 0) title.textContent = hours + " hours to go";
       else title.textContent = "Just a few moments left";
     }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+    updateCountdown(); setInterval(updateCountdown, 1000);
 
-    // OPENING
-    const opening = document.getElementById("opening");
-    const openButton = document.getElementById("openInvite");
+    const opening = document.getElementById("opening"), openButton = document.getElementById("openInvite");
     function openInvitation() {
       opening.classList.add("is-opening");
-      setTimeout(function () {
-        opening.classList.add("is-open");
-        document.body.style.overflow = "auto";
-      }, 900);
+      setTimeout(function () { opening.classList.add("is-open"); document.body.style.overflow = "auto"; }, 900);
     }
     document.body.style.overflow = "hidden";
     openButton.addEventListener("click", openInvitation);
@@ -411,15 +376,11 @@
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openInvitation(); }
     });
 
-    // SCROLL REVEAL
     const revealSections = document.querySelectorAll(".reveal");
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            observer.unobserve(entry.target);
-          }
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); observer.unobserve(entry.target); }
         });
       }, { threshold: 0.12 });
       revealSections.forEach(function (el) { observer.observe(el); });
@@ -427,29 +388,27 @@
       revealSections.forEach(function (el) { el.classList.add("visible"); });
     }
 
-    // SAVE THE DATE
     document.getElementById("saveDate").addEventListener("click", function (e) {
       e.preventDefault();
       window.open("https://calendar.google.com/calendar/render?action=TEMPLATE&text=Ariel+%26+Kate+Wedding&dates=20270425T070000Z/20270425T150000Z&details=Wedding+of+Ariel+%26+Kate&location=Locale+Congregation+of+Baler%2C+Baler%2C+Aurora", "_blank");
     });
 
-    // MUSIC
-    const musicBtn = document.getElementById("musicBtn");
-    const bgMusic = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn"), bgMusic = document.getElementById("bgMusic");
     let isPlaying = false;
     musicBtn.addEventListener("click", function () {
-      if (!bgMusic.src || bgMusic.src.endsWith("/")) {
-        alert("Please add your music file link in the HTML first.");
-        return;
-      }
       if (isPlaying) {
         bgMusic.pause();
         musicBtn.textContent = "♪";
         musicBtn.classList.remove("playing");
+        musicBtn.title = "Play music";
       } else {
-        bgMusic.play().catch(function () {});
-        musicBtn.textContent = "❚❚";
-        musicBtn.classList.add("playing");
+        bgMusic.play().then(function () {
+          musicBtn.textContent = "❚❚";
+          musicBtn.classList.add("playing");
+          musicBtn.title = "Pause music";
+        }).catch(function () {
+          alert("Tap the music button again to play.");
+        });
       }
       isPlaying = !isPlaying;
     });
