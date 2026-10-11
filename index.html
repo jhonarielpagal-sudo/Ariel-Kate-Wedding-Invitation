@@ -55,6 +55,9 @@
     .paper-card::before{content:"";position:absolute;inset:11px;border:1px solid rgba(167,131,67,.18);pointer-events:none}
     .paper-card h3{margin:0 0 10px;color:#9b6f4b;font:400 2.4rem "Great Vibes",cursive}
     .paper-card p{color:#625747;font-size:1.12rem}
+    .verse-box{max-width:520px;margin:0 auto;padding:36px 28px;border-left:3px solid var(--gold);background:rgba(255,253,248,.6);text-align:left}
+    .verse-box p{font:italic 1.35rem/1.75 "Cormorant Garamond",serif;color:#5a5043}
+    .verse-box cite{display:block;margin-top:16px;font:500 .78rem "Montserrat",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-style:normal}
     .info-grid{display:grid;gap:20px;margin-top:36px;text-align:left}
     @media(min-width:580px){.info-grid{grid-template-columns:1fr 1fr}}
     .info-item{padding:22px;background:rgba(255,253,248,.7);border:1px solid #e8dfcf}
@@ -67,6 +70,12 @@
     .photo-frame{max-width:400px;margin:28px auto 0;border:1px solid #e8dfcf;padding:12px;background:#fffdf8;box-shadow:0 20px 50px rgba(91,74,43,.12)}
     .photo-frame img{width:100%;height:auto;display:block;object-fit:cover;aspect-ratio:3/4}
     .photo-caption{margin-top:16px;color:var(--muted);font:1.15rem/1.5 "Cormorant Garamond",serif;font-style:italic}
+    .entourage-list{max-width:480px;margin:28px auto 0;text-align:left}
+    .entourage-item{padding:12px 0;border-bottom:1px solid #e8dfcf;display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+    .entourage-item:last-child{border-bottom:none}
+    .entourage-item .e-name{font:1.15rem/1.4 "Cormorant Garamond",serif;color:#4c4032}
+    .entourage-item .e-role{font:500 .7rem "Montserrat",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+    .entourage-loading{color:var(--muted);font:1.1rem "Cormorant Garamond",serif}
     .form-box{max-width:480px;margin:32px auto 0;padding:28px 24px;background:#fffdf8;border:1px solid #e8dfcf;box-shadow:0 12px 35px rgba(91,74,43,.08);text-align:left}
     .form-box label{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
     .form-box input,.form-box textarea{width:100%;padding:13px 14px;border:1px solid #e0d5c2;background:#fff;font:1rem "Cormorant Garamond",serif;color:var(--ink);margin-bottom:16px;outline:none;transition:border-color .2s}
@@ -90,10 +99,15 @@
     .music-control{position:fixed;bottom:22px;right:22px;z-index:50}
     #musicBtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:rgba(255,253,248,.95);color:var(--gold);font-size:1.25rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 20px rgba(91,74,43,.15);transition:all .25s ease}
     #musicBtn:hover,#musicBtn.playing{background:var(--gold);color:#fffdf8}
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+    .petals{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+    .petal{position:absolute;top:-40px;width:12px;height:12px;background:rgba(167,131,67,.35);border-radius:50% 0 50% 50%;animation:fall linear infinite;opacity:.7}
+    .petal:nth-child(odd){background:rgba(196,163,110,.4);border-radius:50% 50% 0 50%}
+    @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}.petals{display:none}}
   </style>
 </head>
 <body>
+  <div class="petals" id="petals" aria-hidden="true"></div>
   <div class="opening" id="opening">
     <div class="envelope-wrap" id="openInvite" role="button" tabindex="0" aria-label="Tap to open the invitation">
       <div class="envelope">
@@ -103,7 +117,6 @@
       <div class="open-prompt">Tap to open your invitation</div>
     </div>
   </div>
-
   <main>
     <section class="hero">
       <div class="content">
@@ -115,7 +128,6 @@
         <div class="venue">Locale Congregation of Baler<br />(Iglesia ni Cristo)<br />Baler, Aurora</div>
       </div>
     </section>
-
     <section class="story">
       <div class="story-inner reveal">
         <div class="eyebrow">Counting down</div>
@@ -128,7 +140,6 @@
         </div>
       </div>
     </section>
-
     <section class="story story-alt">
       <div class="story-inner reveal">
         <div class="eyebrow">A celebration of love</div>
@@ -137,8 +148,6 @@
         <p style="margin-top:16px">With grateful hearts, we invite you to witness the beginning of our forever.</p>
       </div>
     </section>
-
-    <!-- PHOTO -->
     <section class="story">
       <div class="story-inner reveal">
         <div class="eyebrow">Us</div>
@@ -149,8 +158,17 @@
         <p class="photo-caption">Getting ready for forever</p>
       </div>
     </section>
-
     <section class="story story-alt">
+      <div class="story-inner reveal">
+        <div class="eyebrow">His Word</div>
+        <h2>A Verse for Us</h2>
+        <div class="verse-box">
+          <p>“Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs. Love does not delight in evil but rejoices with the truth. It always protects, always trusts, always hopes, always perseveres.”</p>
+          <cite>1 Corinthians 13:4–7</cite>
+        </div>
+      </div>
+    </section>
+    <section class="story">
       <div class="story-inner reveal">
         <div class="eyebrow">The ceremony</div>
         <h2>Church Wedding</h2>
@@ -161,8 +179,7 @@
         </div>
       </div>
     </section>
-
-    <section class="story">
+    <section class="story story-alt">
       <div class="story-inner reveal">
         <div class="eyebrow">After the ceremony</div>
         <h2>Reception</h2>
@@ -185,7 +202,15 @@
         </div>
       </div>
     </section>
-
+    <section class="story">
+      <div class="story-inner reveal">
+        <div class="eyebrow">Standing with us</div>
+        <h2>The Entourage</h2>
+        <div class="entourage-list" id="entourageList">
+          <p class="entourage-loading">Loading entourage...</p>
+        </div>
+      </div>
+    </section>
     <section class="story story-alt">
       <div class="details-inner reveal">
         <div class="eyebrow">Everything you need</div>
@@ -203,7 +228,6 @@
         </div>
       </div>
     </section>
-
     <section class="story" id="reserve">
       <div class="story-inner reveal">
         <div class="eyebrow">Your presence</div>
@@ -223,7 +247,6 @@
         </div>
       </div>
     </section>
-
     <section class="story story-alt" id="confirmation">
       <div class="story-inner reveal">
         <div class="eyebrow">Already reserved?</div>
@@ -240,7 +263,6 @@
         </div>
       </div>
     </section>
-
     <section class="story">
       <div class="story-inner reveal">
         <div class="eyebrow">With love</div>
@@ -249,29 +271,37 @@
       </div>
     </section>
   </main>
-
   <footer>WITH LOVE · ARIEL &amp; KATE · 04.25.2027</footer>
-
   <div class="music-control">
     <button id="musicBtn" aria-label="Play or pause music" title="Play music">♪</button>
   </div>
   <audio id="bgMusic" loop preload="auto">
     <source src="ATY.mp3" type="audio/mpeg">
   </audio>
-
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygPB7Jd68toZMbVlMJaD1AAOs_ntqHRXzfQREnQcd5BNWDf10Ti3FuXNmgmhi2XV8/exec";
-
+    (function createPetals() {
+      const container = document.getElementById("petals");
+      if (!container) return;
+      for (let i = 0; i < 14; i++) {
+        const petal = document.createElement("span");
+        petal.className = "petal";
+        petal.style.left = Math.random() * 100 + "%";
+        petal.style.animationDuration = (8 + Math.random() * 10) + "s";
+        petal.style.animationDelay = (Math.random() * 8) + "s";
+        petal.style.width = (8 + Math.random() * 10) + "px";
+        petal.style.height = petal.style.width;
+        container.appendChild(petal);
+      }
+    })();
     async function checkSheetStatus(name) {
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=check&name=" + encodeURIComponent(name.trim()));
         return await res.json();
       } catch (e) {
-        console.error(e);
         return { found: false, inList: false, error: true };
       }
     }
-
     async function submitReservation(name, contact, message) {
       try {
         const url = APPS_SCRIPT_URL + "?action=submit&name=" + encodeURIComponent(name.trim()) +
@@ -280,11 +310,27 @@
         const res = await fetch(url);
         return await res.json();
       } catch (e) {
-        console.error(e);
         return { success: false, message: "Network error. Please try again." };
       }
     }
-
+    async function loadEntourage() {
+      const list = document.getElementById("entourageList");
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=entourage");
+        const data = await res.json();
+        if (!data.success || !data.items || !data.items.length) {
+          list.innerHTML = "<p class='entourage-loading'>Entourage will be updated soon.</p>";
+          return;
+        }
+        list.innerHTML = data.items.map(function (item) {
+          const name = item.name && item.name !== "-" ? item.name : "—";
+          return "<div class='entourage-item'><span class='e-name'>" + name + "</span><span class='e-role'>" + (item.role || "") + "</span></div>";
+        }).join("");
+      } catch (e) {
+        list.innerHTML = "<p class='entourage-loading'>Unable to load entourage.</p>";
+      }
+    }
+    loadEntourage();
     document.getElementById("checkReserveBtn").addEventListener("click", async function () {
       const name = document.getElementById("reserveName").value.trim();
       const contact = document.getElementById("reserveContact").value;
@@ -292,7 +338,6 @@
       const btn = this, msg = document.getElementById("reserveMsg");
       msg.className = "form-message"; msg.style.display = "none";
       btn.disabled = true; btn.textContent = "Checking...";
-
       if (!name) {
         msg.className = "form-message error"; msg.textContent = "Please enter your full name.";
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
@@ -319,13 +364,11 @@
       }
       btn.disabled = false; btn.textContent = "Check & Reserve";
     });
-
     document.getElementById("viewConfirmBtn").addEventListener("click", async function () {
       const name = document.getElementById("confirmName").value.trim();
       const btn = this, msg = document.getElementById("confirmMsg"), box = document.getElementById("confirmResult");
       msg.className = "form-message"; msg.style.display = "none"; box.style.display = "none";
       btn.disabled = true; btn.textContent = "Checking...";
-
       if (!name) {
         msg.className = "form-message error"; msg.textContent = "Please enter your full name.";
         btn.disabled = false; btn.textContent = "View Confirmation"; return;
@@ -344,7 +387,6 @@
       box.innerHTML = "<h4>Your Reservation</h4><p><strong>" + status.name + "</strong></p><p class='role'>" + (status.role || "") + "</p><p style='margin-top:6px;font-size:.95rem;color:#756d60'>" + (status.reservedAt ? "Reserved on " + new Date(status.reservedAt).toLocaleString() : "") + "</p>";
       btn.disabled = false; btn.textContent = "View Confirmation";
     });
-
     const weddingDate = new Date("2027-04-25T15:00:00+08:00").getTime();
     function updateCountdown() {
       const now = Date.now(), distance = weddingDate - now, title = document.getElementById("countdownTitle");
@@ -364,7 +406,6 @@
       else title.textContent = "Just a few moments left";
     }
     updateCountdown(); setInterval(updateCountdown, 1000);
-
     const opening = document.getElementById("opening"), openButton = document.getElementById("openInvite");
     function openInvitation() {
       opening.classList.add("is-opening");
@@ -375,7 +416,6 @@
     openButton.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openInvitation(); }
     });
-
     const revealSections = document.querySelectorAll(".reveal");
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver(function (entries) {
@@ -387,28 +427,19 @@
     } else {
       revealSections.forEach(function (el) { el.classList.add("visible"); });
     }
-
     document.getElementById("saveDate").addEventListener("click", function (e) {
       e.preventDefault();
       window.open("https://calendar.google.com/calendar/render?action=TEMPLATE&text=Ariel+%26+Kate+Wedding&dates=20270425T070000Z/20270425T150000Z&details=Wedding+of+Ariel+%26+Kate&location=Locale+Congregation+of+Baler%2C+Baler%2C+Aurora", "_blank");
     });
-
     const musicBtn = document.getElementById("musicBtn"), bgMusic = document.getElementById("bgMusic");
     let isPlaying = false;
     musicBtn.addEventListener("click", function () {
       if (isPlaying) {
-        bgMusic.pause();
-        musicBtn.textContent = "♪";
-        musicBtn.classList.remove("playing");
-        musicBtn.title = "Play music";
+        bgMusic.pause(); musicBtn.textContent = "♪"; musicBtn.classList.remove("playing"); musicBtn.title = "Play music";
       } else {
         bgMusic.play().then(function () {
-          musicBtn.textContent = "❚❚";
-          musicBtn.classList.add("playing");
-          musicBtn.title = "Pause music";
-        }).catch(function () {
-          alert("Tap the music button again to play.");
-        });
+          musicBtn.textContent = "❚❚"; musicBtn.classList.add("playing"); musicBtn.title = "Pause music";
+        }).catch(function () { alert("Tap the music button again to play."); });
       }
       isPlaying = !isPlaying;
     });
