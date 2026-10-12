@@ -188,6 +188,98 @@
     .closing.no-photo h2{color:var(--gold)}
     .closing.no-photo p{color:var(--muted)}
     .closing .ph-note{position:absolute;z-index:3;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border:1px dashed #a78343;background:rgba(255,253,248,.9);color:#756d60;font:500 .7rem "Montserrat",sans-serif;letter-spacing:.08em}
+
+    /* ===== Tab bar (app-style navigation) ===== */
+    :root{--tabh:62px}
+    body{padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px))}
+    .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;height:calc(var(--tabh) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:color-mix(in srgb,var(--paper) 94%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid color-mix(in srgb,var(--gold) 25%,transparent)}
+    .tabbar a{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);text-decoration:none;font:500 .56rem var(--f-label),sans-serif;letter-spacing:.1em;text-transform:uppercase;-webkit-tap-highlight-color:transparent}
+    .tabbar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .tabbar a.active{color:var(--gold)}
+    .tabbar a.active::before{content:"";position:absolute;top:0;left:30%;right:30%;height:2px;background:var(--gold)}
+    .tabbar a:focus-visible{outline:2px solid var(--gold);outline-offset:-4px}
+    .music-control{bottom:calc(var(--tabh) + 14px + env(safe-area-inset-bottom,0px))}
+    .hero{padding-top:50px}
+    @media(min-width:900px){
+      body{padding-bottom:0;padding-top:52px}
+      .tabbar{top:0;bottom:auto;height:auto;padding:0;justify-content:center;border-top:0;border-bottom:1px solid color-mix(in srgb,var(--gold) 25%,transparent)}
+      .tabbar a{flex:0 0 auto;flex-direction:row;gap:8px;padding:16px 24px;font-size:.68rem}
+      .tabbar a.active::before{top:auto;bottom:0;left:16px;right:16px}
+      .music-control{bottom:22px}
+    }
+    .view{display:none}
+    .view.active{display:block;animation:viewIn .18s ease}
+    @keyframes viewIn{from{opacity:0}to{opacity:1}}
+    /* ===== Gallery ===== */
+    .gallery-count{margin-top:6px;color:var(--muted);font:500 .7rem var(--f-label),sans-serif;letter-spacing:.14em;text-transform:uppercase}
+    .gallery-wrap{max-width:920px;margin:0 auto;padding:0 3px 40px}
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+    @media(min-width:700px){.gallery-grid{grid-template-columns:repeat(4,1fr);gap:6px}}
+    .g-tile{position:relative;display:block;width:100%;aspect-ratio:1;padding:0;border:0;overflow:hidden;cursor:pointer;background:var(--bg-alt)}
+    .g-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+    .g-tile:hover img{transform:scale(1.05)}
+    .g-tile.is-video{background:linear-gradient(135deg,var(--accent),var(--gold))}
+    .g-play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;pointer-events:none}
+    .g-play svg{width:34px;height:34px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
+    .g-tile:focus-visible{outline:2px solid var(--gold);outline-offset:-3px}
+    /* ===== Lightbox ===== */
+    .lightbox{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;background:rgba(12,9,6,.94)}
+    .lightbox[hidden]{display:none}
+    .lb-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:56px 8px 8px}
+    .lb-stage img,.lb-stage video{max-width:100%;max-height:100%;object-fit:contain}
+    .lb-stage iframe{width:min(100%,900px);aspect-ratio:16/9;border:0;background:#000}
+    .lb-err{color:#ddd;font:1rem var(--f-label),sans-serif}
+    .lb-caption{max-height:30vh;overflow:auto;margin:0 auto;max-width:640px;padding:12px 22px calc(18px + env(safe-area-inset-bottom,0px));color:#f4eee2;text-align:center;font:italic 1.3rem/1.5 var(--f-body),serif;white-space:pre-line}
+    .lb-caption[hidden]{display:none}
+    .lb-btn{position:absolute;z-index:2;display:grid;place-items:center;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer}
+    .lb-btn:hover{background:rgba(255,255,255,.28)}
+    .lb-close{top:max(10px,env(safe-area-inset-top,0px));right:12px}
+    .lb-prev{left:10px;top:50%;margin-top:-21px}
+    .lb-next{right:10px;top:50%;margin-top:-21px}
+    .lb-count{position:absolute;top:max(18px,env(safe-area-inset-top,0px));left:16px;color:#ddd;font:500 .72rem var(--f-label),sans-serif;letter-spacing:.14em}
+    .lightbox.single .lb-prev,.lightbox.single .lb-next{display:none}
+    /* ===== Love messages ===== */
+    .compose{margin:28px auto 0}
+    .wall{max-width:560px;margin:34px auto 0;text-align:left;display:grid;gap:14px}
+    .wall-item{display:flex;gap:14px;padding:18px;background:var(--paper);border:1px solid var(--line);box-shadow:0 8px 22px rgba(91,74,43,.06)}
+    .wall-avatar{flex:0 0 42px;height:42px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--gold) 18%,var(--paper));color:var(--gold);font:1.5rem/1 var(--f-script),cursive}
+    .wall-body{min-width:0}
+    .wall-name{color:var(--ink-soft);font:600 1.05rem var(--f-body),serif}
+    .wall-time{margin-left:8px;color:var(--muted);font:500 .62rem var(--f-label),sans-serif;letter-spacing:.08em}
+    .wall-text{margin-top:4px;color:var(--ink-soft);font:1.2rem/1.5 var(--f-body),serif;white-space:pre-line;overflow-wrap:anywhere}
+    .check{display:flex;align-items:flex-start;gap:10px;margin-top:14px;color:var(--muted);font:.95rem/1.4 var(--f-label),sans-serif;text-align:left;cursor:pointer}
+    .check input{margin-top:3px;accent-color:var(--gold)}
+    /* ===== Gift guide ===== */
+    .gift-msg{max-width:520px;margin:0 auto}
+    .qr-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:560px;margin:34px auto 0}
+    .qr-card{margin:0;padding:12px 10px 16px;background:var(--paper);border:1px solid var(--line);box-shadow:0 12px 28px rgba(91,74,43,.08);text-align:center}
+    .qr-frame{display:block;width:100%;aspect-ratio:1;border:0;padding:0;background:#fff;cursor:zoom-in;overflow:hidden}
+    .qr-frame img{width:100%;height:100%;object-fit:contain;display:block}
+    .qr-ph{display:grid;place-items:center;width:100%;height:100%;padding:10px;color:var(--muted);font:500 .66rem var(--f-label),sans-serif;letter-spacing:.1em;text-transform:uppercase;background:repeating-linear-gradient(45deg,#faf6ec,#faf6ec 8px,#f3ecda 8px,#f3ecda 16px)}
+    .qr-name{display:block;margin-top:12px;color:var(--accent);font:400 1.7rem/1.1 var(--f-script),cursive}
+    .qr-label{display:block;margin-top:2px;color:var(--gold);font:500 .6rem var(--f-label),sans-serif;letter-spacing:.2em;text-transform:uppercase}
+    .qr-num{display:block;margin-top:8px;color:var(--ink-soft);font:600 1rem var(--f-label),sans-serif;letter-spacing:.04em}
+    .qr-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+    .mini-btn{padding:7px 12px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);background:transparent;color:var(--gold);font:500 .6rem var(--f-label),sans-serif;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer}
+    .mini-btn:hover{background:var(--gold);color:var(--paper)}
+    .gift-note{max-width:460px;margin:22px auto 0;color:var(--muted);font:italic 1.05rem/1.5 var(--f-body),serif}
+    /* ===== Motif swatches & extra info ===== */
+    .swatches{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin:26px 0 8px}
+    .swatch{width:84px;text-align:center}
+    .swatch i{display:block;width:60px;height:60px;margin:0 auto 8px;border-radius:50%;border:3px solid var(--paper);box-shadow:0 0 0 1px var(--line),0 6px 14px rgba(60,45,25,.15)}
+    .swatch span{display:block;color:var(--muted);font:500 .62rem/1.3 var(--f-label),sans-serif;letter-spacing:.1em;text-transform:uppercase}
+    .info-cards{display:grid;gap:14px;max-width:560px;margin:28px auto 0}
+    .info-card{padding:24px 20px;background:var(--paper);border:1px solid var(--line);box-shadow:0 8px 22px rgba(91,74,43,.06)}
+    .info-card h4{margin:0 0 8px;color:var(--gold);font:500 .72rem var(--f-label),sans-serif;letter-spacing:.2em;text-transform:uppercase}
+    .info-card p{margin:0;color:var(--ink-soft);font:1.2rem/1.55 var(--f-body),serif}
+    .hashtag-text{font:400 2rem/1.2 var(--f-script),cursive!important;color:var(--accent)!important;overflow-wrap:anywhere}
+    .faq{max-width:560px;margin:22px auto 0;text-align:left}
+    .faq details{border-bottom:1px solid var(--line);padding:4px 0}
+    .faq summary{padding:14px 4px;cursor:pointer;color:var(--ink-soft);font:600 1.1rem var(--f-body),serif;list-style:none;display:flex;justify-content:space-between;gap:12px}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq summary::after{content:"+";color:var(--gold);font-size:1.3rem;line-height:1}
+    .faq details[open] summary::after{content:"–"}
+    .faq details p{margin:0;padding:0 4px 16px;color:var(--muted);font:1.15rem/1.6 var(--f-body),serif;white-space:pre-line}
 </style>
 </head>
 <body>
@@ -214,18 +306,19 @@
     </div>
   </div>
 
-  <nav class="topnav" id="topnav" aria-label="Sections">
-    <a href="#home">Home</a>
-    <a href="#story">Our Story</a>
-    <a href="#details">Details</a>
-    <a href="#entourage">Entourage</a>
-    <a href="#guidelines">Guidelines</a>
-    <a href="#reserve">RSVP</a>
+  <nav class="tabbar" id="tabbar" aria-label="Main">
+    <a href="#home" data-tab="home" class="active"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a>
+    <a href="#gallery" data-tab="gallery"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Gallery</span></a>
+    <a href="#messages" data-tab="messages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/></svg><span>Messages</span></a>
+    <a href="#gift" data-tab="gift"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg><span>Gift</span></a>
+    <a href="#rsvp" data-tab="rsvp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg><span>RSVP</span></a>
   </nav>
 
   <main>
+    <!-- ================= HOME ================= -->
+    <div class="view active" id="view-home">
     <!-- HOME -->
-    <section class="hero" id="home">
+    <section class="hero">
       <div class="content">
         <div class="eyebrow" data-cfg="Intro">Together with their families</div>
         <h1 id="heroNames"><span class="initial">A</span>riel <span class="ampersand">&amp;</span> <span class="initial">K</span>ate</h1>
@@ -362,17 +455,91 @@
       </div>
     </section>
 
-    <!-- GUIDELINES -->
-    <section class="story" id="guidelines">
-      <div class="story-inner reveal">
-        <div class="eyebrow">Kindly note</div>
-        <h2>Guidelines</h2>
-        <div class="guide-grid" id="guideGrid">
-          <p class="coming-soon">Guidelines coming soon</p>
-        </div>
+    <section class="closing" id="closing">
+      <img class="closing-photo" id="closingPhoto" src="imglast.jpg" alt="" loading="lazy" />
+      <div class="closing-inner reveal">
+        <div class="eyebrow">With love</div>
+        <h2 data-cfg="ClosingTitle">See you there</h2>
+        <div data-paras="ClosingText"><p>Thank you for being part of our story.<br />We can’t wait to celebrate with you.</p></div>
       </div>
     </section>
+    </div>
 
+    <!-- ================= GALLERY ================= -->
+    <div class="view" id="view-gallery">
+      <section class="story">
+        <div class="story-inner">
+          <div class="eyebrow">Our moments</div>
+          <h2>Prenup Gallery</h2>
+          <p class="gallery-count" id="galleryCount"></p>
+        </div>
+      </section>
+      <div class="gallery-wrap">
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <div id="gallerySentinel" style="height:1px"></div>
+        <p class="coming-soon" id="galleryEmpty">Photos and videos coming soon</p>
+      </div>
+    </div>
+
+    <!-- ================= MESSAGES ================= -->
+    <div class="view" id="view-messages">
+      <section class="story">
+        <div class="story-inner">
+          <div class="eyebrow">With love</div>
+          <h2>Love Messages</h2>
+          <p>Leave a greeting for the couple. Messages are shown publicly below.</p>
+          <div class="form-box compose">
+            <label for="wallName">Your full name *</label>
+            <input type="text" id="wallName" placeholder="Exactly as it appears on the invitation list" autocomplete="name" />
+            <label for="wallText">Your message *</label>
+            <textarea id="wallText" maxlength="500" placeholder="Write your greeting here..."></textarea>
+            <div class="btn-row" style="justify-content:flex-start;margin-top:8px">
+              <button class="btn btn-filled" id="wallSend">Send greeting</button>
+            </div>
+            <div class="form-message" id="wallMsg"></div>
+          </div>
+          <div class="wall" id="wallList"></div>
+          <p class="coming-soon" id="wallEmpty">No messages yet. Be the first to greet the couple!</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= GIFT ================= -->
+    <div class="view" id="view-gift">
+      <section class="story">
+        <div class="story-inner">
+          <div class="eyebrow">With gratitude</div>
+          <h2>Gift Guide</h2>
+          <div class="gift-msg" id="giftMsg" data-paras="GiftMessage">
+            <p>Ang inyong presensya at panalangin ang pinakamahalagang regalo sa aming kasal. Ngunit kung nais niyo kaming handugan ng regalo, ang monetary gift ay lubos naming ipagpapasalamat para sa aming pagsisimula.</p>
+          </div>
+          <div class="qr-pair">
+            <figure class="qr-card">
+              <button type="button" class="qr-frame" id="qrFrame1" aria-label="Enlarge QR code"><div class="qr-ph">QR coming soon</div></button>
+              <figcaption>
+                <strong class="qr-name" id="qrName1">Ariel</strong>
+                <span class="qr-label" id="qrLabel1">GCash</span>
+                <span class="qr-num" id="qrNum1"></span>
+                <div class="qr-actions"><button type="button" class="mini-btn" id="qrCopy1" hidden>Copy number</button><a class="mini-btn" id="qrSave1" download hidden>Save QR</a></div>
+              </figcaption>
+            </figure>
+            <figure class="qr-card">
+              <button type="button" class="qr-frame" id="qrFrame2" aria-label="Enlarge QR code"><div class="qr-ph">QR coming soon</div></button>
+              <figcaption>
+                <strong class="qr-name" id="qrName2">Kate</strong>
+                <span class="qr-label" id="qrLabel2">GCash</span>
+                <span class="qr-num" id="qrNum2"></span>
+                <div class="qr-actions"><button type="button" class="mini-btn" id="qrCopy2" hidden>Copy number</button><a class="mini-btn" id="qrSave2" download hidden>Save QR</a></div>
+              </figcaption>
+            </figure>
+          </div>
+          <p class="gift-note">Tap a QR code to enlarge it, or save it and scan it from your GCash app.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= RSVP & INFO ================= -->
+    <div class="view" id="view-rsvp">
     <!-- RSVP -->
     <section class="story story-alt" id="reserve">
       <div class="story-inner reveal">
@@ -384,8 +551,9 @@
           <input type="text" id="reserveName" placeholder="e.g. Jhon Ariel Pagal" autocomplete="name" />
           <label for="reserveContact">Contact Number</label>
           <input type="tel" id="reserveContact" placeholder="e.g. 0917 123 4567" />
-          <label for="reserveMessage">Message / Notes (optional)</label>
-          <textarea id="reserveMessage" placeholder="Any message or dietary notes..."></textarea>
+          <label for="reserveMessage">Message for the couple (optional)</label>
+          <textarea id="reserveMessage" maxlength="500" placeholder="Your greetings, or a note for us..."></textarea>
+          <label class="check"><input type="checkbox" id="reservePublic" checked /><span>Show my message on the Love Messages wall</span></label>
           <div class="btn-row" style="justify-content:flex-start;margin-top:8px">
             <button class="btn btn-filled" id="checkReserveBtn">Check &amp; Reserve</button>
           </div>
@@ -409,16 +577,50 @@
         </div>
       </div>
     </section>
-    <section class="closing" id="closing">
-      <img class="closing-photo" id="closingPhoto" src="imglast.jpg" alt="" loading="lazy" />
-      <div class="closing-inner reveal">
-        <div class="eyebrow">With love</div>
-        <h2 data-cfg="ClosingTitle">See you there</h2>
-        <div data-paras="ClosingText"><p>Thank you for being part of our story.<br />We can’t wait to celebrate with you.</p></div>
+
+      <section class="story story-alt" id="motif">
+        <div class="story-inner reveal">
+          <div class="eyebrow">Wedding motif</div>
+          <h2>Dress Code</h2>
+          <p><strong data-cfg="DressCode" data-tba>To be announced</strong></p>
+          <div class="swatches" id="swatches"></div>
+          <p data-cfg="DressPalette"></p>
+        </div>
+      </section>
+    <!-- GUIDELINES -->
+    <section class="story" id="guidelines">
+      <div class="story-inner reveal">
+        <div class="eyebrow">Kindly note</div>
+        <h2>Guidelines</h2>
+        <div class="guide-grid" id="guideGrid">
+          <p class="coming-soon">Guidelines coming soon</p>
+        </div>
       </div>
     </section>
+
+
+      <section class="story story-alt" id="info">
+        <div class="story-inner reveal">
+          <div class="eyebrow">Good to know</div>
+          <h2>Extra Info</h2>
+          <div class="info-cards">
+            <div class="info-card" id="unpluggedCard"><h4>Unplugged Ceremony</h4><p data-cfg="UnpluggedNote">We kindly ask everyone to keep phones and cameras away during the ceremony so we can all be fully present. Our photographers will capture every moment.</p></div>
+            <div class="info-card" id="hashtagCard"><h4>Our Official Hashtag</h4><p class="hashtag-text" id="hashtagText">#ArielFoundHisKate</p><div class="qr-actions" style="justify-content:flex-start;margin-top:10px"><button type="button" class="mini-btn" id="hashtagCopy">Copy hashtag</button></div></div>
+          </div>
+          <div class="faq" id="faqList"><p class="coming-soon">Travel, parking and other reminders coming soon</p></div>
+        </div>
+      </section>
+    </div>
   </main>
   <footer>With love · <span data-cfg="_Names">Ariel &amp; Kate</span> · <span data-cfg="CeremonyDate" data-tba="Date to be announced">Date to be announced</span></footer>
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <span class="lb-count" id="lbCount"></span>
+    <button class="lb-btn lb-close" id="lbClose" aria-label="Close">&times;</button>
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#8249;</button>
+    <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#8250;</button>
+    <div class="lb-stage" id="lbStage"></div>
+    <div class="lb-caption" id="lbCaption" hidden></div>
+  </div>
   <div class="music-control" id="musicControl">
     <div class="music-extra" id="musicExtra">
       <button id="prevBtn" aria-label="Previous track" title="Previous"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M6 6h2v12H6zM20 6v12L9.5 12z"/></svg></button>
@@ -543,15 +745,19 @@
     const MONTHS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
     function pad(n) { return String(n).padStart(2, "0"); }
     // Binabasa ang "April 25, 2027" o "4/25/2027" + "3:00 PM" -> oras ng Pilipinas (+08:00)
+    function monthNum(w) {
+      const k = String(w || "").toLowerCase().slice(0, 3);
+      for (let i = 0; i < 12; i++) if (MONTHS[i].slice(0, 3) === k) return i + 1;
+      return 0;
+    }
     function parseWedding(dateStr, timeStr) {
-      let y, m, d;
-      let a = String(dateStr || "").match(/([A-Za-z]+)\.?\s+(\d{1,2}),?\s+(\d{4})/);
-      if (a && MONTHS.indexOf(a[1].toLowerCase()) > -1) { m = MONTHS.indexOf(a[1].toLowerCase()) + 1; d = +a[2]; y = +a[3]; }
-      else {
-        a = String(dateStr || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        if (!a) return null;
-        m = +a[1]; d = +a[2]; y = +a[3];
-      }
+      let y, m, d, a;
+      const ds = String(dateStr || "");
+      if ((a = ds.match(/([A-Za-z]{3,})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})/)) && monthNum(a[1])) { m = monthNum(a[1]); d = +a[2]; y = +a[3]; }          // April 25, 2027
+      else if ((a = ds.match(/(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]{3,})\.?,?\s+(\d{4})/)) && monthNum(a[2])) { d = +a[1]; m = monthNum(a[2]); y = +a[3]; }  // 25 April 2027
+      else if ((a = ds.match(/(\d{4})-(\d{1,2})-(\d{1,2})/))) { y = +a[1]; m = +a[2]; d = +a[3]; }                                                              // 2027-04-25
+      else if ((a = ds.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/))) { m = +a[1]; d = +a[2]; y = +a[3]; }                                                          // 4/25/2027
+      else return null;
       let h = 0, min = 0;
       const t = String(timeStr || "").match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
       if (t) {
@@ -683,6 +889,7 @@
       setMap(el("churchMap"), CFG.CeremonyMap, "Church Map");
       setMap(el("receptionMap"), CFG.ReceptionMap, "Reception Map");
       const sd = el("saveDate"); if (sd) sd.style.display = weddingDate ? "" : "none";
+      [applyGift, applyMotif, applyInfo].forEach(function (f) { try { f(CFG); } catch (e) { debugNote(f.name + " ERROR: " + e.message); } });
       updateCountdown();
     }
 
@@ -700,8 +907,7 @@
         const photo = isDress
           ? "<div class='photo-item' data-photo='dresscode.jpg' data-ratio='3/4' data-size='1200 × 1600 px · portrait' data-alt='Dress code guide'><div class='photo-frame'></div></div>"
           : "";
-        const extra = (isDress && (CFG.DressCode || CFG.DressPalette))
-          ? "<p><strong>" + esc([CFG.DressCode, CFG.DressPalette].filter(Boolean).join(" · ")) + "</strong></p>" : "";
+        const extra = "";
         html += "<div class='guide-card'>" + photo + "<h4>" + esc(it.title) + "</h4>" + paras + extra + "</div>";
       });
       if (html) { grid.innerHTML = html; initPhotos(grid); }
@@ -750,30 +956,49 @@
     }
 
     /* ---------- load everything in one request ---------- */
+    function debugNote(t) {
+      if (!/[?&]debug/.test(location.search)) return;
+      let d = el("dbg");
+      if (!d) {
+        d = document.createElement("pre"); d.id = "dbg";
+        d.style.cssText = "position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;max-height:45vh;overflow:auto;margin:0;padding:10px;background:#111;color:#8f8;font:11px/1.4 monospace;white-space:pre-wrap;border-radius:6px";
+        document.body.appendChild(d);
+      }
+      d.textContent += t + "\n";
+    }
     async function loadSiteData() {
       const cached = cachedCfg();
-      if (cached) applyConfig(cached);
+      if (cached) { try { applyConfig(cached); } catch (e) { debugNote("cached applyConfig ERROR: " + e.message); } }
+      let data = null;
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=all");
-        const data = await res.json();
-        if (!data.success) throw new Error("bad response");
-        applyConfig(data.config);
-        renderGuidelines(data.guidelines);
-        renderProgram(data.program);
-        renderEntourage(data.entourage);
-      } catch (e) {
-        // Fallback: luma pa ring deployment na wala pang action=all
-        try {
-          const [c, g, p, en] = await Promise.all(["config", "guidelines", "program", "entourage"].map(function (a) {
-            return fetch(APPS_SCRIPT_URL + "?action=" + a).then(function (r) { return r.json(); });
+        data = await res.json();
+        debugNote("action=all success=" + data.success + "\nConfig keys found: " + Object.keys(data.config || {}).join(", "));
+      } catch (e) { debugNote("action=all FAILED: " + e); data = null; }
+      if (!data || !data.success) {
+        try {   // luma pa ring deployment na wala pang action=all
+          const r = await Promise.all(["config", "guidelines", "program", "entourage"].map(function (act) {
+            return fetch(APPS_SCRIPT_URL + "?action=" + act).then(function (x) { return x.json(); });
           }));
-          applyConfig(c.config); renderGuidelines(g.items); renderProgram(p.items); renderEntourage(en.rows);
+          data = { success: true, config: r[0].config, guidelines: r[1].items, program: r[2].items, entourage: r[3].rows };
+          debugNote("fallback requests OK");
         } catch (e2) {
+          debugNote("fallback FAILED: " + e2);
           markEnvelopeReady();
           el("programList").innerHTML = "<li style='justify-content:center;color:var(--muted)'>Unable to load program.</li>";
-          el("entourageList").innerHTML = "<p class='entourage-loading'>Unable to load entourage.</p>";
+          el("entourageList").innerHTML = "<p class='coming-soon'>Unable to load entourage.</p>";
+          return;
         }
       }
+      [["applyConfig", function () { applyConfig(data.config || {}); }],
+       ["renderGuidelines", function () { renderGuidelines(data.guidelines); }],
+       ["renderProgram", function () { renderProgram(data.program); }],
+       ["renderEntourage", function () { renderEntourage(data.entourage); }],
+       ["renderGallery", function () { renderGallery(data.gallery); }],
+       ["renderMessages", function () { renderMessages(data.messages); }],
+       ["renderFaq", function () { renderFaq(data.faq); }]].forEach(function (st) {
+        try { st[1](); } catch (e) { console.error(st[0], e); debugNote(st[0] + " ERROR: " + e.message); }
+      });
     }
 
     /* ---------- RSVP ---------- */
@@ -789,7 +1014,8 @@
       try {
         const url = APPS_SCRIPT_URL + "?action=submit&name=" + encodeURIComponent(name.trim()) +
           "&contact=" + encodeURIComponent(contact || "") +
-          "&message=" + encodeURIComponent(message || "");
+          "&message=" + encodeURIComponent(message || "") +
+          "&public=" + (el("reservePublic") && el("reservePublic").checked ? "1" : "0");
         const res = await fetch(url);
         return await res.json();
       } catch (e) {
@@ -994,25 +1220,6 @@
       revealSections.forEach(function (n) { n.classList.add("visible"); });
     }
 
-    /* ---------- nav: active link + keep active tab in view ---------- */
-    const navLinks = Array.prototype.slice.call(document.querySelectorAll("#topnav a"));
-    const navTargets = navLinks.map(function (a) { return document.querySelector(a.getAttribute("href")); });
-    let lastActive = -1;
-    function updateNav() {
-      let idx = 0;
-      for (let i = 0; i < navTargets.length; i++) {
-        if (navTargets[i] && navTargets[i].getBoundingClientRect().top <= window.innerHeight * 0.35) idx = i;
-      }
-      if (idx === lastActive) return;
-      lastActive = idx;
-      navLinks.forEach(function (a, i) { a.classList.toggle("active", i === idx); });
-      const nav = el("topnav"), a = navLinks[idx];
-      nav.scrollTo({ left: a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2, behavior: "smooth" });
-    }
-    window.addEventListener("scroll", updateNav, { passive: true });
-    window.addEventListener("resize", updateNav);
-    updateNav();
-
     /* ---------- save the date ---------- */
     el("saveDate").addEventListener("click", function (e) {
       e.preventDefault();
@@ -1027,6 +1234,280 @@
       window.open(url, "_blank");
     });
     initPhotos(document);
+
+    /* ---------- tabs (single-page, walang reload) ---------- */
+    const TABS = ["home", "gallery", "messages", "gift", "rsvp"];
+    const TAB_ALIAS = { reserve: "rsvp", guidelines: "rsvp", info: "rsvp", confirmation: "rsvp", motif: "rsvp", entourage: "home", details: "home", story: "home" };
+    function currentTab() {
+      let h = (location.hash || "").replace(/^#\/?/, "").toLowerCase();
+      h = TAB_ALIAS[h] || h;
+      return TABS.indexOf(h) > -1 ? h : "home";
+    }
+    function showTab() {
+      const t = currentTab();
+      document.querySelectorAll(".view").forEach(function (v) { v.classList.toggle("active", v.id === "view-" + t); });
+      document.querySelectorAll("#tabbar a").forEach(function (a) {
+        const on = a.getAttribute("data-tab") === t;
+        a.classList.toggle("active", on);
+        if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+      });
+      window.scrollTo(0, 0);
+      if (t === "gallery") galleryFill();
+    }
+    window.addEventListener("hashchange", showTab);
+    document.querySelectorAll("#tabbar a").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        if (a.getAttribute("data-tab") === currentTab()) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+      });
+    });
+
+    /* ---------- lightbox ---------- */
+    const lb = el("lightbox"), lbStage = el("lbStage"), lbCap = el("lbCaption"), lbCount = el("lbCount");
+    let lbItems = [], lbIdx = 0, lbPrevOverflow = "";
+    function renderLb() {
+      const it = lbItems[lbIdx];
+      lbStage.innerHTML = "";
+      if (!it) return;
+      if (it.type === "youtube") {
+        const f = document.createElement("iframe");
+        f.src = it.src; f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+        lbStage.appendChild(f);
+      } else if (it.type === "video") {
+        const v = document.createElement("video");
+        v.src = it.src; v.controls = true; v.autoplay = true; v.playsInline = true;
+        v.onerror = function () { lbStage.innerHTML = "<p class='lb-err'>Video unavailable</p>"; };
+        lbStage.appendChild(v);
+      } else {
+        const img = new Image(); img.alt = it.caption || ""; img.src = it.src; lbStage.appendChild(img);
+        [1, -1].forEach(function (d) {   // paunang load ng katabing larawan
+          const nb = lbItems[(lbIdx + d + lbItems.length) % lbItems.length];
+          if (nb && nb.type === "photo") new Image().src = nb.src;
+        });
+      }
+      lbCap.textContent = it.caption || "";
+      lbCap.hidden = !it.caption;               // walang caption = walang caption box
+      lbCount.textContent = lbItems.length > 1 ? (lbIdx + 1) + " / " + lbItems.length : "";
+      lb.classList.toggle("single", lbItems.length < 2);
+    }
+    function openLightboxList(list, idx) {
+      lbItems = list; lbIdx = Math.max(0, idx);
+      lbPrevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      lb.hidden = false; renderLb();
+    }
+    function closeLightbox() { lb.hidden = true; lbStage.innerHTML = ""; document.body.style.overflow = lbPrevOverflow || "auto"; }
+    function lbStep(d) { if (lbItems.length > 1) { lbIdx = (lbIdx + d + lbItems.length) % lbItems.length; renderLb(); } }
+    el("lbClose").addEventListener("click", closeLightbox);
+    el("lbPrev").addEventListener("click", function () { lbStep(-1); });
+    el("lbNext").addEventListener("click", function () { lbStep(1); });
+    lb.addEventListener("click", function (e) { if (e.target === lb || e.target === lbStage) closeLightbox(); });
+    document.addEventListener("keydown", function (e) {
+      if (lb.hidden) return;
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") lbStep(-1);
+      else if (e.key === "ArrowRight") lbStep(1);
+    });
+    (function swipe() {
+      let x0 = null;
+      lb.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      lb.addEventListener("touchend", function (e) {
+        if (x0 === null) return;
+        const dx = e.changedTouches[0].clientX - x0; x0 = null;
+        if (Math.abs(dx) > 50) lbStep(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    })();
+
+    /* ---------- gallery (lazy, batch-by-batch) ---------- */
+    let GALLERY = [], galleryPos = 0;
+    const G_BATCH = 18;
+    function galleryBase() {
+      let f = (CFG.GalleryFolder || "gallery/").trim().replace(/[^\w.\-\/]/g, "");
+      if (f && !/\/$/.test(f)) f += "/";
+      return f;
+    }
+    function ytId(u) { const m = String(u).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/); return m ? m[1] : ""; }
+    function mapGalleryRow(r) {
+      const file = (r.file || "").trim();
+      if (!file) return null;
+      const abs = /^https?:\/\//i.test(file);
+      let type = (r.type || "").trim().toLowerCase();
+      if (type !== "photo" && type !== "video" && type !== "youtube") {
+        type = (abs && ytId(file)) ? "youtube" : /\.(mp4|webm|mov|m4v)$/i.test(file) ? "video" : "photo";
+      }
+      const it = { type: type, caption: (r.caption || "").trim(), bad: false };
+      const thumbsOn = /^(yes|y|true|on|1)$/i.test((CFG.GalleryThumbs || "").trim());
+      const base = galleryBase(), name = file.split("/").pop();
+      if (type === "youtube") {
+        it.id = ytId(file);
+        if (!it.id) return null;
+        it.src = "https://www.youtube.com/embed/" + it.id + "?autoplay=1&rel=0";
+        it.thumb = "https://img.youtube.com/vi/" + it.id + "/hqdefault.jpg";
+      } else {
+        it.src = abs ? file : encodeURI(base + file);
+        if (type === "video") it.thumb = (thumbsOn && !abs) ? encodeURI(base + "thumbs/" + name.replace(/\.[^.]+$/, "") + ".jpg") : "";
+        else it.thumb = (thumbsOn && !abs) ? encodeURI(base + "thumbs/" + name) : it.src;
+      }
+      return it;
+    }
+    function updateGalleryCount() {
+      const ok = GALLERY.filter(function (x) { return !x.bad; });
+      const ph = ok.filter(function (x) { return x.type === "photo"; }).length, vd = ok.length - ph;
+      el("galleryCount").textContent = ok.length ? (ph + " photo" + (ph === 1 ? "" : "s") + (vd ? " · " + vd + " video" + (vd === 1 ? "" : "s") : "")) : "";
+      el("galleryEmpty").style.display = ok.length ? "none" : "";
+    }
+    const PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.35)"/><path d="M10 8l6 4-6 4z"/></svg>';
+    function makeTile(it) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "g-tile" + (it.type !== "photo" ? " is-video" : "");
+      b.setAttribute("aria-label", it.caption ? it.caption.split("\n")[0] : (it.type === "photo" ? "Open photo" : "Play video"));
+      if (it.thumb) {
+        const img = new Image();
+        img.loading = "lazy"; img.decoding = "async"; img.alt = "";
+        img.onerror = function () {
+          if (it.type === "photo") { it.bad = true; b.remove(); updateGalleryCount(); } else img.remove();
+        };
+        img.src = it.thumb;
+        b.appendChild(img);
+      }
+      if (it.type !== "photo") { const p = document.createElement("span"); p.className = "g-play"; p.innerHTML = PLAY_SVG; b.appendChild(p); }
+      b.addEventListener("click", function () {
+        const list = GALLERY.filter(function (x) { return !x.bad; });
+        openLightboxList(list, list.indexOf(it));
+      });
+      return b;
+    }
+    function galleryMore() {
+      const grid = el("galleryGrid"), end = Math.min(GALLERY.length, galleryPos + G_BATCH);
+      for (let i = galleryPos; i < end; i++) grid.appendChild(makeTile(GALLERY[i]));
+      galleryPos = end;
+    }
+    function galleryFill() {          // magdagdag habang may espasyo sa ilalim ng screen
+      const sent = el("gallerySentinel");
+      if (!sent || !el("view-gallery").classList.contains("active")) return;
+      let guard = 0;
+      while (galleryPos < GALLERY.length && guard++ < 10 && sent.getBoundingClientRect().top < window.innerHeight + 700) galleryMore();
+    }
+    function renderGallery(rows) {
+      GALLERY = (rows || []).map(mapGalleryRow).filter(Boolean);
+      el("galleryGrid").innerHTML = ""; galleryPos = 0;
+      updateGalleryCount();
+      el("galleryEmpty").style.display = GALLERY.length ? "none" : "";
+      if (GALLERY.length) galleryMore();
+      galleryFill();
+    }
+    window.addEventListener("scroll", galleryFill, { passive: true });
+
+    /* ---------- love messages wall ---------- */
+    function msgCard(m) {
+      const d = document.createElement("div");
+      d.className = "wall-item";
+      const init = (m.name || "?").trim().charAt(0).toUpperCase() || "?";
+      d.innerHTML = "<div class='wall-avatar'>" + esc(init) + "</div><div class='wall-body'><span class='wall-name'>" + esc(m.name || "Guest") +
+        "</span><span class='wall-time'>" + esc(m.time || "") + "</span><div class='wall-text'>" + esc(m.message) + "</div></div>";
+      return d;
+    }
+    function renderMessages(rows) {
+      const list = el("wallList");
+      list.innerHTML = "";
+      (rows || []).forEach(function (m) { list.appendChild(msgCard(m)); });
+      el("wallEmpty").style.display = (rows && rows.length) ? "none" : "";
+    }
+    el("wallSend").addEventListener("click", async function () {
+      const btn = this, msg = el("wallMsg");
+      const name = el("wallName").value.trim(), text = el("wallText").value.trim();
+      msg.className = "form-message"; msg.style.display = "none";
+      if (!name || !text) { msg.className = "form-message error"; msg.textContent = "Please enter your name and message."; return; }
+      btn.disabled = true; btn.textContent = "Sending...";
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=message&name=" + encodeURIComponent(name) + "&message=" + encodeURIComponent(text));
+        const r = await res.json();
+        if (r.success) {
+          if (!r.duplicate) el("wallList").insertBefore(msgCard({ name: r.name, time: r.time, message: text }), el("wallList").firstChild);
+          el("wallEmpty").style.display = "none";
+          el("wallText").value = "";
+          msg.className = "form-message success"; msg.textContent = "Thank you, " + r.name + "! Your message is now on the wall.";
+        } else {
+          msg.className = "form-message error";
+          msg.textContent = /not found/i.test(r.message || "") ? "Name not found. Please type your full name exactly as on the invitation list." : (r.message || "Something went wrong.");
+        }
+      } catch (e) { msg.className = "form-message error"; msg.textContent = "Network error. Please try again."; }
+      btn.disabled = false; btn.textContent = "Send greeting";
+    });
+
+    /* ---------- gift guide ---------- */
+    function copyText(t, btn, label) {
+      const done = function () { if (btn) { btn.textContent = "Copied!"; setTimeout(function () { btn.textContent = label; }, 1600); } };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () { fallbackCopy(t); done(); });
+      else { fallbackCopy(t); done(); }
+    }
+    function fallbackCopy(t) {
+      const ta = document.createElement("textarea"); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} ta.remove();
+    }
+    function applyGift(cfg) {
+      [1, 2].forEach(function (n) {
+        const name = cfg["Gcash" + n + "Name"] || (n === 1 ? (cfg.Groom || "Ariel") : (cfg.Bride || "Kate"));
+        const label = cfg["Gcash" + n + "Label"] || "GCash";
+        const num = (cfg["Gcash" + n + "Number"] || "").trim();
+        const img = ((cfg["Gcash" + n + "Image"] || ("gcash" + n + ".jpg")) + "").replace(/[^\w.\-\/]/g, "");
+        el("qrName" + n).textContent = name;
+        el("qrLabel" + n).textContent = label;
+        el("qrNum" + n).textContent = num;
+        const cp = el("qrCopy" + n);
+        cp.hidden = !num;
+        cp.onclick = function () { copyText(num.replace(/\s+/g, ""), cp, "Copy number"); };
+        const frame = el("qrFrame" + n), save = el("qrSave" + n);
+        if (frame.dataset.src !== img) {
+          frame.dataset.src = img;
+          const im = new Image();
+          im.alt = "GCash QR code of " + name;
+          im.onload = function () {
+            frame.innerHTML = ""; frame.appendChild(im);
+            save.href = img; save.hidden = false; save.setAttribute("download", "gcash-" + name.replace(/\W+/g, "-") + ".jpg");
+            frame.onclick = function () { openLightboxList([{ type: "photo", src: img, caption: name + " · " + label }], 0); };
+          };
+          im.onerror = function () { frame.innerHTML = "<div class='qr-ph'>QR coming soon</div>"; save.hidden = true; frame.onclick = null; };
+          im.src = img;
+        }
+      });
+    }
+
+    /* ---------- motif swatches / extra info ---------- */
+    function parseMotif(str) {
+      const out = [];
+      String(str || "").split(/[;\n]|,(?=\s*#)/).forEach(function (part) {
+        const m = part.trim().match(/^(#[0-9a-fA-F]{3,8})\s*(?:\|\s*(.+))?$/);
+        if (m) out.push({ hex: m[1], name: (m[2] || "").trim() });
+      });
+      return out;
+    }
+    function applyMotif(cfg) {
+      const box = el("swatches"), sw = parseMotif(cfg.MotifColors);
+      box.innerHTML = sw.map(function (c) {
+        return "<div class='swatch'><i style='background:" + esc(c.hex) + "'></i><span>" + esc(c.name) + "</span></div>";
+      }).join("");
+      if (!sw.length && !cfg.DressPalette) box.innerHTML = "<p class='coming-soon'>Motif colors to be announced</p>";
+    }
+    function applyInfo(cfg) {
+      const tag = (cfg.Hashtag || "#ArielFoundHisKate").trim();
+      const hide = /^(no|off|none|hide)$/i.test(tag);
+      el("hashtagCard").style.display = hide ? "none" : "";
+      el("hashtagText").textContent = tag;
+      el("hashtagCopy").onclick = function () { copyText(tag, this, "Copy hashtag"); };
+      if (/^(no|off|none|hide)$/i.test((cfg.UnpluggedNote || "").trim())) el("unpluggedCard").style.display = "none";
+      else el("unpluggedCard").style.display = "";
+    }
+    function renderFaq(items) {
+      const box = el("faqList");
+      const rows = (items || []).filter(function (x) { return x.q; });
+      if (!rows.length) { box.innerHTML = "<p class='coming-soon'>Travel, parking and other reminders coming soon</p>"; return; }
+      box.innerHTML = rows.map(function (x) {
+        return "<details><summary>" + esc(x.q) + "</summary><p>" + esc(x.a || "To be announced") + "</p></details>";
+      }).join("");
+    }
+    document.querySelectorAll("[data-cfg]").forEach(function () {});
+    showTab();
     loadSiteData();
   </script>
 </body>
