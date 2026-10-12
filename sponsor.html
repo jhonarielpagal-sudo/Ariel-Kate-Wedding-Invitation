@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ariel & Kate — Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500&family=Great+Vibes&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--gold:#a78343;--cream:#fffdf8;--muted:#756d60;--dark:#f8f5ee;--paper:#fffdf8;--ink:#30271e}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{color:var(--ink);background:var(--dark);font-family:"Montserrat",sans-serif;text-align:center;overflow-x:hidden}
+    .opening{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;background:#faf7f0;transition:opacity 1.1s ease,visibility 1.1s ease}
+    .opening.is-open{opacity:0;visibility:hidden;pointer-events:none}
+    .envelope-wrap{text-align:center;cursor:pointer;outline:none;perspective:1200px}
+    .envelope-wrap:focus-visible{outline:2px solid var(--gold);outline-offset:16px}
+    .envelope{position:relative;width:min(340px,82vw);height:220px;margin:0 auto 28px;background:#eee5d5;box-shadow:0 25px 60px rgba(91,74,43,.18);transform-style:preserve-3d}
+    .envelope::before{content:"";position:absolute;inset:0;z-index:3;background:linear-gradient(160deg,#e8d9be,#d9c7a3);clip-path:polygon(0 0,50% 58%,100% 0);transform-origin:top center;transition:transform .9s cubic-bezier(.4,0,.2,1)}
+    .envelope::after{content:"";position:absolute;inset:0;z-index:1;background:#d5c29e;clip-path:polygon(0 100%,50% 48%,100% 100%)}
+    .envelope-seal{position:absolute;z-index:4;top:52%;left:50%;width:48px;height:48px;display:grid;place-items:center;border-radius:50%;color:#fffdf8;background:linear-gradient(145deg,#9b6f4b,#7d5638);box-shadow:0 4px 14px rgba(0,0,0,.15);font:1.25rem "Great Vibes",cursive;transform:translate(-50%,-20%);transition:opacity .4s ease .3s}
+    .invite-card{position:absolute;top:18px;left:12px;right:12px;height:160px;background:var(--cream);border:1px solid #e8dfcf;box-shadow:0 8px 25px rgba(91,74,43,.12);z-index:2;display:grid;place-items:center;transform:translateY(0);transition:transform .9s cubic-bezier(.4,0,.2,1) .15s;font-family:"Great Vibes",cursive;color:var(--gold);font-size:1.8rem}
+    .envelope-wrap:hover .envelope::before,.envelope-wrap:focus-visible .envelope::before,.opening.is-opening .envelope::before{transform:rotateX(180deg)}
+    .envelope-wrap:hover .invite-card,.envelope-wrap:focus-visible .invite-card,.opening.is-opening .invite-card{transform:translateY(-70px)}
+    .envelope-wrap:hover .envelope-seal,.opening.is-opening .envelope-seal{opacity:0}
+    .open-prompt{color:var(--gold);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;animation:pulse 2s infinite}
+    @keyframes pulse{50%{opacity:.45}}
+    .hero{position:relative;min-height:100vh;display:grid;place-items:center;padding:60px 24px 80px;background:radial-gradient(ellipse at 50% 30%,#fffdf8 0%,#f4eee2 55%,#ebe2d2 100%);overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:28px;border:1px solid rgba(167,131,67,.35);pointer-events:none}
+    .content{position:relative;max-width:720px;animation:heroReveal 1.6s ease both}
+    .eyebrow{color:var(--gold);font-size:.68rem;letter-spacing:.4em;text-transform:uppercase;font-weight:500}
+    h1{margin:28px 0 8px;color:#4c4032;font:400 clamp(4.2rem,12vw,7.8rem)/.88 "Great Vibes",cursive}
+    h1 .initial{display:inline-block;color:var(--gold);font-size:1.42em;line-height:.7}
+    .ampersand{display:block;margin:6px 0 2px;color:var(--gold);font:400 .52em "Great Vibes",cursive;opacity:.9}
+    .divider{width:60px;height:1px;margin:32px auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+    .invite{max-width:460px;margin:0 auto;color:var(--muted);font:1.32rem/1.55 "Cormorant Garamond",serif}
+    .date{margin-top:36px;color:var(--gold);font:500 .95rem "Montserrat",sans-serif;letter-spacing:.18em;text-transform:uppercase}
+    .venue{margin-top:14px;color:var(--muted);font-size:.88rem;letter-spacing:.06em;line-height:1.75}
+    @keyframes heroReveal{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    section{padding:80px 24px}
+    .story{background:#fffdf8}
+    .story-alt{background:#f2ede3}
+    .story-inner,.details-inner{max-width:640px;margin:0 auto}
+    .story .eyebrow,.details .eyebrow{margin-bottom:18px}
+    h2{margin:0 0 22px;color:var(--gold);font:400 clamp(2.3rem,6vw,3.4rem) "Playfair Display",serif}
+    .story p,.details p{color:var(--muted);font:1.25rem/1.7 "Cormorant Garamond",serif}
+    .reveal{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .countdown{display:flex;justify-content:center;gap:14px;margin-top:32px;flex-wrap:wrap}
+    .count-box{min-width:70px;padding:14px 10px;background:rgba(255,253,248,.75);border:1px solid rgba(167,131,67,.3)}
+    .count-box span{display:block;font:500 1.55rem "Playfair Display",serif;color:var(--gold)}
+    .count-box small{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    .paper-card{max-width:520px;margin:36px auto 0;padding:40px 28px;background:var(--paper);border:1px solid #e8dfcf;box-shadow:0 20px 45px rgba(91,74,43,.1);position:relative}
+    .paper-card::before{content:"";position:absolute;inset:11px;border:1px solid rgba(167,131,67,.18);pointer-events:none}
+    .paper-card h3{margin:0 0 10px;color:#9b6f4b;font:400 2.4rem "Great Vibes",cursive}
+    .paper-card p{color:#625747;font-size:1.12rem}
+    .verse-box{max-width:520px;margin:0 auto;padding:36px 28px;border-left:3px solid var(--gold);background:rgba(255,253,248,.6);text-align:left}
+    .verse-box p{font:italic 1.35rem/1.75 "Cormorant Garamond",serif;color:#5a5043}
+    .verse-box cite{display:block;margin-top:16px;font:500 .78rem "Montserrat",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-style:normal}
+    .info-grid{display:grid;gap:20px;margin-top:36px;text-align:left}
+    @media(min-width:580px){.info-grid{grid-template-columns:1fr 1fr}}
+    .info-item{padding:22px;background:rgba(255,253,248,.7);border:1px solid #e8dfcf}
+    .info-item h4{color:var(--gold);font:500 .72rem "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+    .info-item p{font:1.12rem/1.55 "Cormorant Garamond",serif;color:#5a5043}
+    .program-list{list-style:none;margin-top:28px;text-align:left;max-width:420px;margin-left:auto;margin-right:auto}
+    .program-list li{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #e8dfcf;font:1.1rem/1.4 "Cormorant Garamond",serif;color:#5a5043}
+    .program-list li:last-child{border-bottom:none}
+    .program-list .time{color:var(--gold);font-weight:500;white-space:nowrap;min-width:70px}
+    .photo-frame{max-width:400px;margin:28px auto 0;border:1px solid #e8dfcf;padding:12px;background:#fffdf8;box-shadow:0 20px 50px rgba(91,74,43,.12)}
+    .photo-frame img{width:100%;height:auto;display:block;object-fit:cover;aspect-ratio:3/4}
+    .photo-caption{margin-top:16px;color:var(--muted);font:1.15rem/1.5 "Cormorant Garamond",serif;font-style:italic}
+    .entourage-list{max-width:520px;margin:28px auto 0}
+    
+    .guide-grid{display:grid;gap:18px;margin-top:28px;text-align:left;max-width:560px;margin-left:auto;margin-right:auto}
+    .guide-card{padding:22px;background:rgba(255,253,248,.75);border:1px solid #e8dfcf}
+    .guide-card h4{color:var(--gold);font:500 .72rem "Montserrat",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+    .guide-card p{font:1.12rem/1.6 "Cormorant Garamond",serif;color:#5a5043}
+
+    .entourage-loading{color:var(--muted);font:1.1rem "Cormorant Garamond",serif}
+    .ent-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:6px 0}
+    .ent-left{text-align:right;font:1.1rem/1.4 "Cormorant Garamond",serif;color:#4c4032}
+    .ent-right{text-align:left;font:1.1rem/1.4 "Cormorant Garamond",serif;color:#4c4032}
+    .ent-center{text-align:center;font:500 .72rem "Montserrat",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);padding:10px 8px}
+    .ent-center.couple{font:400 1.6rem "Great Vibes",cursive;letter-spacing:.04em;text-transform:none;color:#9b6f4b;padding:14px 8px}
+    .ent-center.section{border-top:1px solid rgba(167,131,67,.25);border-bottom:1px solid rgba(167,131,67,.25);margin:8px 0;padding:10px}
+    .ent-label{font:500 .68rem "Montserrat",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);opacity:.9}
+    .ent-name{display:block}
+    .form-box{max-width:480px;margin:32px auto 0;padding:28px 24px;background:#fffdf8;border:1px solid #e8dfcf;box-shadow:0 12px 35px rgba(91,74,43,.08);text-align:left}
+    .form-box label{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+    .form-box input,.form-box textarea{width:100%;padding:13px 14px;border:1px solid #e0d5c2;background:#fff;font:1rem "Cormorant Garamond",serif;color:var(--ink);margin-bottom:16px;outline:none;transition:border-color .2s}
+    .form-box textarea{min-height:80px;resize:vertical}
+    .form-box input:focus,.form-box textarea:focus{border-color:var(--gold)}
+    .form-message{margin-top:12px;padding:14px 16px;font-size:.95rem;line-height:1.55;display:none}
+    .form-message.success{display:block;background:#f0f7eb;color:#3d6b2e;border:1px solid #c5dfb5}
+    .form-message.error{display:block;background:#fdf0ee;color:#8b3a2f;border:1px solid #e8c5bf}
+    .form-message.info{display:block;background:#f7f3eb;color:#6b5a3e;border:1px solid #e0d5c2}
+    .btn{display:inline-block;padding:14px 28px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;transition:all .28s ease;background:transparent;cursor:pointer;font-family:"Montserrat",sans-serif}
+    .btn:hover{background:var(--gold);color:#fffdf8}
+    .btn-filled{background:var(--gold);color:#fffdf8}
+    .btn-filled:hover{background:#8f6e38}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .btn-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:20px}
+    .confirm-result{margin-top:20px;padding:20px;background:#fffdf8;border:1px solid #e8dfcf;text-align:left;display:none}
+    .confirm-result h4{color:var(--gold);font:500 .78rem "Montserrat",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+    .confirm-result p{font:1.2rem/1.5 "Cormorant Garamond",serif;color:#4c4032}
+    .confirm-result .role{color:var(--muted);font-size:1.05rem}
+    footer{padding:28px 24px;color:#8a8174;background:#f0ebe1;font-size:.68rem;letter-spacing:.14em}
+    .music-control{position:fixed;bottom:22px;right:22px;z-index:50}
+    #musicBtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:rgba(255,253,248,.95);color:var(--gold);font-size:1.25rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 20px rgba(91,74,43,.15);transition:all .25s ease}
+    #musicBtn:hover,#musicBtn.playing{background:var(--gold);color:#fffdf8}
+    .petals{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+    .petal{position:absolute;top:-40px;width:12px;height:12px;background:rgba(167,131,67,.35);border-radius:50% 0 50% 50%;animation:fall linear infinite;opacity:.7}
+    .petal:nth-child(odd){background:rgba(196,163,110,.4);border-radius:50% 50% 0 50%}
+    @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}.petals{display:none}}
+  
+    /* ===== Sticky navigation ===== */
+    .topnav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;overflow-x:auto;scrollbar-width:none;background:rgba(255,253,248,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid rgba(167,131,67,.25)}
+    .topnav::-webkit-scrollbar{display:none}
+    .topnav a{flex:0 0 auto;padding:16px 14px 14px;color:var(--muted);text-decoration:none;font:500 .66rem "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+    .topnav a:first-child{margin-left:auto}
+    .topnav a:last-child{margin-right:auto}
+    .topnav a:hover{color:var(--gold)}
+    .topnav a.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .topnav a:focus-visible{outline:2px solid var(--gold);outline-offset:-4px}
+    section{scroll-margin-top:50px}
+    .hero{padding-top:90px}
+    .guide-card p+p{margin-top:10px}
+    footer{text-transform:uppercase}
+
+    body{overflow:auto}
+    .sp{min-height:100vh;display:grid;place-items:center;padding:48px 20px;background:radial-gradient(ellipse at 50% 30%,#fffdf8 0%,#f4eee2 55%,#ebe2d2 100%)}
+    .sp-card{position:relative;width:100%;max-width:560px;padding:56px 32px 44px;background:var(--paper);border:1px solid #e8dfcf;box-shadow:0 20px 45px rgba(91,74,43,.1);animation:heroReveal 1.2s ease both}
+    .sp-card::before{content:"";position:absolute;inset:11px;border:1px solid rgba(167,131,67,.25);pointer-events:none}
+    .sp-names{margin:18px 0 0;color:#4c4032;font:400 clamp(2.8rem,10vw,4.2rem)/1 "Great Vibes",cursive}
+    .sp-names .initial{color:var(--gold)}
+    .sp-dear{margin-top:6px;color:#9b6f4b;font:400 2.2rem "Great Vibes",cursive}
+    .sp-honor{max-width:440px;margin:18px auto 0;color:#5a5043;font:1.45rem/1.6 "Cormorant Garamond",serif}
+    .sp-role{display:inline-block;margin-top:22px;padding:8px 18px;border:1px solid rgba(167,131,67,.45);color:var(--gold);font:500 .72rem "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase}
+    .sp-when{margin-top:30px;color:var(--muted);font-size:.85rem;letter-spacing:.06em;line-height:1.8}
+    .sp-note{margin-top:20px;color:var(--muted);font:1.1rem/1.5 "Cormorant Garamond",serif;font-style:italic}
+    .sp-card .btn-row{margin-top:28px}
+    .hidden{display:none!important}
+</style>
+</head>
+<body>
+  <main class="sp">
+    <div class="sp-card" id="card">
+      <div class="eyebrow">A special invitation</div>
+      <h1 class="sp-names" id="names"><span class="initial">A</span>riel <span class="ampersand" style="display:inline;font-size:.7em">&amp;</span> <span class="initial">K</span>ate</h1>
+      <div class="divider"></div>
+      <p class="sp-dear" id="dear">Dear Friend,</p>
+      <p class="sp-honor" id="honor">We would be honored if you would stand with us on our wedding day.</p>
+      <div class="sp-role hidden" id="role"></div>
+
+      <div class="btn-row" id="actions">
+        <button class="btn btn-filled hidden" id="acceptBtn">I accept with joy</button>
+        <a class="btn" href="index.html" id="viewBtn">View full invitation</a>
+      </div>
+      <div class="form-message" id="msg"></div>
+
+      <p class="sp-when" id="when"></p>
+      <p class="sp-note hidden" id="thanks"></p>
+    </div>
+  </main>
+
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygPB7Jd68toZMbVlMJaD1AAOs_ntqHRXzfQREnQcd5BNWDf10Ti3FuXNmgmhi2XV8/exec";
+    const FULL_INVITE_URL = "index.html";   // palitan kung iba ang pangalan/lokasyon ng main page
+    const $ = function (id) { return document.getElementById(id); };
+    const params = new URLSearchParams(location.search);
+    const guestParam = (params.get("name") || "").trim();
+
+    function fill(template, vars) {
+      return String(template).replace(/\{(\w+)\}/g, function (m, k) { return vars[k] != null ? vars[k] : m; });
+    }
+    function setNames(groom, bride) {
+      $("names").innerHTML = '<span class="initial">' + esc(groom.charAt(0)) + '</span>' + esc(groom.slice(1)) +
+        ' <span class="ampersand" style="display:inline;font-size:.7em">&amp;</span> <span class="initial">' + esc(bride.charAt(0)) + '</span>' + esc(bride.slice(1));
+      document.title = groom + " & " + bride + " — Our invitation to you";
+    }
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+    let guest = null;
+
+    function showAccepted(when) {
+      $("acceptBtn").classList.add("hidden");
+      $("viewBtn").classList.add("btn-filled");
+      $("viewBtn").textContent = "Continue to the invitation";
+      const first = guest.name.split(" ")[0];
+      $("thanks").textContent = "Thank you, " + first + ". Your acceptance is recorded" + (when ? " (" + when + ")" : "") + ".";
+      $("thanks").classList.remove("hidden");
+    }
+
+    async function init() {
+      $("viewBtn").href = FULL_INVITE_URL;
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=sponsor&name=" + encodeURIComponent(guestParam));
+        const data = await res.json();
+        if (!data.success) throw new Error("bad response");
+        const cfg = data.config || {};
+        const groom = cfg.Groom || "Ariel", bride = cfg.Bride || "Kate";
+        setNames(groom, bride);
+        const whenParts = [cfg.CeremonyDate, cfg.CeremonyTime].filter(Boolean).join(" • ");
+        const where = [cfg.CeremonyVenue, cfg.CeremonyCity].filter(Boolean).join(", ");
+        $("when").innerHTML = [esc(whenParts), esc(where)].filter(Boolean).join("<br />");
+
+        if (!data.found) return; // generic warm message na ang nakalagay
+        guest = { name: data.name, role: data.role };
+        $("dear").textContent = "Dear " + data.name + ",";
+        const vars = { Groom: groom, Bride: bride, Name: data.name, Role: data.role };
+        const custom = data.message
+          ? fill(data.message, vars)
+          : (data.role ? "We would be honored if you would stand with us as " + data.role + "." : "");
+        if (custom) $("honor").textContent = custom;
+        if (data.role) { $("role").textContent = data.role; $("role").classList.remove("hidden"); }
+        $("acceptBtn").classList.remove("hidden");
+        if (data.accepted) showAccepted(data.acceptedAt);
+      } catch (e) {
+        // Hindi nakuha ang data: generic message pa rin, may link papunta sa invitation
+      }
+    }
+
+    $("acceptBtn").addEventListener("click", async function () {
+      const btn = this, msg = $("msg");
+      msg.className = "form-message"; msg.style.display = "none";
+      btn.disabled = true; btn.textContent = "Saving...";
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=accept&name=" + encodeURIComponent(guest.name));
+        const r = await res.json();
+        if (r.success) { showAccepted(r.acceptedAt || ""); return; }
+        msg.className = "form-message error"; msg.textContent = r.message || "Something went wrong. Please try again.";
+      } catch (e) {
+        msg.className = "form-message error"; msg.textContent = "Network error. Please try again.";
+      }
+      btn.disabled = false; btn.textContent = "I accept with joy";
+    });
+
+    init();
+  </script>
+</body>
+</html>

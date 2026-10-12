@@ -114,7 +114,21 @@
     .petal:nth-child(odd){background:rgba(196,163,110,.4);border-radius:50% 50% 0 50%}
     @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}.petals{display:none}}
-  </style>
+  
+    /* ===== Sticky navigation ===== */
+    .topnav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;overflow-x:auto;scrollbar-width:none;background:rgba(255,253,248,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid rgba(167,131,67,.25)}
+    .topnav::-webkit-scrollbar{display:none}
+    .topnav a{flex:0 0 auto;padding:16px 14px 14px;color:var(--muted);text-decoration:none;font:500 .66rem "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+    .topnav a:first-child{margin-left:auto}
+    .topnav a:last-child{margin-right:auto}
+    .topnav a:hover{color:var(--gold)}
+    .topnav a.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .topnav a:focus-visible{outline:2px solid var(--gold);outline-offset:-4px}
+    section{scroll-margin-top:50px}
+    .hero{padding-top:90px}
+    .guide-card p+p{margin-top:10px}
+    footer{text-transform:uppercase}
+</style>
 </head>
 <body>
   <div class="petals" id="petals" aria-hidden="true"></div>
@@ -127,15 +141,26 @@
       <div class="open-prompt">Tap to open your invitation</div>
     </div>
   </div>
+
+  <nav class="topnav" id="topnav" aria-label="Sections">
+    <a href="#home">Home</a>
+    <a href="#story">Our Story</a>
+    <a href="#details">Details</a>
+    <a href="#entourage">Entourage</a>
+    <a href="#guidelines">Guidelines</a>
+    <a href="#reserve">RSVP</a>
+  </nav>
+
   <main>
-    <section class="hero">
+    <!-- HOME -->
+    <section class="hero" id="home">
       <div class="content">
         <div class="eyebrow">Together with their families</div>
-        <h1><span class="initial">A</span>riel <span class="ampersand">&amp;</span> <span class="initial">K</span>ate</h1>
+        <h1 id="heroNames"><span class="initial">A</span>riel <span class="ampersand">&amp;</span> <span class="initial">K</span>ate</h1>
         <div class="divider"></div>
-        <p class="invite">Joyfully invite you to celebrate the beginning of their forever.</p>
-        <div class="date">April 25, 2027 &nbsp;•&nbsp; 3:00 PM</div>
-        <div class="venue">Locale Congregation of Baler<br />(Iglesia ni Cristo)<br />Baler, Aurora</div>
+        <p class="invite" data-cfg="Tagline">Joyfully invite you to celebrate the beginning of their forever.</p>
+        <div class="date"><span data-cfg="CeremonyDate">April 25, 2027</span> &nbsp;•&nbsp; <span data-cfg="CeremonyTime">3:00 PM</span></div>
+        <div class="venue" data-lines="CeremonyVenue|(CeremonySub)|CeremonyCity">Locale Congregation of Baler<br />(Iglesia ni Cristo)<br />Baler, Aurora</div>
       </div>
     </section>
     <section class="story">
@@ -150,7 +175,9 @@
         </div>
       </div>
     </section>
-    <section class="story story-alt">
+
+    <!-- OUR STORY -->
+    <section class="story story-alt" id="story">
       <div class="story-inner reveal">
         <div class="eyebrow">A celebration of love</div>
         <h2>Our Story</h2>
@@ -178,14 +205,16 @@
         </div>
       </div>
     </section>
-    <section class="story">
+
+    <!-- DETAILS -->
+    <section class="story" id="details">
       <div class="story-inner reveal">
         <div class="eyebrow">The ceremony</div>
         <h2>Church Wedding</h2>
         <div class="paper-card">
-          <h3>Ariel &amp; Kate</h3>
-          <p><strong>Locale Congregation of Baler</strong><br />Iglesia ni Cristo<br />Baler, Aurora</p>
-          <p style="margin-top:14px;font-size:1.05rem">Sunday, April 25, 2027<br />3:00 in the afternoon</p>
+          <h3 data-cfg="_Names">Ariel &amp; Kate</h3>
+          <p data-lines="CeremonyVenue|CeremonySub|CeremonyCity" data-bold-first><strong>Locale Congregation of Baler</strong><br />Iglesia ni Cristo<br />Baler, Aurora</p>
+          <p style="margin-top:14px;font-size:1.05rem"><span data-cfg="_FullDate">Sunday, April 25, 2027</span><br /><span data-cfg="CeremonyTime">3:00 PM</span></p>
         </div>
       </div>
     </section>
@@ -193,7 +222,7 @@
       <div class="story-inner reveal">
         <div class="eyebrow">After the ceremony</div>
         <h2>Reception</h2>
-        <p>Join us for an intimate celebration by the sea at<br /><strong>Sea Grace Resort</strong>, Baler, Aurora.</p>
+        <p>Join us for an intimate celebration by the sea at<br /><strong data-cfg="ReceptionVenue">Sea Grace Resort</strong>, <span data-cfg="ReceptionCity">Baler, Aurora</span>.</p>
         <div class="paper-card" style="margin-top:28px">
           <h3 style="font-size:1.9rem">Program</h3>
           <ul class="program-list" id="programList">
@@ -203,6 +232,25 @@
       </div>
     </section>
     <section class="story">
+      <div class="details-inner reveal">
+        <div class="eyebrow">Everything you need</div>
+        <h2>Wedding Details</h2>
+        <div class="info-grid">
+          <div class="info-item"><h4>Date &amp; Time</h4><p><span data-cfg="_FullDate">Sunday, April 25, 2027</span><br />Ceremony at <span data-cfg="CeremonyTime">3:00 PM</span></p></div>
+          <div class="info-item"><h4>Ceremony</h4><p data-lines="CeremonyVenue|CeremonySub|CeremonyCity">Locale Congregation of Baler<br />Iglesia ni Cristo<br />Baler, Aurora</p></div>
+          <div class="info-item"><h4>Reception</h4><p data-lines="ReceptionVenue|ReceptionCity">Sea Grace Resort<br />Baler, Aurora</p></div>
+          <div class="info-item"><h4>Dress Code</h4><p><span data-cfg="DressCode">Formal Attire Only</span><br /><span data-cfg="DressPalette">Dusty Blue &amp; Cream</span><br /><span style="font-size:0.95em;opacity:0.85">Strictly observed</span></p></div>
+        </div>
+        <div class="btn-row">
+          <a class="btn" id="churchMap" href="https://maps.google.com/?q=Locale+Congregation+of+Baler+Iglesia+ni+Cristo" target="_blank" rel="noopener">Church Map</a>
+          <a class="btn" id="receptionMap" href="https://maps.google.com/?q=Sea+Grace+Resort+Baler+Aurora" target="_blank" rel="noopener">Reception Map</a>
+          <a class="btn btn-filled" href="#" id="saveDate">Save the Date</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENTOURAGE -->
+    <section class="story story-alt" id="entourage">
       <div class="story-inner reveal">
         <div class="eyebrow">Standing with us</div>
         <h2>The Entourage</h2>
@@ -212,48 +260,33 @@
       </div>
     </section>
 
-    <section class="story">
+    <!-- GUIDELINES -->
+    <section class="story" id="guidelines">
       <div class="story-inner reveal">
         <div class="eyebrow">Kindly note</div>
         <h2>Guidelines</h2>
-        <div class="guide-grid">
+        <div class="guide-grid" id="guideGrid">
           <div class="guide-card">
             <h4>During the Ceremony</h4>
             <p>Electronic devices such as cellphones, cameras, and video or audio recorders are not allowed inside the church, except for authorized multimedia personnel.</p>
-            <p style="margin-top:10px">Please leave all devices at the Security / Guard House (SCAN) before entering.</p>
+            <p>Please leave all devices at the Lokal Security / Guard House (SCAN) before entering.</p>
           </div>
           <div class="guide-card">
             <h4>At the Reception</h4>
             <p>You are welcome to take unlimited photos. However, we kindly ask that you do not upload or post any photos with the couple on social media until the official photographs have been released by our multimedia team.</p>
-            <p style="margin-top:10px">We would love to be the first to share our moments with you.</p>
+            <p>We would love to be the first to share our moments with you.</p>
           </div>
           <div class="guide-card">
             <h4>Dress Code</h4>
             <p>This is a church wedding. <strong>Formal attire only</strong> is requested.</p>
-            <p style="margin-top:10px">Palette: <strong>Dusty Blue &amp; Cream</strong>. We kindly ask everyone to observe the dress code.</p>
+            <p>Palette: <strong>Dusty Blue &amp; Cream</strong>. We kindly ask everyone to observe the dress code.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="story story-alt">
-      <div class="details-inner reveal">
-        <div class="eyebrow">Everything you need</div>
-        <h2>Wedding Details</h2>
-        <div class="info-grid">
-          <div class="info-item"><h4>Date & Time</h4><p>Sunday, April 25, 2027<br />Ceremony at 3:00 PM</p></div>
-          <div class="info-item"><h4>Ceremony</h4><p>Locale Congregation of Baler<br />Iglesia ni Cristo<br />Baler, Aurora</p></div>
-          <div class="info-item"><h4>Reception</h4><p>Sea Grace Resort<br />Baler, Aurora</p></div>
-          <div class="info-item"><h4>Dress Code</h4><p>Formal Attire Only<br />Dusty Blue &amp; Cream<br /><span style="font-size:0.95em;opacity:0.85">Strictly observed</span></p></div>
-        </div>
-        <div class="btn-row">
-          <a class="btn" href="https://maps.google.com/?q=Locale+Congregation+of+Baler+Iglesia+ni+Cristo" target="_blank" rel="noopener">Church Map</a>
-          <a class="btn" href="https://maps.google.com/?q=Sea+Grace+Resort+Baler+Aurora" target="_blank" rel="noopener">Reception Map</a>
-          <a class="btn btn-filled" href="#" id="saveDate">Save the Date</a>
-        </div>
-      </div>
-    </section>
-    <section class="story" id="reserve">
+    <!-- RSVP -->
+    <section class="story story-alt" id="reserve">
       <div class="story-inner reveal">
         <div class="eyebrow">Your presence</div>
         <h2>Reserve Your Seat</h2>
@@ -272,7 +305,7 @@
         </div>
       </div>
     </section>
-    <section class="story story-alt" id="confirmation">
+    <section class="story" id="confirmation">
       <div class="story-inner reveal">
         <div class="eyebrow">Already reserved?</div>
         <h2>View Your Confirmation</h2>
@@ -288,7 +321,7 @@
         </div>
       </div>
     </section>
-    <section class="story">
+    <section class="story story-alt">
       <div class="story-inner reveal">
         <div class="eyebrow">With love</div>
         <h2>See you there</h2>
@@ -296,7 +329,7 @@
       </div>
     </section>
   </main>
-  <footer>WITH LOVE · ARIEL &amp; KATE · 04.25.2027</footer>
+  <footer>With love · <span data-cfg="_Names">Ariel &amp; Kate</span> · <span data-cfg="CeremonyDate">April 25, 2027</span></footer>
   <div class="music-control">
     <button id="musicBtn" aria-label="Play or pause music" title="Play music">♪</button>
   </div>
@@ -305,8 +338,18 @@
   </audio>
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygPB7Jd68toZMbVlMJaD1AAOs_ntqHRXzfQREnQcd5BNWDf10Ti3FuXNmgmhi2XV8/exec";
+
+    /* ---------- helpers ---------- */
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function el(id) { return document.getElementById(id); }
+
+    /* ---------- petals ---------- */
     (function createPetals() {
-      const container = document.getElementById("petals");
+      const container = el("petals");
       if (!container) return;
       for (let i = 0; i < 14; i++) {
         const petal = document.createElement("span");
@@ -319,6 +362,163 @@
         container.appendChild(petal);
       }
     })();
+
+    /* ---------- wedding date (default; napapalitan ng Config) ---------- */
+    let weddingDate = new Date("2027-04-25T15:00:00+08:00").getTime();
+    let CFG = {};
+
+    const MONTHS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+    function pad(n) { return String(n).padStart(2, "0"); }
+    // Binabasa ang "April 25, 2027" o "4/25/2027" + "3:00 PM" -> oras ng Pilipinas (+08:00)
+    function parseWedding(dateStr, timeStr) {
+      let y, m, d;
+      let a = String(dateStr || "").match(/([A-Za-z]+)\.?\s+(\d{1,2}),?\s+(\d{4})/);
+      if (a && MONTHS.indexOf(a[1].toLowerCase()) > -1) { m = MONTHS.indexOf(a[1].toLowerCase()) + 1; d = +a[2]; y = +a[3]; }
+      else {
+        a = String(dateStr || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (!a) return null;
+        m = +a[1]; d = +a[2]; y = +a[3];
+      }
+      let h = 0, min = 0;
+      const t = String(timeStr || "").match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+      if (t) {
+        h = +t[1]; min = +t[2];
+        if (t[3]) { const pm = /pm/i.test(t[3]); if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; }
+      }
+      const iso = y + "-" + pad(m) + "-" + pad(d) + "T" + pad(h) + ":" + pad(min) + ":00+08:00";
+      const ms = new Date(iso).getTime();
+      return isNaN(ms) ? null : ms;
+    }
+
+    /* ---------- apply Config ---------- */
+    function applyConfig(cfg) {
+      CFG = cfg || {};
+      const groom = CFG.Groom || "Ariel", bride = CFG.Bride || "Kate";
+      CFG._Names = groom + " & " + bride;
+
+      const parsed = parseWedding(CFG.CeremonyDate, CFG.CeremonyTime);
+      if (parsed) {
+        weddingDate = parsed;
+        CFG._FullDate = new Date(parsed).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "Asia/Manila" });
+      } else if (CFG.CeremonyDate) {
+        CFG._FullDate = CFG.CeremonyDate;
+      }
+
+      // simple text
+      document.querySelectorAll("[data-cfg]").forEach(function (n) {
+        const v = CFG[n.getAttribute("data-cfg")];
+        if (v) n.textContent = v;
+      });
+      // multi-line blocks: data-lines="Key1|(Key2)|Key3"
+      document.querySelectorAll("[data-lines]").forEach(function (n) {
+        const tokens = n.getAttribute("data-lines").split("|");
+        const bold = n.hasAttribute("data-bold-first");
+        const parts = [];
+        tokens.forEach(function (tk) {
+          const wrap = /^\((.+)\)$/.test(tk);
+          const key = wrap ? tk.slice(1, -1) : tk;
+          const v = CFG[key];
+          if (v) parts.push({ text: wrap ? "(" + v + ")" : v });
+        });
+        if (!parts.length) return;
+        n.innerHTML = parts.map(function (p, i) {
+          const t = esc(p.text);
+          return (bold && i === 0) ? "<strong>" + t + "</strong>" : t;
+        }).join("<br />");
+      });
+      // hero names with big initials
+      const h1 = el("heroNames");
+      if (h1) {
+        h1.innerHTML = '<span class="initial">' + esc(groom.charAt(0)) + "</span>" + esc(groom.slice(1)) +
+          ' <span class="ampersand">&amp;</span> <span class="initial">' + esc(bride.charAt(0)) + "</span>" + esc(bride.slice(1));
+      }
+      document.title = groom + " & " + bride + " — Wedding Invitation";
+      if (CFG.CeremonyMap) el("churchMap").href = CFG.CeremonyMap;
+      if (CFG.ReceptionMap) el("receptionMap").href = CFG.ReceptionMap;
+      updateCountdown();
+    }
+
+    /* ---------- Guidelines ---------- */
+    function renderGuidelines(items) {
+      const grid = el("guideGrid");
+      if (!grid || !items || !items.length) return; // may default text na sa HTML
+      let html = "";
+      items.forEach(function (it) {
+        if (!it.title && !it.body) return;
+        const paras = String(it.body || "").split(/\n+/).filter(Boolean).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
+        html += "<div class='guide-card'><h4>" + esc(it.title) + "</h4>" + paras + "</div>";
+      });
+      if (html) grid.innerHTML = html;
+    }
+
+    /* ---------- Program (eksaktong text ng Sheet) ---------- */
+    function renderProgram(items) {
+      const list = el("programList");
+      if (!list) return;
+      const empty = "<li style='justify-content:center;color:var(--muted)'>Program will be updated soon.</li>";
+      if (!items || !items.length) { list.innerHTML = empty; return; }
+      let html = "";
+      items.forEach(function (item) {
+        const time = (item.time || "").trim(), activity = (item.activity || "").trim();
+        if (!time && !activity) return;
+        html += "<li><span class='time'>" + esc(time) + "</span><span>" + esc(activity) + "</span></li>";
+      });
+      list.innerHTML = html || empty;
+    }
+
+    /* ---------- Entourage ---------- */
+    function renderEntourage(rows) {
+      const list = el("entourageList");
+      const soon = "<p class='entourage-loading'>Entourage will be updated soon.</p>";
+      if (!rows || !rows.length) { list.innerHTML = soon; return; }
+      const groom = (CFG.Groom || "Ariel").toLowerCase(), bride = (CFG.Bride || "Kate").toLowerCase();
+      let html = "";
+      rows.forEach(function (row) {
+        const L = row.left || "", C = row.center || "", R = row.right || "";
+        if (!L && !C && !R) return;
+        if (C && !L && !R) {
+          const lc = C.toLowerCase();
+          const isCouple = lc.indexOf(groom) > -1 || lc.indexOf(bride) > -1;
+          html += "<div class='ent-row'><div></div><div class='" + (isCouple ? "ent-center couple" : "ent-center section") + "'>" + esc(C) + "</div><div></div></div>";
+          return;
+        }
+        const leftIsLabel = /Parent of|Best Man|Groom/i.test(L) && !/Mrs\.|Mr\./i.test(L);
+        const rightIsLabel = /Parent of|Maid of|Bride/i.test(R) && !/Mrs\.|Mr\./i.test(R);
+        if ((L || R) && (leftIsLabel || rightIsLabel) && !C) {
+          html += "<div class='ent-row'><div class='ent-left'><span class='ent-label'>" + esc(L) + "</span></div><div></div><div class='ent-right'><span class='ent-label'>" + esc(R) + "</span></div></div>";
+          return;
+        }
+        html += "<div class='ent-row'><div class='ent-left'><span class='ent-name'>" + esc(L) + "</span></div><div class='ent-center'></div><div class='ent-right'><span class='ent-name'>" + esc(R) + "</span></div></div>";
+      });
+      list.innerHTML = html || soon;
+    }
+
+    /* ---------- load everything in one request ---------- */
+    async function loadSiteData() {
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=all");
+        const data = await res.json();
+        if (!data.success) throw new Error("bad response");
+        applyConfig(data.config);
+        renderGuidelines(data.guidelines);
+        renderProgram(data.program);
+        renderEntourage(data.entourage);
+      } catch (e) {
+        // Fallback: luma pa ring deployment na wala pang action=all
+        try {
+          const [c, g, p, en] = await Promise.all(["config", "guidelines", "program", "entourage"].map(function (a) {
+            return fetch(APPS_SCRIPT_URL + "?action=" + a).then(function (r) { return r.json(); });
+          }));
+          applyConfig(c.config); renderGuidelines(g.items); renderProgram(p.items); renderEntourage(en.rows);
+        } catch (e2) {
+          el("programList").innerHTML = "<li style='justify-content:center;color:var(--muted)'>Unable to load program.</li>";
+          el("entourageList").innerHTML = "<p class='entourage-loading'>Unable to load entourage.</p>";
+        }
+      }
+    }
+    loadSiteData();
+
+    /* ---------- RSVP ---------- */
     async function checkSheetStatus(name) {
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=check&name=" + encodeURIComponent(name.trim()));
@@ -338,87 +538,11 @@
         return { success: false, message: "Network error. Please try again." };
       }
     }
-    async function loadEntourage() {
-      const list = document.getElementById("entourageList");
-      try {
-        const res = await fetch(APPS_SCRIPT_URL + "?action=entourage");
-        const data = await res.json();
-        if (!data.success || !data.rows || !data.rows.length) {
-          list.innerHTML = "<p class='entourage-loading'>Entourage will be updated soon.</p>";
-          return;
-        }
-        const sectionTitles = ["Principal Sponsors", "Best Man", "Maid of Honor", "Groom's Men", "Bride's Maid", "Parent of the Groom", "Parent of the Bride"];
-        let html = "";
-        data.rows.forEach(function (row) {
-          const L = row.left || "", C = row.center || "", R = row.right || "";
-          if (!L && !C && !R) return;
-          if (C && !L && !R) {
-            const isCouple = /ARIEL|KATE/i.test(C);
-            const cls = isCouple ? "ent-center couple" : "ent-center section";
-            html += "<div class='ent-row'><div></div><div class='" + cls + "'>" + C + "</div><div></div></div>";
-            return;
-          }
-          // Role labels on their own row style when both sides are role headers
-          const leftIsLabel = /Parent of|Best Man|Groom/i.test(L) && !/Mrs\.|Mr\.|Freddie|Shairene/i.test(L);
-          const rightIsLabel = /Parent of|Maid of|Bride/i.test(R) && !/Mrs\.|Mr\.|Freddie|Shairene/i.test(R);
-          if ((L || R) && (leftIsLabel || rightIsLabel) && !C) {
-            html += "<div class='ent-row'><div class='ent-left'><span class='ent-label'>" + L + "</span></div><div></div><div class='ent-right'><span class='ent-label'>" + R + "</span></div></div>";
-            return;
-          }
-          html += "<div class='ent-row'><div class='ent-left'><span class='ent-name'>" + L + "</span></div><div class='ent-center'></div><div class='ent-right'><span class='ent-name'>" + R + "</span></div></div>";
-        });
-        list.innerHTML = html || "<p class='entourage-loading'>Entourage will be updated soon.</p>";
-      } catch (e) {
-        list.innerHTML = "<p class='entourage-loading'>Unable to load entourage.</p>";
-      }
-    }
-    loadEntourage();
-
-    async function loadProgram() {
-      const list = document.getElementById("programList");
-      if (!list) return;
-      try {
-        const res = await fetch(APPS_SCRIPT_URL + "?action=program");
-        const data = await res.json();
-        if (!data.success || !data.items || !data.items.length) {
-          list.innerHTML = "<li style='justify-content:center;color:var(--muted)'>Program will be updated soon.</li>";
-          return;
-        }
-        function formatTime(t) {
-          if (!t) return "";
-          // If Apps Script returned a full date string from a time cell
-          const m = String(t).match(/(\d{1,2}):(\d{2}):\d{2}/);
-          if (m) {
-            let h = parseInt(m[1], 10);
-            const min = m[2];
-            const ap = h >= 12 ? "PM" : "AM";
-            h = h % 12; if (h === 0) h = 12;
-            return h + ":" + min + " " + ap;
-          }
-          if (/^time$/i.test(String(t).trim())) return null; // skip header
-          return String(t).trim();
-        }
-        let html = "";
-        data.items.forEach(function (item) {
-          const time = formatTime(item.time);
-          if (time === null) return;
-          const activity = (item.activity || "").trim();
-          if (!time && !activity) return;
-          if (/^activity$/i.test(activity)) return;
-          html += "<li><span class='time'>" + time + "</span><span>" + activity + "</span></li>";
-        });
-        list.innerHTML = html || "<li style='justify-content:center;color:var(--muted)'>Program will be updated soon.</li>";
-      } catch (e) {
-        list.innerHTML = "<li style='justify-content:center;color:var(--muted)'>Unable to load program.</li>";
-      }
-    }
-    loadProgram();
-
-    document.getElementById("checkReserveBtn").addEventListener("click", async function () {
-      const name = document.getElementById("reserveName").value.trim();
-      const contact = document.getElementById("reserveContact").value;
-      const message = document.getElementById("reserveMessage").value;
-      const btn = this, msg = document.getElementById("reserveMsg");
+    el("checkReserveBtn").addEventListener("click", async function () {
+      const name = el("reserveName").value.trim();
+      const contact = el("reserveContact").value;
+      const message = el("reserveMessage").value;
+      const btn = this, msg = el("reserveMsg");
       msg.className = "form-message"; msg.style.display = "none";
       btn.disabled = true; btn.textContent = "Checking...";
       if (!name) {
@@ -426,6 +550,10 @@
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
       const status = await checkSheetStatus(name);
+      if (status.error) {
+        msg.className = "form-message error"; msg.textContent = "Network error. Please try again.";
+        btn.disabled = false; btn.textContent = "Check & Reserve"; return;
+      }
       if (!status.inList) {
         msg.className = "form-message error";
         msg.textContent = "Name not found. Please type your full name exactly as it appears on the invitation list.";
@@ -433,23 +561,23 @@
       }
       if (status.found) {
         msg.className = "form-message info";
-        msg.innerHTML = "You have already reserved under the name <strong>" + status.name + "</strong> (" + (status.role || "") + "). You may view your confirmation below.";
+        msg.innerHTML = "You have already reserved under the name <strong>" + esc(status.name) + "</strong> (" + esc(status.role || "") + "). You may view your confirmation below.";
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
       btn.textContent = "Submitting...";
       const result = await submitReservation(status.name, contact, message);
       if (result.success) {
         msg.className = "form-message success";
-        msg.innerHTML = "<strong>Reservation successful!</strong><br>" + result.name + " — " + (result.role || status.role || "") + "<br><br>Thank you! You may view your confirmation below anytime.";
+        msg.innerHTML = "<strong>Reservation successful!</strong><br>" + esc(result.name) + " — " + esc(result.role || status.role || "") + "<br><br>Thank you! You may view your confirmation below anytime.";
       } else {
         msg.className = "form-message error";
         msg.textContent = result.message || "Something went wrong. Please try again.";
       }
       btn.disabled = false; btn.textContent = "Check & Reserve";
     });
-    document.getElementById("viewConfirmBtn").addEventListener("click", async function () {
-      const name = document.getElementById("confirmName").value.trim();
-      const btn = this, msg = document.getElementById("confirmMsg"), box = document.getElementById("confirmResult");
+    el("viewConfirmBtn").addEventListener("click", async function () {
+      const name = el("confirmName").value.trim();
+      const btn = this, msg = el("confirmMsg"), box = el("confirmResult");
       msg.className = "form-message"; msg.style.display = "none"; box.style.display = "none";
       btn.disabled = true; btn.textContent = "Checking...";
       if (!name) {
@@ -463,35 +591,52 @@
       }
       if (!status.found) {
         msg.className = "form-message info";
-        msg.innerHTML = "No reservation found yet for <strong>" + status.name + "</strong>. Please use the Reserve section above first.";
+        msg.innerHTML = "No reservation found yet for <strong>" + esc(status.name) + "</strong>. Please use the Reserve section above first.";
         btn.disabled = false; btn.textContent = "View Confirmation"; return;
       }
       box.style.display = "block";
-      box.innerHTML = "<h4>Your Reservation</h4><p><strong>" + status.name + "</strong></p><p class='role'>" + (status.role || "") + "</p><p style='margin-top:6px;font-size:.95rem;color:#756d60'>" + (status.reservedAt ? "Reserved on " + new Date(status.reservedAt).toLocaleString() : "") + "</p>";
+      box.innerHTML = "<h4>Your Reservation</h4><p><strong>" + esc(status.name) + "</strong></p><p class='role'>" + esc(status.role || "") + "</p><p style='margin-top:6px;font-size:.95rem;color:#756d60'>" + (status.reservedAt ? "Reserved on " + esc(new Date(status.reservedAt).toLocaleString()) : "") + "</p>";
       btn.disabled = false; btn.textContent = "View Confirmation";
     });
-    const weddingDate = new Date("2027-04-25T15:00:00+08:00").getTime();
+
+    /* ---------- countdown ---------- */
     function updateCountdown() {
-      const now = Date.now(), distance = weddingDate - now, title = document.getElementById("countdownTitle");
+      const now = Date.now(), distance = weddingDate - now, title = el("countdownTitle");
       if (distance < 0) {
-        document.getElementById("countdown").innerHTML = "<p style='color:var(--gold);font-size:1.3rem'>The day is here! Welcome!</p>";
+        el("countdown").innerHTML = "<p style='color:var(--gold);font-size:1.3rem'>The day is here! Welcome!</p>";
         title.textContent = "Today is the day"; return;
       }
       const days = Math.floor(distance / 86400000), hours = Math.floor((distance % 86400000) / 3600000),
             mins = Math.floor((distance % 3600000) / 60000), secs = Math.floor((distance % 60000) / 1000);
-      document.getElementById("days").textContent = String(days).padStart(2,"0");
-      document.getElementById("hours").textContent = String(hours).padStart(2,"0");
-      document.getElementById("mins").textContent = String(mins).padStart(2,"0");
-      document.getElementById("secs").textContent = String(secs).padStart(2,"0");
+      el("days").textContent = pad(days);
+      el("hours").textContent = pad(hours);
+      el("mins").textContent = pad(mins);
+      el("secs").textContent = pad(secs);
       if (days > 1) title.textContent = days + " days to go";
       else if (days === 1) title.textContent = "1 day to go";
       else if (hours > 0) title.textContent = hours + " hours to go";
       else title.textContent = "Just a few moments left";
     }
     updateCountdown(); setInterval(updateCountdown, 1000);
-    const opening = document.getElementById("opening"), openButton = document.getElementById("openInvite");
+
+    /* ---------- music ---------- */
+    const musicBtn = el("musicBtn"), bgMusic = el("bgMusic");
+    function setMusicUI(playing) {
+      musicBtn.textContent = playing ? "❚❚" : "♪";
+      musicBtn.classList.toggle("playing", playing);
+      musicBtn.title = playing ? "Pause music" : "Play music";
+    }
+    musicBtn.addEventListener("click", function () {
+      if (!bgMusic.paused) { bgMusic.pause(); setMusicUI(false); }
+      else { bgMusic.play().then(function () { setMusicUI(true); }).catch(function () { setMusicUI(false); }); }
+    });
+
+    /* ---------- opening envelope ---------- */
+    const opening = el("opening"), openButton = el("openInvite");
     function openInvitation() {
       opening.classList.add("is-opening");
+      // Nasa loob ng tap ng bisita, kaya papayagan ng browser ang tugtog
+      bgMusic.play().then(function () { setMusicUI(true); }).catch(function () {});
       setTimeout(function () { opening.classList.add("is-open"); document.body.style.overflow = "auto"; }, 900);
     }
     document.body.style.overflow = "hidden";
@@ -499,6 +644,8 @@
     openButton.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openInvitation(); }
     });
+
+    /* ---------- reveal on scroll ---------- */
     const revealSections = document.querySelectorAll(".reveal");
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver(function (entries) {
@@ -506,25 +653,42 @@
           if (entry.isIntersecting) { entry.target.classList.add("visible"); observer.unobserve(entry.target); }
         });
       }, { threshold: 0.12 });
-      revealSections.forEach(function (el) { observer.observe(el); });
+      revealSections.forEach(function (n) { observer.observe(n); });
     } else {
-      revealSections.forEach(function (el) { el.classList.add("visible"); });
+      revealSections.forEach(function (n) { n.classList.add("visible"); });
     }
-    document.getElementById("saveDate").addEventListener("click", function (e) {
-      e.preventDefault();
-      window.open("https://calendar.google.com/calendar/render?action=TEMPLATE&text=Ariel+%26+Kate+Wedding&dates=20270425T070000Z/20270425T150000Z&details=Wedding+of+Ariel+%26+Kate&location=Locale+Congregation+of+Baler%2C+Baler%2C+Aurora", "_blank");
-    });
-    const musicBtn = document.getElementById("musicBtn"), bgMusic = document.getElementById("bgMusic");
-    let isPlaying = false;
-    musicBtn.addEventListener("click", function () {
-      if (isPlaying) {
-        bgMusic.pause(); musicBtn.textContent = "♪"; musicBtn.classList.remove("playing"); musicBtn.title = "Play music";
-      } else {
-        bgMusic.play().then(function () {
-          musicBtn.textContent = "❚❚"; musicBtn.classList.add("playing"); musicBtn.title = "Pause music";
-        }).catch(function () { alert("Tap the music button again to play."); });
+
+    /* ---------- nav: active link + keep active tab in view ---------- */
+    const navLinks = Array.prototype.slice.call(document.querySelectorAll("#topnav a"));
+    const navTargets = navLinks.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+    let lastActive = -1;
+    function updateNav() {
+      let idx = 0;
+      for (let i = 0; i < navTargets.length; i++) {
+        if (navTargets[i] && navTargets[i].getBoundingClientRect().top <= window.innerHeight * 0.35) idx = i;
       }
-      isPlaying = !isPlaying;
+      if (idx === lastActive) return;
+      lastActive = idx;
+      navLinks.forEach(function (a, i) { a.classList.toggle("active", i === idx); });
+      const nav = el("topnav"), a = navLinks[idx];
+      nav.scrollTo({ left: a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2, behavior: "smooth" });
+    }
+    window.addEventListener("scroll", updateNav, { passive: true });
+    window.addEventListener("resize", updateNav);
+    updateNav();
+
+    /* ---------- save the date ---------- */
+    el("saveDate").addEventListener("click", function (e) {
+      e.preventDefault();
+      const fmt = function (ms) { return new Date(ms).toISOString().replace(/[-:]|\.\d{3}/g, ""); };
+      const names = CFG._Names || "Ariel & Kate";
+      const where = [CFG.CeremonyVenue || "Locale Congregation of Baler", CFG.CeremonyCity || "Baler, Aurora"].join(", ");
+      const url = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+        "&text=" + encodeURIComponent(names + " Wedding") +
+        "&dates=" + fmt(weddingDate) + "/" + fmt(weddingDate + 4 * 3600000) +
+        "&details=" + encodeURIComponent("Wedding of " + names) +
+        "&location=" + encodeURIComponent(where);
+      window.open(url, "_blank");
     });
   </script>
 </body>
