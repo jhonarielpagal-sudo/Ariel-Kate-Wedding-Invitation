@@ -3,122 +3,144 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ariel & Kate — Wedding Invitation</title>
+  <title>Our invitation to you</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500&family=Great+Vibes&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root{--gold:#a78343;--cream:#fffdf8;--muted:#756d60;--dark:#f8f5ee;--paper:#fffdf8;--ink:#30271e}
+    :root{--gold:#a78343;--paper:#fffdf8;--bg:#f8f5ee;--bg-alt:#f2ede3;--bg-mid:color-mix(in srgb,var(--bg-alt) 60%,var(--paper));--bg-deep:color-mix(in srgb,var(--bg-alt) 85%,var(--gold));--muted:#756d60;--ink:#30271e;--ink-soft:#5a5043;--title:#4c4032;--accent:#9b6f4b;--line:#e8dfcf;--env:#eee5d5;--f-script:"Great Vibes";--f-head:"Playfair Display";--f-body:"Cormorant Garamond";--f-label:"Montserrat"}
     *{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{color:var(--ink);background:var(--dark);font-family:"Montserrat",sans-serif;text-align:center;overflow-x:hidden}
-    .opening{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;background:#faf7f0;transition:opacity 1.1s ease,visibility 1.1s ease}
+    body{color:var(--ink);background:var(--bg);font-family:var(--f-label),sans-serif;text-align:center;overflow-x:hidden}
+
+    /* ===== 3D envelope ===== */
+    .opening{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 50% 40%,var(--paper),var(--bg-alt));transition:opacity 1.1s ease,visibility 1.1s ease;overflow:hidden}
     .opening.is-open{opacity:0;visibility:hidden;pointer-events:none}
-    .envelope-wrap{text-align:center;cursor:pointer;outline:none;perspective:1200px}
-    .envelope-wrap:focus-visible{outline:2px solid var(--gold);outline-offset:16px}
-    .envelope{position:relative;width:min(340px,82vw);height:220px;margin:0 auto 28px;background:#eee5d5;box-shadow:0 25px 60px rgba(91,74,43,.18);transform-style:preserve-3d}
-    .envelope::before{content:"";position:absolute;inset:0;z-index:3;background:linear-gradient(160deg,#e8d9be,#d9c7a3);clip-path:polygon(0 0,50% 58%,100% 0);transform-origin:top center;transition:transform .9s cubic-bezier(.4,0,.2,1)}
-    .envelope::after{content:"";position:absolute;inset:0;z-index:1;background:#d5c29e;clip-path:polygon(0 100%,50% 48%,100% 100%)}
-    .envelope-seal{position:absolute;z-index:4;top:52%;left:50%;width:48px;height:48px;display:grid;place-items:center;border-radius:50%;color:#fffdf8;background:linear-gradient(145deg,#9b6f4b,#7d5638);box-shadow:0 4px 14px rgba(0,0,0,.15);font:1.25rem "Great Vibes",cursive;transform:translate(-50%,-20%);transition:opacity .4s ease .3s}
-    .invite-card{position:absolute;top:18px;left:12px;right:12px;height:160px;background:var(--cream);border:1px solid #e8dfcf;box-shadow:0 8px 25px rgba(91,74,43,.12);z-index:2;display:grid;place-items:center;transform:translateY(0);transition:transform .9s cubic-bezier(.4,0,.2,1) .15s;font-family:"Great Vibes",cursive;color:var(--gold);font-size:1.8rem}
-    .envelope-wrap:hover .envelope::before,.envelope-wrap:focus-visible .envelope::before,.opening.is-opening .envelope::before{transform:rotateX(180deg)}
-    .envelope-wrap:hover .invite-card,.envelope-wrap:focus-visible .invite-card,.opening.is-opening .invite-card{transform:translateY(-70px)}
-    .envelope-wrap:hover .envelope-seal,.opening.is-opening .envelope-seal{opacity:0}
-    .open-prompt{color:var(--gold);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;animation:pulse 2s infinite}
+    .env-stage{--w:min(340px,84vw);--h:calc(var(--w)*.66);text-align:center;padding-top:calc(var(--h)*.55);perspective:1400px}
+    .env-wrap{position:relative;width:var(--w);height:var(--h);margin:0 auto 44px;cursor:pointer;outline:none;transform:rotateX(var(--rx,7deg)) rotateY(var(--ry,0deg));transition:transform .3s ease-out}
+    .env-wrap:focus-visible{outline:2px solid var(--gold);outline-offset:18px}
+    .env-shadow{position:absolute;left:6%;right:6%;bottom:-26px;height:26px;border-radius:50%;background:rgba(60,45,25,.28);filter:blur(14px)}
+    .envelope{position:absolute;inset:0}
+    .env-back{position:absolute;inset:0;z-index:1;border-radius:2px;background:linear-gradient(180deg,color-mix(in srgb,var(--env) 80%,black),color-mix(in srgb,var(--env) 90%,black));box-shadow:0 26px 50px rgba(60,45,25,.22)}
+    .env-card{position:absolute;z-index:3;left:5%;right:5%;top:6%;height:88%;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);box-shadow:0 4px 14px rgba(60,45,25,.16);transition:transform 1.05s cubic-bezier(.3,.7,.2,1) .6s}
+    .env-card::before{content:"";position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);pointer-events:none}
+    .env-card-in{padding:0 14px;text-align:center}
+    .env-card-in small{display:block;color:var(--gold);font:500 .58rem var(--f-label),sans-serif;letter-spacing:.3em;text-transform:uppercase}
+    .env-names{display:block;margin:8px 0;color:var(--accent);font:400 2.1rem/1.1 var(--f-script),cursive}
+    .env-pocket{position:absolute;inset:0;z-index:4;filter:drop-shadow(0 -2px 3px rgba(60,45,25,.2))}
+    .env-pocket i{position:absolute;inset:0}
+    .env-pocket .pl{clip-path:polygon(0 0,52% 53%,0 100%);background:linear-gradient(100deg,color-mix(in srgb,var(--env) 92%,white),color-mix(in srgb,var(--env) 86%,black))}
+    .env-pocket .pr{clip-path:polygon(100% 0,48% 53%,100% 100%);background:linear-gradient(260deg,color-mix(in srgb,var(--env) 92%,white),color-mix(in srgb,var(--env) 84%,black))}
+    .env-pocket .pb{clip-path:polygon(0 100%,50% 46%,100% 100%);background:linear-gradient(0deg,color-mix(in srgb,var(--env) 88%,black),var(--env) 70%,color-mix(in srgb,var(--env) 94%,white))}
+    .env-flap{position:absolute;left:0;right:0;top:0;height:58%;z-index:5;transform-origin:50% 0;transform-style:preserve-3d;transform:perspective(900px) rotateX(0deg)}
+    .env-flap i{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;clip-path:polygon(0 0,100% 0,50% 100%)}
+    .env-flap .ff{background:linear-gradient(172deg,color-mix(in srgb,var(--env) 94%,white),color-mix(in srgb,var(--env) 82%,black))}
+    .env-flap .fb{transform:rotateX(180deg);background:linear-gradient(0deg,color-mix(in srgb,var(--env) 78%,black),color-mix(in srgb,var(--env) 92%,black))}
+    .env-seal{position:absolute;z-index:6;left:50%;top:58%;width:56px;height:56px;margin:-28px 0 0 -28px;display:flex;align-items:center;justify-content:center;gap:1px;border-radius:48% 52% 50% 50%/52% 48% 52% 48%;color:#f8ead7;font:1.05rem var(--f-script),cursive;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--accent) 65%,white),var(--accent) 55%,color-mix(in srgb,var(--accent) 65%,black));box-shadow:0 3px 8px rgba(40,25,10,.38),inset 0 0 0 4px color-mix(in srgb,var(--accent) 75%,black),inset 0 0 0 5px rgba(255,255,255,.14);transition:opacity .35s ease}
+    .env-seal em{font-style:normal;font-size:.7em;opacity:.85}
+    .env-text{transition:opacity .45s ease}
+    .opening:not(.ready) .env-text{opacity:0}
+    .opening.is-opening .env-flap{animation:flapOpen .9s ease-in-out forwards}
+    .opening.is-opening .env-seal{opacity:0}
+    .opening.is-opening .env-card{transform:translateY(-62%)}
+    @keyframes flapOpen{0%{transform:perspective(900px) rotateX(0deg);z-index:5}49%{z-index:5}50%{z-index:2}100%{transform:perspective(900px) rotateX(180deg);z-index:2}}
+    .open-prompt{color:var(--gold);font:500 .72rem var(--f-label),sans-serif;letter-spacing:.28em;text-transform:uppercase;animation:pulse 2s infinite}
+    .opening.is-opening .open-prompt{visibility:hidden}
     @keyframes pulse{50%{opacity:.45}}
-    .hero{position:relative;min-height:100vh;display:grid;place-items:center;padding:60px 24px 80px;background:radial-gradient(ellipse at 50% 30%,#fffdf8 0%,#f4eee2 55%,#ebe2d2 100%);overflow:hidden}
-    .hero::before{content:"";position:absolute;inset:28px;border:1px solid rgba(167,131,67,.35);pointer-events:none}
+
+    .hero{position:relative;min-height:100vh;display:grid;place-items:center;padding:60px 24px 80px;background:radial-gradient(ellipse at 50% 30%,var(--paper) 0%,var(--bg-mid) 55%,var(--bg-deep) 100%);overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:28px;border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);pointer-events:none}
     .content{position:relative;max-width:720px;animation:heroReveal 1.6s ease both}
     .eyebrow{color:var(--gold);font-size:.68rem;letter-spacing:.4em;text-transform:uppercase;font-weight:500}
-    h1{margin:28px 0 8px;color:#4c4032;font:400 clamp(4.2rem,12vw,7.8rem)/.88 "Great Vibes",cursive}
+    h1{margin:28px 0 8px;color:var(--title);font:400 clamp(4.2rem,12vw,7.8rem)/.88 var(--f-script),cursive}
     h1 .initial{display:inline-block;color:var(--gold);font-size:1.42em;line-height:.7}
-    .ampersand{display:block;margin:6px 0 2px;color:var(--gold);font:400 .52em "Great Vibes",cursive;opacity:.9}
+    .ampersand{display:block;margin:6px 0 2px;color:var(--gold);font:400 .52em var(--f-script),cursive;opacity:.9}
     .divider{width:60px;height:1px;margin:32px auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-    .invite{max-width:460px;margin:0 auto;color:var(--muted);font:1.32rem/1.55 "Cormorant Garamond",serif}
-    .date{margin-top:36px;color:var(--gold);font:500 .95rem "Montserrat",sans-serif;letter-spacing:.18em;text-transform:uppercase}
+    .invite{max-width:460px;margin:0 auto;color:var(--muted);font:1.32rem/1.55 var(--f-body),serif}
+    .date{margin-top:36px;color:var(--gold);font:500 .95rem var(--f-label),sans-serif;letter-spacing:.18em;text-transform:uppercase}
     .venue{margin-top:14px;color:var(--muted);font-size:.88rem;letter-spacing:.06em;line-height:1.75}
     @keyframes heroReveal{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
     section{padding:80px 24px}
-    .story{background:#fffdf8}
-    .story-alt{background:#f2ede3}
+    .story{background:var(--paper)}
+    .story-alt{background:var(--bg-alt)}
     .story-inner,.details-inner{max-width:640px;margin:0 auto}
     .story .eyebrow,.details .eyebrow{margin-bottom:18px}
-    h2{margin:0 0 22px;color:var(--gold);font:400 clamp(2.3rem,6vw,3.4rem) "Playfair Display",serif}
-    .story p,.details p{color:var(--muted);font:1.25rem/1.7 "Cormorant Garamond",serif}
+    h2{margin:0 0 22px;color:var(--gold);font:400 clamp(2.3rem,6vw,3.4rem) var(--f-head),serif}
+    .story p,.details p{color:var(--muted);font:1.25rem/1.7 var(--f-body),serif}
     .reveal{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease}
     .reveal.visible{opacity:1;transform:translateY(0)}
     .countdown{display:flex;justify-content:center;gap:14px;margin-top:32px;flex-wrap:wrap}
-    .count-box{min-width:70px;padding:14px 10px;background:rgba(255,253,248,.75);border:1px solid rgba(167,131,67,.3)}
-    .count-box span{display:block;font:500 1.55rem "Playfair Display",serif;color:var(--gold)}
+    .count-box{min-width:70px;padding:14px 10px;background:color-mix(in srgb,var(--paper) 75%,transparent);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent)}
+    .count-box span{display:block;font:500 1.55rem var(--f-head),serif;color:var(--gold)}
     .count-box small{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-    .paper-card{max-width:520px;margin:36px auto 0;padding:40px 28px;background:var(--paper);border:1px solid #e8dfcf;box-shadow:0 20px 45px rgba(91,74,43,.1);position:relative}
-    .paper-card::before{content:"";position:absolute;inset:11px;border:1px solid rgba(167,131,67,.18);pointer-events:none}
-    .paper-card h3{margin:0 0 10px;color:#9b6f4b;font:400 2.4rem "Great Vibes",cursive}
-    .paper-card p{color:#625747;font-size:1.12rem}
-    .verse-box{max-width:520px;margin:0 auto;padding:36px 28px;border-left:3px solid var(--gold);background:rgba(255,253,248,.6);text-align:left}
-    .verse-box p{font:italic 1.35rem/1.75 "Cormorant Garamond",serif;color:#5a5043}
-    .verse-box cite{display:block;margin-top:16px;font:500 .78rem "Montserrat",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-style:normal}
+    .paper-card{max-width:520px;margin:36px auto 0;padding:40px 28px;background:var(--paper);border:1px solid var(--line);box-shadow:0 20px 45px rgba(91,74,43,.1);position:relative}
+    .paper-card::before{content:"";position:absolute;inset:11px;border:1px solid color-mix(in srgb,var(--gold) 18%,transparent);pointer-events:none}
+    .paper-card h3{margin:0 0 10px;color:var(--accent);font:400 2.4rem var(--f-script),cursive}
+    .paper-card p{color:var(--ink-soft);font-size:1.12rem}
+    .verse-box{max-width:520px;margin:0 auto;padding:36px 28px;border-left:3px solid var(--gold);background:color-mix(in srgb,var(--paper) 60%,transparent);text-align:left}
+    .verse-box p{font:italic 1.35rem/1.75 var(--f-body),serif;color:var(--ink-soft)}
+    .verse-box cite{display:block;margin-top:16px;font:500 .78rem var(--f-label),sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-style:normal}
     .info-grid{display:grid;gap:20px;margin-top:36px;text-align:left}
     @media(min-width:580px){.info-grid{grid-template-columns:1fr 1fr}}
-    .info-item{padding:22px;background:rgba(255,253,248,.7);border:1px solid #e8dfcf}
-    .info-item h4{color:var(--gold);font:500 .72rem "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
-    .info-item p{font:1.12rem/1.55 "Cormorant Garamond",serif;color:#5a5043}
+    .info-item{padding:22px;background:color-mix(in srgb,var(--paper) 70%,transparent);border:1px solid var(--line)}
+    .info-item h4{color:var(--gold);font:500 .72rem var(--f-label),sans-serif;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+    .info-item p{font:1.12rem/1.55 var(--f-body),serif;color:var(--ink-soft)}
     .program-list{list-style:none;margin-top:28px;text-align:left;max-width:420px;margin-left:auto;margin-right:auto}
-    .program-list li{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #e8dfcf;font:1.1rem/1.4 "Cormorant Garamond",serif;color:#5a5043}
+    .program-list li{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font:1.1rem/1.4 var(--f-body),serif;color:var(--ink-soft)}
     .program-list li:last-child{border-bottom:none}
     .program-list .time{color:var(--gold);font-weight:500;white-space:nowrap;min-width:70px}
-    .photo-frame{max-width:400px;margin:28px auto 0;border:1px solid #e8dfcf;padding:12px;background:#fffdf8;box-shadow:0 20px 50px rgba(91,74,43,.12)}
+    .photo-frame{max-width:400px;margin:28px auto 0;border:1px solid var(--line);padding:12px;background:var(--paper);box-shadow:0 20px 50px rgba(91,74,43,.12)}
     .photo-frame img{width:100%;height:auto;display:block;object-fit:cover;aspect-ratio:3/4}
-    .photo-caption{margin-top:16px;color:var(--muted);font:1.15rem/1.5 "Cormorant Garamond",serif;font-style:italic}
+    .photo-caption{margin-top:16px;color:var(--muted);font:1.15rem/1.5 var(--f-body),serif;font-style:italic}
     .entourage-list{max-width:520px;margin:28px auto 0}
     
     .guide-grid{display:grid;gap:18px;margin-top:28px;text-align:left;max-width:560px;margin-left:auto;margin-right:auto}
-    .guide-card{padding:22px;background:rgba(255,253,248,.75);border:1px solid #e8dfcf}
-    .guide-card h4{color:var(--gold);font:500 .72rem "Montserrat",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
-    .guide-card p{font:1.12rem/1.6 "Cormorant Garamond",serif;color:#5a5043}
+    .guide-card{padding:22px;background:color-mix(in srgb,var(--paper) 75%,transparent);border:1px solid var(--line)}
+    .guide-card h4{color:var(--gold);font:500 .72rem var(--f-label),sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+    .guide-card p{font:1.12rem/1.6 var(--f-body),serif;color:var(--ink-soft)}
 
-    .entourage-loading{color:var(--muted);font:1.1rem "Cormorant Garamond",serif}
+    .entourage-loading{color:var(--muted);font:1.1rem var(--f-body),serif}
     .ent-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:6px 0}
-    .ent-left{text-align:right;font:1.1rem/1.4 "Cormorant Garamond",serif;color:#4c4032}
-    .ent-right{text-align:left;font:1.1rem/1.4 "Cormorant Garamond",serif;color:#4c4032}
-    .ent-center{text-align:center;font:500 .72rem "Montserrat",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);padding:10px 8px}
-    .ent-center.couple{font:400 1.6rem "Great Vibes",cursive;letter-spacing:.04em;text-transform:none;color:#9b6f4b;padding:14px 8px}
-    .ent-center.section{border-top:1px solid rgba(167,131,67,.25);border-bottom:1px solid rgba(167,131,67,.25);margin:8px 0;padding:10px}
-    .ent-label{font:500 .68rem "Montserrat",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);opacity:.9}
+    .ent-left{text-align:right;font:1.1rem/1.4 var(--f-body),serif;color:var(--title)}
+    .ent-right{text-align:left;font:1.1rem/1.4 var(--f-body),serif;color:var(--title)}
+    .ent-center{text-align:center;font:500 .72rem var(--f-label),sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);padding:10px 8px}
+    .ent-center.couple{font:400 1.6rem var(--f-script),cursive;letter-spacing:.04em;text-transform:none;color:var(--accent);padding:14px 8px}
+    .ent-center.section{border-top:1px solid color-mix(in srgb,var(--gold) 25%,transparent);border-bottom:1px solid color-mix(in srgb,var(--gold) 25%,transparent);margin:8px 0;padding:10px}
+    .ent-label{font:500 .68rem var(--f-label),sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);opacity:.9}
     .ent-name{display:block}
-    .form-box{max-width:480px;margin:32px auto 0;padding:28px 24px;background:#fffdf8;border:1px solid #e8dfcf;box-shadow:0 12px 35px rgba(91,74,43,.08);text-align:left}
+    .form-box{max-width:480px;margin:32px auto 0;padding:28px 24px;background:var(--paper);border:1px solid var(--line);box-shadow:0 12px 35px rgba(91,74,43,.08);text-align:left}
     .form-box label{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-    .form-box input,.form-box textarea{width:100%;padding:13px 14px;border:1px solid #e0d5c2;background:#fff;font:1rem "Cormorant Garamond",serif;color:var(--ink);margin-bottom:16px;outline:none;transition:border-color .2s}
+    .form-box input,.form-box textarea{width:100%;padding:13px 14px;border:1px solid var(--line);background:#fff;font:1rem var(--f-body),serif;color:var(--ink);margin-bottom:16px;outline:none;transition:border-color .2s}
     .form-box textarea{min-height:80px;resize:vertical}
     .form-box input:focus,.form-box textarea:focus{border-color:var(--gold)}
     .form-message{margin-top:12px;padding:14px 16px;font-size:.95rem;line-height:1.55;display:none}
     .form-message.success{display:block;background:#f0f7eb;color:#3d6b2e;border:1px solid #c5dfb5}
     .form-message.error{display:block;background:#fdf0ee;color:#8b3a2f;border:1px solid #e8c5bf}
-    .form-message.info{display:block;background:#f7f3eb;color:#6b5a3e;border:1px solid #e0d5c2}
-    .btn{display:inline-block;padding:14px 28px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;transition:all .28s ease;background:transparent;cursor:pointer;font-family:"Montserrat",sans-serif}
-    .btn:hover{background:var(--gold);color:#fffdf8}
-    .btn-filled{background:var(--gold);color:#fffdf8}
-    .btn-filled:hover{background:#8f6e38}
+    .form-message.info{display:block;background:#f7f3eb;color:#6b5a3e;border:1px solid var(--line)}
+    .btn{display:inline-block;padding:14px 28px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;transition:all .28s ease;background:transparent;cursor:pointer;font-family:var(--f-label),sans-serif}
+    .btn:hover{background:var(--gold);color:var(--paper)}
+    .btn-filled{background:var(--gold);color:var(--paper)}
+    .btn-filled:hover{background:color-mix(in srgb,var(--gold) 80%,black)}
     .btn:disabled{opacity:.5;cursor:not-allowed}
     .btn-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:20px}
-    .confirm-result{margin-top:20px;padding:20px;background:#fffdf8;border:1px solid #e8dfcf;text-align:left;display:none}
-    .confirm-result h4{color:var(--gold);font:500 .78rem "Montserrat",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
-    .confirm-result p{font:1.2rem/1.5 "Cormorant Garamond",serif;color:#4c4032}
+    .confirm-result{margin-top:20px;padding:20px;background:var(--paper);border:1px solid var(--line);text-align:left;display:none}
+    .confirm-result h4{color:var(--gold);font:500 .78rem var(--f-label),sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+    .confirm-result p{font:1.2rem/1.5 var(--f-body),serif;color:var(--title)}
     .confirm-result .role{color:var(--muted);font-size:1.05rem}
-    footer{padding:28px 24px;color:#8a8174;background:#f0ebe1;font-size:.68rem;letter-spacing:.14em}
+    footer{padding:28px 24px;color:var(--muted);background:var(--bg-alt);font-size:.68rem;letter-spacing:.14em}
     .music-control{position:fixed;bottom:22px;right:22px;z-index:50}
-    #musicBtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:rgba(255,253,248,.95);color:var(--gold);font-size:1.25rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 20px rgba(91,74,43,.15);transition:all .25s ease}
-    #musicBtn:hover,#musicBtn.playing{background:var(--gold);color:#fffdf8}
+    #musicBtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:color-mix(in srgb,var(--paper) 95%,transparent);color:var(--gold);font-size:1.25rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 20px rgba(91,74,43,.15);transition:all .25s ease}
+    #musicBtn:hover,#musicBtn.playing{background:var(--gold);color:var(--paper)}
     .petals{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
-    .petal{position:absolute;top:-40px;width:12px;height:12px;background:rgba(167,131,67,.35);border-radius:50% 0 50% 50%;animation:fall linear infinite;opacity:.7}
+    .petal{position:absolute;top:-40px;width:12px;height:12px;background:color-mix(in srgb,var(--gold) 35%,transparent);border-radius:50% 0 50% 50%;animation:fall linear infinite;opacity:.7}
     .petal:nth-child(odd){background:rgba(196,163,110,.4);border-radius:50% 50% 0 50%}
     @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}.petals{display:none}}
   
     /* ===== Sticky navigation ===== */
-    .topnav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;overflow-x:auto;scrollbar-width:none;background:rgba(255,253,248,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid rgba(167,131,67,.25)}
+    .topnav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;overflow-x:auto;scrollbar-width:none;background:color-mix(in srgb,var(--paper) 93%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid color-mix(in srgb,var(--gold) 25%,transparent)}
     .topnav::-webkit-scrollbar{display:none}
-    .topnav a{flex:0 0 auto;padding:16px 14px 14px;color:var(--muted);text-decoration:none;font:500 .66rem "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+    .topnav a{flex:0 0 auto;padding:16px 14px 14px;color:var(--muted);text-decoration:none;font:500 .66rem var(--f-label),sans-serif;letter-spacing:.16em;text-transform:uppercase;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
     .topnav a:first-child{margin-left:auto}
     .topnav a:last-child{margin-right:auto}
     .topnav a:hover{color:var(--gold)}
@@ -129,22 +151,72 @@
     .guide-card p+p{margin-top:10px}
     footer{text-transform:uppercase}
 
+    /* ===== Photos ===== */
+    .photo-frame.wide{max-width:640px}
+    .photo-frame .ph{display:grid;place-items:center;padding:16px;background:repeating-linear-gradient(45deg,#f6f0e3,#f6f0e3 10px,#f0e8d6 10px,#f0e8d6 20px);color:var(--muted);font:500 .72rem/1.7 var(--f-label),sans-serif;letter-spacing:.08em;text-align:center}
+    .photo-item .photo-caption{margin-top:14px}
+    .photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:640px;margin:28px auto 0}
+    .photo-pair .photo-frame{margin-top:0;padding:8px}
+    .photo-pair .photo-caption{font-size:1.05rem}
+    .photo-item.sq .photo-frame{max-width:360px}
+    .guide-card .photo-item{margin-bottom:16px}
+    .guide-card .photo-frame{margin-top:0;max-width:320px}
+    .story div[data-paras] p+p{margin-top:16px}
+    p:empty{display:none}
+    .card-actions{margin-top:22px}
+    /* ===== Closing photo ===== */
+    .closing{position:relative;min-height:70vh;display:grid;place-items:center;padding:100px 24px;color:#fffdf8;overflow:hidden;background:#3a3025}
+    .closing-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+    .closing::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,22,14,.30),rgba(30,22,14,.62))}
+    .closing .closing-inner{position:relative;z-index:2;max-width:640px}
+    .closing .eyebrow{color:#e8d4a6;margin-bottom:18px}
+    .closing h2{color:#fffdf8}
+    .closing p{font:1.3rem/1.7 "Cormorant Garamond",serif;color:#f4eee2}
+    .closing.no-photo{background:var(--paper);color:var(--ink)}
+    .closing.no-photo::after{display:none}
+    .closing.no-photo .eyebrow{color:var(--gold)}
+    .closing.no-photo h2{color:var(--gold)}
+    .closing.no-photo p{color:var(--muted)}
+    .closing .ph-note{position:absolute;z-index:3;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border:1px dashed #a78343;background:rgba(255,253,248,.9);color:#756d60;font:500 .7rem "Montserrat",sans-serif;letter-spacing:.08em}
+
     body{overflow:auto}
-    .sp{min-height:100vh;display:grid;place-items:center;padding:48px 20px;background:radial-gradient(ellipse at 50% 30%,#fffdf8 0%,#f4eee2 55%,#ebe2d2 100%)}
-    .sp-card{position:relative;width:100%;max-width:560px;padding:56px 32px 44px;background:var(--paper);border:1px solid #e8dfcf;box-shadow:0 20px 45px rgba(91,74,43,.1);animation:heroReveal 1.2s ease both}
-    .sp-card::before{content:"";position:absolute;inset:11px;border:1px solid rgba(167,131,67,.25);pointer-events:none}
-    .sp-names{margin:18px 0 0;color:#4c4032;font:400 clamp(2.8rem,10vw,4.2rem)/1 "Great Vibes",cursive}
+    .sp{min-height:100vh;display:grid;place-items:center;padding:48px 20px;background:radial-gradient(ellipse at 50% 30%,var(--paper) 0%,var(--bg-mid) 55%,var(--bg-deep) 100%)}
+    .sp-card{position:relative;width:100%;max-width:560px;padding:56px 32px 44px;background:var(--paper);border:1px solid var(--line);box-shadow:0 20px 45px rgba(91,74,43,.1);text-align:center}
+    .sp-card::before{content:"";position:absolute;inset:11px;border:1px solid color-mix(in srgb,var(--gold) 25%,transparent);pointer-events:none}
+    .sp-names{margin:18px 0 0;color:var(--title);font:400 clamp(2.8rem,10vw,4.2rem)/1 var(--f-script),cursive}
     .sp-names .initial{color:var(--gold)}
-    .sp-dear{margin-top:6px;color:#9b6f4b;font:400 2.2rem "Great Vibes",cursive}
-    .sp-honor{max-width:440px;margin:18px auto 0;color:#5a5043;font:1.45rem/1.6 "Cormorant Garamond",serif}
-    .sp-role{display:inline-block;margin-top:22px;padding:8px 18px;border:1px solid rgba(167,131,67,.45);color:var(--gold);font:500 .72rem "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase}
+    .sp-dear{margin-top:6px;color:var(--accent);font:400 2.2rem var(--f-script),cursive}
+    .sp-honor{max-width:440px;margin:18px auto 0;color:var(--ink-soft);font:1.45rem/1.6 var(--f-body),serif}
+    .sp-role{display:inline-block;margin-top:22px;padding:8px 18px;border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);color:var(--gold);font:500 .72rem var(--f-label),sans-serif;letter-spacing:.16em;text-transform:uppercase}
     .sp-when{margin-top:30px;color:var(--muted);font-size:.85rem;letter-spacing:.06em;line-height:1.8}
-    .sp-note{margin-top:20px;color:var(--muted);font:1.1rem/1.5 "Cormorant Garamond",serif;font-style:italic}
+    .sp-note{margin-top:20px;color:var(--muted);font:1.1rem/1.5 var(--f-body),serif;font-style:italic}
     .sp-card .btn-row{margin-top:28px}
     .hidden{display:none!important}
 </style>
 </head>
 <body>
+  <div class="opening" id="opening">
+    <div class="env-stage">
+      <div class="env-wrap" id="openInvite" role="button" tabindex="0" aria-label="Tap to open the invitation">
+        <div class="env-shadow"></div>
+        <div class="envelope">
+          <div class="env-back"></div>
+          <div class="env-card">
+            <div class="env-card-in env-text">
+              <small>You are invited</small>
+              <b class="env-names">Ariel &amp; Kate</b>
+              <small>Wedding Invitation</small>
+            </div>
+          </div>
+          <div class="env-pocket"><i class="pl"></i><i class="pr"></i><i class="pb"></i></div>
+          <div class="env-flap"><i class="ff"></i><i class="fb"></i></div>
+          <div class="env-seal env-text"><span data-i="g">A</span><em>&amp;</em><span data-i="b">K</span></div>
+        </div>
+      </div>
+      <div class="open-prompt">Tap to open</div>
+    </div>
+  </div>
+
   <main class="sp">
     <div class="sp-card" id="card">
       <div class="eyebrow">A special invitation</div>
@@ -153,25 +225,89 @@
       <p class="sp-dear" id="dear">Dear Friend,</p>
       <p class="sp-honor" id="honor">We would be honored if you would stand with us on our wedding day.</p>
       <div class="sp-role hidden" id="role"></div>
-
       <div class="btn-row" id="actions">
         <button class="btn btn-filled hidden" id="acceptBtn">I accept with joy</button>
         <a class="btn" href="index.html" id="viewBtn">View full invitation</a>
       </div>
       <div class="form-message" id="msg"></div>
-
       <p class="sp-when" id="when"></p>
       <p class="sp-note hidden" id="thanks"></p>
     </div>
   </main>
-
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygPB7Jd68toZMbVlMJaD1AAOs_ntqHRXzfQREnQcd5BNWDf10Ti3FuXNmgmhi2XV8/exec";
     const FULL_INVITE_URL = "index.html";   // palitan kung iba ang pangalan/lokasyon ng main page
     const $ = function (id) { return document.getElementById(id); };
-    const params = new URLSearchParams(location.search);
-    const guestParam = (params.get("name") || "").trim();
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
+    /* ---------- theme from Config (colors, fonts, size) ---------- */
+    const THEME_COLORS = { ColorGold: ["--gold"], ColorBackground: ["--bg"], ColorBackgroundAlt: ["--bg-alt"], ColorCard: ["--paper"],
+      ColorText: ["--ink", "--ink-soft"], ColorTitle: ["--title"], ColorAccent: ["--accent"], ColorMuted: ["--muted"],
+      ColorLine: ["--line"], ColorEnvelope: ["--env"] };
+    const THEME_FONTS = { FontScript: ["--f-script", "Great Vibes"], FontHeading: ["--f-head", "Playfair Display"],
+      FontBody: ["--f-body", "Cormorant Garamond"], FontLabel: ["--f-label", "Montserrat"] };
+    function loadFont(name) {
+      const id = "gf-" + name.replace(/\W+/g, "");
+      if (document.getElementById(id)) return;
+      const fam = encodeURIComponent(name).replace(/%20/g, "+");
+      const l = document.createElement("link");
+      l.id = id; l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=" + fam + ":wght@400;500;600&display=swap";
+      l.onerror = function () { l.onerror = null; l.href = "https://fonts.googleapis.com/css2?family=" + fam + "&display=swap"; };
+      document.head.appendChild(l);
+    }
+    function applyTheme(cfg) {
+      const root = document.documentElement.style;
+      Object.keys(THEME_COLORS).forEach(function (k) {
+        const v = (cfg[k] || "").trim();
+        THEME_COLORS[k].forEach(function (p) {
+          if (v && /^[#\w(),.\s%-]+$/.test(v)) root.setProperty(p, v); else root.removeProperty(p);
+        });
+      });
+      Object.keys(THEME_FONTS).forEach(function (k) {
+        const v = (cfg[k] || "").trim().replace(/["';{}<>]/g, "");
+        const prop = THEME_FONTS[k][0];
+        if (v) { if (v !== THEME_FONTS[k][1]) loadFont(v); root.setProperty(prop, '"' + v + '"'); } else root.removeProperty(prop);
+      });
+      let sc = (cfg.FontScale || "").trim();
+      if (/^\d+(\.\d+)?$/.test(sc)) sc += "%";
+      if (/^\d+(\.\d+)?(%|px|rem)$/.test(sc)) root.fontSize = sc; else root.removeProperty("font-size");
+    }
+    /* ---------- envelope: initials + names from Config ---------- */
+    function applyEnvelope(cfg) {
+      const g = (cfg.Groom || "Ariel").trim(), b = (cfg.Bride || "Kate").trim();
+      document.querySelectorAll("[data-i=g]").forEach(function (n) { n.textContent = g.charAt(0).toUpperCase(); });
+      document.querySelectorAll("[data-i=b]").forEach(function (n) { n.textContent = b.charAt(0).toUpperCase(); });
+      const nm = document.querySelector(".env-names");
+      if (nm) {
+        const t = g + " & " + b;
+        nm.textContent = t;
+        nm.style.fontSize = t.length <= 14 ? "2.1rem" : t.length <= 20 ? "1.7rem" : "1.35rem";
+      }
+    }
+    function saveCfgCache(cfg) { try { localStorage.setItem("wedding_cfg", JSON.stringify(cfg)); } catch (e) {} }
+    function cachedCfg() { try { return JSON.parse(localStorage.getItem("wedding_cfg") || "null"); } catch (e) { return null; } }
+    function markEnvelopeReady() { const o = el("opening"); if (o) o.classList.add("ready"); }
+    (function earlyTheme() {
+      const c = cachedCfg();
+      if (c) { applyTheme(c); applyEnvelope(c); markEnvelopeReady(); }
+      setTimeout(markEnvelopeReady, 2500);
+    })();
+    // bahagyang 3D tilt ng envelope kapag ginalaw ang mouse/daliri
+    (function envelopeTilt() {
+      const w = el("openInvite");
+      if (!w) return;
+      w.addEventListener("pointermove", function (e) {
+        const r = w.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        w.style.setProperty("--ry", (x * 12) + "deg");
+        w.style.setProperty("--rx", (7 - y * 10) + "deg");
+      });
+      w.addEventListener("pointerleave", function () { w.style.removeProperty("--ry"); w.style.removeProperty("--rx"); });
+    })();
+
+    const guestParam = (new URLSearchParams(location.search).get("name") || "").trim();
     function fill(template, vars) {
       return String(template).replace(/\{(\w+)\}/g, function (m, k) { return vars[k] != null ? vars[k] : m; });
     }
@@ -180,10 +316,7 @@
         ' <span class="ampersand" style="display:inline;font-size:.7em">&amp;</span> <span class="initial">' + esc(bride.charAt(0)) + '</span>' + esc(bride.slice(1));
       document.title = groom + " & " + bride + " — Our invitation to you";
     }
-    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-
     let guest = null;
-
     function showAccepted(when) {
       $("acceptBtn").classList.add("hidden");
       $("viewBtn").classList.add("btn-filled");
@@ -192,7 +325,13 @@
       $("thanks").textContent = "Thank you, " + first + ". Your acceptance is recorded" + (when ? " (" + when + ")" : "") + ".";
       $("thanks").classList.remove("hidden");
     }
-
+    function showCard(cfg) {
+      const groom = cfg.Groom || "Ariel", bride = cfg.Bride || "Kate";
+      setNames(groom, bride);
+      const whenParts = [cfg.CeremonyDate, cfg.CeremonyTime].filter(Boolean).join(" • ");
+      const where = [cfg.CeremonyVenue, cfg.CeremonyCity].filter(Boolean).join(", ");
+      $("when").innerHTML = [esc(whenParts), esc(where)].filter(Boolean).join("<br />");
+    }
     async function init() {
       $("viewBtn").href = FULL_INVITE_URL;
       try {
@@ -200,28 +339,22 @@
         const data = await res.json();
         if (!data.success) throw new Error("bad response");
         const cfg = data.config || {};
-        const groom = cfg.Groom || "Ariel", bride = cfg.Bride || "Kate";
-        setNames(groom, bride);
-        const whenParts = [cfg.CeremonyDate, cfg.CeremonyTime].filter(Boolean).join(" • ");
-        const where = [cfg.CeremonyVenue, cfg.CeremonyCity].filter(Boolean).join(", ");
-        $("when").innerHTML = [esc(whenParts), esc(where)].filter(Boolean).join("<br />");
-
-        if (!data.found) return; // generic warm message na ang nakalagay
+        applyTheme(cfg); applyEnvelope(cfg); saveCfgCache(cfg); markEnvelopeReady();
+        if (/^(no|off|false|0)$/i.test((cfg.ShowPetals || "").trim())) { /* walang petals sa page na ito */ }
+        showCard(cfg);
+        if (!data.found) return;
         guest = { name: data.name, role: data.role };
-        $("dear").textContent = "Dear " + data.name + ",";
-        const vars = { Groom: groom, Bride: bride, Name: data.name, Role: data.role };
-        const custom = data.message
-          ? fill(data.message, vars)
-          : (data.role ? "We would be honored if you would stand with us as " + data.role + "." : "");
+        $("dear").textContent = "Dear " + data.name + (data.partner ? " & " + data.partner : "") + ",";
+        const vars = { Groom: cfg.Groom || "Ariel", Bride: cfg.Bride || "Kate", Name: data.name, Role: data.role };
+        const custom = data.message ? fill(data.message, vars) : (data.role ? "We would be honored if you would stand with us as " + data.role + "." : "");
         if (custom) $("honor").textContent = custom;
         if (data.role) { $("role").textContent = data.role; $("role").classList.remove("hidden"); }
         $("acceptBtn").classList.remove("hidden");
         if (data.accepted) showAccepted(data.acceptedAt);
       } catch (e) {
-        // Hindi nakuha ang data: generic message pa rin, may link papunta sa invitation
+        markEnvelopeReady();
       }
     }
-
     $("acceptBtn").addEventListener("click", async function () {
       const btn = this, msg = $("msg");
       msg.className = "form-message"; msg.style.display = "none";
@@ -237,6 +370,17 @@
       btn.disabled = false; btn.textContent = "I accept with joy";
     });
 
+    /* ---------- opening envelope ---------- */
+    const opening = el("opening"), openButton = el("openInvite");
+    function openInvitation() {
+      opening.classList.add("is-opening");
+      setTimeout(function () { opening.classList.add("is-open"); document.body.style.overflow = "auto"; }, 2100);
+    }
+    document.body.style.overflow = "hidden";
+    openButton.addEventListener("click", openInvitation);
+    openButton.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openInvitation(); }
+    });
     init();
   </script>
 </body>
