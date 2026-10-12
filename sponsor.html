@@ -322,7 +322,7 @@
       $("viewBtn").classList.add("btn-filled");
       $("viewBtn").textContent = "Continue to the invitation";
       const first = guest.name.split(" ")[0];
-      $("thanks").textContent = "Thank you, " + first + ". Your acceptance is recorded" + (when ? " (" + when + ")" : "") + ".";
+      $("thanks").textContent = "Thank you, " + first + ". Your acceptance is recorded and you are on our guest list as " + (guest.role || "our guest") + (when ? " (" + when + ")" : "") + ".";
       $("thanks").classList.remove("hidden");
     }
     function showCard(cfg) {
@@ -330,7 +330,7 @@
       setNames(groom, bride);
       const whenParts = [cfg.CeremonyDate, cfg.CeremonyTime].filter(Boolean).join(" • ");
       const where = [cfg.CeremonyVenue, cfg.CeremonyCity].filter(Boolean).join(", ");
-      $("when").innerHTML = [esc(whenParts), esc(where)].filter(Boolean).join("<br />");
+      $("when").innerHTML = [esc(whenParts), esc(where)].filter(Boolean).join("<br />") || "Date and venue to be announced";
     }
     async function init() {
       $("viewBtn").href = FULL_INVITE_URL;

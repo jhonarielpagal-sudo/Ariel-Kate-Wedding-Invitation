@@ -128,12 +128,22 @@
     .confirm-result p{font:1.2rem/1.5 var(--f-body),serif;color:var(--title)}
     .confirm-result .role{color:var(--muted);font-size:1.05rem}
     footer{padding:28px 24px;color:var(--muted);background:var(--bg-alt);font-size:.68rem;letter-spacing:.14em}
-    .music-control{position:fixed;bottom:22px;right:22px;z-index:50}
+    .music-control{position:fixed;bottom:22px;right:22px;z-index:50;display:flex;align-items:center;gap:8px}
     #musicBtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:color-mix(in srgb,var(--paper) 95%,transparent);color:var(--gold);font-size:1.25rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 20px rgba(91,74,43,.15);transition:all .25s ease}
     #musicBtn:hover,#musicBtn.playing{background:var(--gold);color:var(--paper)}
+    .music-more{width:26px;height:26px;border-radius:50%;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);background:color-mix(in srgb,var(--paper) 95%,transparent);color:var(--gold);cursor:pointer;font-size:.95rem;line-height:1;display:grid;place-items:center;transition:transform .3s ease}
+    .music-control.open .music-more{transform:rotate(180deg)}
+    .music-extra{display:flex;align-items:center;gap:4px;max-width:0;opacity:0;overflow:hidden;padding:0;white-space:nowrap;border-radius:30px;border:1px solid transparent;background:color-mix(in srgb,var(--paper) 95%,transparent);transition:max-width .35s ease,opacity .25s ease,padding .35s ease,border-color .35s ease}
+    .music-control.open .music-extra{max-width:270px;opacity:1;padding:4px 10px;border-color:color-mix(in srgb,var(--gold) 50%,transparent)}
+    .music-extra button{width:32px;height:32px;border-radius:50%;border:0;background:transparent;color:var(--gold);cursor:pointer;display:grid;place-items:center}
+    .music-extra button:hover{background:var(--gold);color:var(--paper)}
+    .music-title{max-width:120px;overflow:hidden;text-overflow:ellipsis;padding:0 6px;color:var(--muted);font:500 .62rem var(--f-label),sans-serif;letter-spacing:.1em;text-transform:uppercase}
+    .music-control.single .music-more,.music-control.single .music-extra{display:none}
+    .btn.disabled{opacity:.5;pointer-events:none}
+    .coming-soon{grid-column:1/-1;color:var(--muted);font:italic 1.35rem var(--f-body),serif;letter-spacing:.03em;text-align:center;padding:10px 0}
     .petals{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
-    .petal{position:absolute;top:-40px;width:12px;height:12px;background:color-mix(in srgb,var(--gold) 35%,transparent);border-radius:50% 0 50% 50%;animation:fall linear infinite;opacity:.7}
-    .petal:nth-child(odd){background:rgba(196,163,110,.4);border-radius:50% 50% 0 50%}
+    .petal{position:absolute;top:-40px;width:12px;height:12px;background:var(--petal,color-mix(in srgb,var(--gold) 35%,transparent));border-radius:50% 0 50% 50%;animation:fall linear infinite;opacity:.7}
+    .petal:nth-child(odd){background:var(--petal2,rgba(196,163,110,.4));border-radius:50% 50% 0 50%}
     @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}.petals{display:none}}
   
@@ -221,8 +231,8 @@
         <h1 id="heroNames"><span class="initial">A</span>riel <span class="ampersand">&amp;</span> <span class="initial">K</span>ate</h1>
         <div class="divider"></div>
         <p class="invite" data-cfg="Tagline">Joyfully invite you to celebrate the beginning of their forever.</p>
-        <div class="date"><span data-cfg="CeremonyDate">April 25, 2027</span> &nbsp;•&nbsp; <span data-cfg="CeremonyTime">3:00 PM</span></div>
-        <div class="venue" data-lines="CeremonyVenue|(CeremonySub)|CeremonyCity">Locale Congregation of Baler<br />(Iglesia ni Cristo)<br />Baler, Aurora</div>
+        <div class="date" id="heroDate">To be announced</div>
+        <div class="venue" data-lines="CeremonyVenue|(CeremonySub)|CeremonyCity" data-tba>To be announced</div>
       </div>
     </section>
     <section class="story">
@@ -306,11 +316,11 @@
         </div>
         <div class="paper-card" style="margin-top:24px">
           <h3 data-cfg="_Names">Ariel &amp; Kate</h3>
-          <p data-lines="CeremonyVenue|CeremonySub|CeremonyAddress|CeremonyCity" data-bold-first><strong>Locale Congregation of Baler</strong><br />Iglesia ni Cristo<br />Baler, Aurora</p>
-          <p style="margin-top:14px;font-size:1.05rem"><span data-cfg="_FullDate">Sunday, April 25, 2027</span><br /><span data-cfg="CeremonyTime">3:00 PM</span></p>
+          <p data-lines="CeremonyVenue|CeremonySub|CeremonyAddress|CeremonyCity" data-bold-first data-tba>To be announced</p>
+          <p data-datetime style="margin-top:14px;font-size:1.05rem">Date and time to be announced</p>
           <div class="btn-row card-actions">
-            <a class="btn" id="churchMap" href="https://maps.google.com/?q=Locale+Congregation+of+Baler+Iglesia+ni+Cristo" target="_blank" rel="noopener">Church Map</a>
-            <a class="btn btn-filled" href="#" id="saveDate">Save the Date</a>
+            <a class="btn disabled" id="churchMap" target="_blank" rel="noopener" aria-disabled="true">Map coming soon</a>
+            <a class="btn btn-filled" href="#" id="saveDate" style="display:none">Save the Date</a>
           </div>
         </div>
       </div>
@@ -321,21 +331,21 @@
       <div class="story-inner reveal">
         <div class="eyebrow">After the ceremony</div>
         <h2>Reception</h2>
-        <p>Join us for an intimate celebration by the sea at<br /><strong data-cfg="ReceptionVenue">Sea Grace Resort</strong>, <span data-cfg="ReceptionCity">Baler, Aurora</span>.</p>
+        <p id="recepIntro">Reception details to be announced.</p>
         <div class="photo-item" data-photo="recep.jpg" data-ratio="16/10" data-size="1600 × 1000 px · landscape" data-alt="Reception venue">
           <div class="photo-frame wide"></div>
         </div>
         <div class="paper-card" style="margin-top:24px">
-          <p data-lines="ReceptionVenue|ReceptionSub|ReceptionAddress|ReceptionCity" data-bold-first><strong>Sea Grace Resort</strong><br />Baler, Aurora</p>
+          <p data-lines="ReceptionVenue|ReceptionSub|ReceptionAddress|ReceptionCity" data-bold-first data-tba>To be announced</p>
           <p data-lines="ReceptionTime" style="margin-top:12px;font-size:1.05rem"></p>
           <div class="btn-row card-actions">
-            <a class="btn" id="receptionMap" href="https://maps.google.com/?q=Sea+Grace+Resort+Baler+Aurora" target="_blank" rel="noopener">Reception Map</a>
+            <a class="btn disabled" id="receptionMap" target="_blank" rel="noopener" aria-disabled="true">Map coming soon</a>
           </div>
         </div>
         <div class="paper-card" style="margin-top:28px">
           <h3 style="font-size:1.9rem">Program</h3>
           <ul class="program-list" id="programList">
-            <li style="justify-content:center;color:var(--muted)">Loading program...</li>
+            <li style="justify-content:center;color:var(--muted)">Program coming soon</li>
           </ul>
         </div>
       </div>
@@ -347,7 +357,7 @@
         <div class="eyebrow">Standing with us</div>
         <h2>The Entourage</h2>
         <div class="entourage-list" id="entourageList">
-          <p class="entourage-loading">Loading entourage...</p>
+          <p class="coming-soon">Entourage coming soon</p>
         </div>
       </div>
     </section>
@@ -358,24 +368,7 @@
         <div class="eyebrow">Kindly note</div>
         <h2>Guidelines</h2>
         <div class="guide-grid" id="guideGrid">
-          <div class="guide-card">
-            <h4>During the Ceremony</h4>
-            <p>Electronic devices such as cellphones, cameras, and video or audio recorders are not allowed inside the church, except for authorized multimedia personnel.</p>
-            <p>Please leave all devices at the Lokal Security / Guard House (SCAN) before entering.</p>
-          </div>
-          <div class="guide-card">
-            <h4>At the Reception</h4>
-            <p>You are welcome to take unlimited photos. However, we kindly ask that you do not upload or post any photos with the couple on social media until the official photographs have been released by our multimedia team.</p>
-            <p>We would love to be the first to share our moments with you.</p>
-          </div>
-          <div class="guide-card">
-            <div class="photo-item" data-photo="dresscode.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Dress code guide">
-              <div class="photo-frame"></div>
-            </div>
-            <h4>Dress Code</h4>
-            <p>This is a church wedding. <strong>Formal attire only</strong> is requested.</p>
-            <p>Palette: <strong>Dusty Blue &amp; Cream</strong>. We kindly ask everyone to observe the dress code.</p>
-          </div>
+          <p class="coming-soon">Guidelines coming soon</p>
         </div>
       </div>
     </section>
@@ -425,13 +418,17 @@
       </div>
     </section>
   </main>
-  <footer>With love · <span data-cfg="_Names">Ariel &amp; Kate</span> · <span data-cfg="CeremonyDate">April 25, 2027</span></footer>
-  <div class="music-control">
+  <footer>With love · <span data-cfg="_Names">Ariel &amp; Kate</span> · <span data-cfg="CeremonyDate" data-tba="Date to be announced">Date to be announced</span></footer>
+  <div class="music-control" id="musicControl">
+    <div class="music-extra" id="musicExtra">
+      <button id="prevBtn" aria-label="Previous track" title="Previous"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M6 6h2v12H6zM20 6v12L9.5 12z"/></svg></button>
+      <span class="music-title" id="musicTitle"></span>
+      <button id="nextBtn" aria-label="Next track" title="Next"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M16 6h2v12h-2zM4 6v12l10.5-6z"/></svg></button>
+    </div>
+    <button class="music-more" id="musicMore" aria-label="More music controls" aria-expanded="false" title="Prev / Next">‹</button>
     <button id="musicBtn" aria-label="Play or pause music" title="Play music">♪</button>
   </div>
-  <audio id="bgMusic" loop preload="auto">
-    <source src="ATY.mp3" type="audio/mpeg">
-  </audio>
+  <audio id="bgMusic" preload="auto"></audio>
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygPB7Jd68toZMbVlMJaD1AAOs_ntqHRXzfQREnQcd5BNWDf10Ti3FuXNmgmhi2XV8/exec";
 
@@ -509,24 +506,38 @@
       w.addEventListener("pointerleave", function () { w.style.removeProperty("--ry"); w.style.removeProperty("--rx"); });
     })();
 
-    /* ---------- petals ---------- */
-    (function createPetals() {
-      const container = el("petals");
-      if (!container) return;
-      for (let i = 0; i < 14; i++) {
-        const petal = document.createElement("span");
-        petal.className = "petal";
-        petal.style.left = Math.random() * 100 + "%";
-        petal.style.animationDuration = (8 + Math.random() * 10) + "s";
-        petal.style.animationDelay = (Math.random() * 8) + "s";
-        petal.style.width = (8 + Math.random() * 10) + "px";
-        petal.style.height = petal.style.width;
-        container.appendChild(petal);
+    /* ---------- petals (galing sa Config) ---------- */
+    function applyPetals(cfg) {
+      const c = el("petals");
+      if (!c) return;
+      c.innerHTML = "";
+      const root = document.documentElement.style;
+      if (/^(no|off|false|0)$/i.test((cfg.ShowPetals || "").trim())) { c.style.display = "none"; return; }
+      c.style.display = "";
+      const num = function (v, d, lo, hi) { v = parseFloat(v); if (!(v >= 0)) v = d; return Math.max(lo, Math.min(hi, v)); };
+      const count = Math.round(num(cfg.PetalCount, 14, 0, 80));   // dami
+      const speed = num(cfg.PetalSpeed, 12, 2, 60);               // segundo ng pagbagsak: mas malaki = mas mabagal
+      const size = num(cfg.PetalSize, 13, 4, 60);                 // laki sa px
+      const col = (cfg.PetalColor || "").trim();
+      if (col && /^[#\w(),.\s%-]+$/.test(col)) { root.setProperty("--petal", col); root.setProperty("--petal2", col); }
+      else { root.removeProperty("--petal"); root.removeProperty("--petal2"); }
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement("span");
+        const dur = speed * (0.7 + Math.random() * 0.6);
+        const sz = size * (0.6 + Math.random() * 0.8);
+        p.className = "petal";
+        p.style.left = Math.random() * 100 + "%";
+        p.style.animationDuration = dur + "s";
+        p.style.animationDelay = (Math.random() * speed) + "s";
+        p.style.width = sz + "px";
+        p.style.height = sz + "px";
+        c.appendChild(p);
       }
-    })();
+    }
+    applyPetals(cachedCfg() || {});
 
     /* ---------- wedding date (default; napapalitan ng Config) ---------- */
-    let weddingDate = new Date("2027-04-25T15:00:00+08:00").getTime();
+    let weddingDate = null;   // walang petsa sa Config = To be announced
     let CFG = {};
 
     const MONTHS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
@@ -588,27 +599,37 @@
       };
     })();
 
-    /* ---------- apply Config ---------- */
+    /* ---------- apply Config (walang laman = To be announced) ---------- */
+    const TBA = "To be announced";
+    function setMap(a, url, label) {
+      if (!a) return;
+      if (/^https?:\/\//i.test(url || "")) {
+        a.href = url; a.classList.remove("disabled"); a.removeAttribute("aria-disabled"); a.textContent = label;
+      } else {
+        a.removeAttribute("href"); a.classList.add("disabled"); a.setAttribute("aria-disabled", "true"); a.textContent = "Map coming soon";
+      }
+    }
     function applyConfig(cfg) {
-      CFG = cfg || {};
-      applyTheme(CFG); applyEnvelope(CFG); markEnvelopeReady(); saveCfgCache(CFG);
-      if (/^(no|off|false|0)$/i.test((CFG.ShowPetals || "").trim())) { const pe = el("petals"); if (pe) pe.style.display = "none"; }
-      if (CFG.MusicFile) { const bm = el("bgMusic"); bm.src = CFG.MusicFile.replace(/[^\w.\-\/]/g, ""); }
+      CFG = Object.assign({}, cfg || {});
+      applyTheme(CFG); applyEnvelope(CFG); markEnvelopeReady(); saveCfgCache(cfg || {});
+      applyPetals(CFG);
+      setTracksFromConfig(CFG);
       const groom = CFG.Groom || "Ariel", bride = CFG.Bride || "Kate";
       CFG._Names = groom + " & " + bride;
 
       const parsed = parseWedding(CFG.CeremonyDate, CFG.CeremonyTime);
+      weddingDate = parsed;
       if (parsed) {
-        weddingDate = parsed;
         CFG._FullDate = new Date(parsed).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "Asia/Manila" });
       } else if (CFG.CeremonyDate) {
         CFG._FullDate = CFG.CeremonyDate;
       }
 
-      // simple text
+      // simple text (data-tba = gamitin ang To be announced kapag walang laman)
       document.querySelectorAll("[data-cfg]").forEach(function (n) {
         const v = CFG[n.getAttribute("data-cfg")];
         if (v) n.textContent = v;
+        else if (n.hasAttribute("data-tba")) n.textContent = n.getAttribute("data-tba") || TBA;
       });
       // mahabang text: bawat linya sa cell = isang paragraph
       document.querySelectorAll("[data-paras]").forEach(function (n) {
@@ -627,12 +648,31 @@
           const v = CFG[key];
           if (v) parts.push({ text: wrap ? "(" + v + ")" : v });
         });
-        if (!parts.length) return;
+        if (!parts.length) { if (n.hasAttribute("data-tba")) n.textContent = TBA; else n.textContent = ""; return; }
         n.innerHTML = parts.map(function (p, i) {
           const t = esc(p.text);
           return (bold && i === 0) ? "<strong>" + t + "</strong>" : t;
         }).join("<br />");
       });
+      // petsa at oras
+      const fd = CFG._FullDate, tm = CFG.CeremonyTime;
+      document.querySelectorAll("[data-datetime]").forEach(function (n) {
+        if (!fd && !tm) { n.textContent = "Date and time to be announced"; return; }
+        n.innerHTML = esc(fd || "Date to be announced") + "<br />" + esc(tm || "Time to be announced");
+      });
+      const hd = el("heroDate");
+      if (hd) {
+        if (!CFG.CeremonyDate && !tm) hd.textContent = TBA;
+        else hd.textContent = (CFG.CeremonyDate || "Date TBA") + " \u2022 " + (tm || "Time TBA");
+      }
+      // reception intro
+      const ri = el("recepIntro");
+      if (ri) {
+        if (CFG.ReceptionVenue || CFG.ReceptionCity) {
+          ri.innerHTML = "Join us for a celebration at<br />" + (CFG.ReceptionVenue ? "<strong>" + esc(CFG.ReceptionVenue) + "</strong>" : "") +
+            (CFG.ReceptionVenue && CFG.ReceptionCity ? ", " : "") + esc(CFG.ReceptionCity || "") + ".";
+        } else ri.textContent = "Reception details to be announced.";
+      }
       // hero names with big initials
       const h1 = el("heroNames");
       if (h1) {
@@ -640,15 +680,18 @@
           ' <span class="ampersand">&amp;</span> <span class="initial">' + esc(bride.charAt(0)) + "</span>" + esc(bride.slice(1));
       }
       document.title = groom + " & " + bride + " — Wedding Invitation";
-      if (CFG.CeremonyMap) el("churchMap").href = CFG.CeremonyMap;
-      if (CFG.ReceptionMap) el("receptionMap").href = CFG.ReceptionMap;
+      setMap(el("churchMap"), CFG.CeremonyMap, "Church Map");
+      setMap(el("receptionMap"), CFG.ReceptionMap, "Reception Map");
+      const sd = el("saveDate"); if (sd) sd.style.display = weddingDate ? "" : "none";
       updateCountdown();
     }
 
     /* ---------- Guidelines ---------- */
     function renderGuidelines(items) {
       const grid = el("guideGrid");
-      if (!grid || !items || !items.length) return; // may default text na sa HTML
+      if (!grid) return;
+      const soon = "<p class='coming-soon'>Guidelines coming soon</p>";
+      if (!items || !items.some(function (it) { return it.title || it.body; })) { grid.innerHTML = soon; return; }
       let html = "";
       items.forEach(function (it) {
         if (!it.title && !it.body) return;
@@ -668,7 +711,7 @@
     function renderProgram(items) {
       const list = el("programList");
       if (!list) return;
-      const empty = "<li style='justify-content:center;color:var(--muted)'>Program will be updated soon.</li>";
+      const empty = "<li style='justify-content:center;color:var(--muted)'>Program coming soon</li>";
       if (!items || !items.length) { list.innerHTML = empty; return; }
       let html = "";
       items.forEach(function (item) {
@@ -682,8 +725,8 @@
     /* ---------- Entourage ---------- */
     function renderEntourage(rows) {
       const list = el("entourageList");
-      const soon = "<p class='entourage-loading'>Entourage will be updated soon.</p>";
-      if (!rows || !rows.length) { list.innerHTML = soon; return; }
+      const soon = "<p class='coming-soon'>Entourage coming soon</p>";
+      if (!rows || !rows.some(function (r) { return r.left || r.center || r.right; })) { list.innerHTML = soon; return; }
       const groom = (CFG.Groom || "Ariel").toLowerCase(), bride = (CFG.Bride || "Kate").toLowerCase();
       let html = "";
       rows.forEach(function (row) {
@@ -708,6 +751,8 @@
 
     /* ---------- load everything in one request ---------- */
     async function loadSiteData() {
+      const cached = cachedCfg();
+      if (cached) applyConfig(cached);
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=all");
         const data = await res.json();
@@ -730,8 +775,6 @@
         }
       }
     }
-    initPhotos(document);
-    loadSiteData();
 
     /* ---------- RSVP ---------- */
     async function checkSheetStatus(name) {
@@ -774,16 +817,21 @@
         msg.textContent = "Name not found. Please type your full name exactly as it appears on the invitation list.";
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
-      if (status.found) {
+      if (status.found && !status.canUpdate) {
         msg.className = "form-message info";
         msg.innerHTML = "You have already reserved under the name <strong>" + esc(status.name) + "</strong> (" + esc(status.role || "") + "). You may view your confirmation below.";
+        btn.disabled = false; btn.textContent = "Check & Reserve"; return;
+      }
+      if (status.found && status.canUpdate && !contact.trim() && !message.trim()) {
+        msg.className = "form-message success";
+        msg.innerHTML = "<strong>You are already confirmed</strong> as " + esc(status.role || "our guest") + ", <strong>" + esc(status.name) + "</strong>.<br>You may add your contact number or a message above, then press the button again.";
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
       btn.textContent = "Submitting...";
       const result = await submitReservation(status.name, contact, message);
       if (result.success) {
         msg.className = "form-message success";
-        msg.innerHTML = "<strong>Reservation successful!</strong><br>" + esc(result.name) + " — " + esc(result.role || status.role || "") + "<br><br>Thank you! You may view your confirmation below anytime.";
+        msg.innerHTML = "<strong>" + (result.updated ? "Details updated!" : "Reservation successful!") + "</strong><br>" + esc(result.name) + " — " + esc(result.role || status.role || "") + "<br><br>Thank you! You may view your confirmation below anytime.";
       } else {
         msg.className = "form-message error";
         msg.textContent = result.message || "Something went wrong. Please try again.";
@@ -816,10 +864,16 @@
 
     /* ---------- countdown ---------- */
     function updateCountdown() {
-      const now = Date.now(), distance = weddingDate - now, title = el("countdownTitle");
+      const title = el("countdownTitle"), box = el("countdown");
+      if (!weddingDate) { title.textContent = "Date to be announced"; box.style.display = "none"; return; }
+      box.style.display = "";
+      const distance = weddingDate - Date.now();
       if (distance < 0) {
-        el("countdown").innerHTML = "<p style='color:var(--gold);font-size:1.3rem'>The day is here! Welcome!</p>";
+        box.innerHTML = "<p style='color:var(--gold);font-size:1.3rem'>The day is here! Welcome!</p>";
         title.textContent = "Today is the day"; return;
+      }
+      if (!el("days")) {
+        box.innerHTML = '<div class="count-box"><span id="days">00</span><small>Days</small></div><div class="count-box"><span id="hours">00</span><small>Hours</small></div><div class="count-box"><span id="mins">00</span><small>Minutes</small></div><div class="count-box"><span id="secs">00</span><small>Seconds</small></div>';
       }
       const days = Math.floor(distance / 86400000), hours = Math.floor((distance % 86400000) / 3600000),
             mins = Math.floor((distance % 3600000) / 60000), secs = Math.floor((distance % 60000) / 1000);
@@ -834,24 +888,91 @@
     }
     updateCountdown(); setInterval(updateCountdown, 1000);
 
-    /* ---------- music ---------- */
-    const musicBtn = el("musicBtn"), bgMusic = el("bgMusic");
+    /* ---------- music playlist ---------- */
+    const musicBtn = el("musicBtn"), bgMusic = el("bgMusic"), mc = el("musicControl");
+    const DEFAULT_TRACKS = ["ATY.mp3", "audio1.mp3", "audio2.mp3"];
+    let tracks = [], cur = 0;
+    function trackTitle(file) { return file.split("/").pop().replace(/\.[^.]+$/, ""); }
+    function setTracksFromConfig(cfg) {
+      const list = DEFAULT_TRACKS.map(function (d, i) {
+        const f = ((cfg["Track" + (i + 1)] || d) + "").replace(/[^\w.\-\/]/g, "");
+        return { src: f, title: (cfg["Track" + (i + 1) + "Title"] || "").trim() || trackTitle(f), ok: null };
+      });
+      if (JSON.stringify(list.map(function (t) { return t.src; })) === JSON.stringify(tracks.map(function (t) { return t.src; }))) {
+        tracks.forEach(function (t, i) { t.title = list[i].title; });
+        refreshMusicUI(); return;
+      }
+      tracks = list;
+      tracks.forEach(function (t) {   // tingnan kung nasa GitHub na ang file
+        const probe = new Audio();
+        probe.preload = "metadata";
+        probe.onloadedmetadata = function () { t.ok = true; refreshMusicUI(); };
+        probe.onerror = function () { t.ok = false; refreshMusicUI(); };
+        probe.src = t.src;
+      });
+      refreshMusicUI();
+    }
+    function availableIdx() { const r = []; tracks.forEach(function (t, i) { if (t.ok !== false) r.push(i); }); return r; }
+    function refreshMusicUI() {
+      if (!mc || !tracks.length) return;
+      mc.classList.toggle("single", availableIdx().length < 2);
+      el("musicTitle").textContent = tracks[cur] ? tracks[cur].title : "";
+    }
     function setMusicUI(playing) {
       musicBtn.textContent = playing ? "❚❚" : "♪";
       musicBtn.classList.toggle("playing", playing);
       musicBtn.title = playing ? "Pause music" : "Play music";
     }
-    musicBtn.addEventListener("click", function () {
-      if (!bgMusic.paused) { bgMusic.pause(); setMusicUI(false); }
-      else { bgMusic.play().then(function () { setMusicUI(true); }).catch(function () { setMusicUI(false); }); }
+    function loadTrack(i) {
+      cur = i;
+      bgMusic.src = tracks[i].src;
+      refreshMusicUI();
+    }
+    function playCurrent() {
+      bgMusic.play().then(function () { setMusicUI(true); }).catch(function () { setMusicUI(false); });
+    }
+    function stepTrack(dir) {
+      const idx = availableIdx();
+      if (!idx.length) return;
+      let n = cur;
+      for (let k = 0; k < tracks.length; k++) {
+        n = (n + dir + tracks.length) % tracks.length;
+        if (tracks[n].ok !== false) break;
+      }
+      loadTrack(n); playCurrent();
+    }
+    function startPlaylist() {          // ATY.mp3 (o ang unang available) pagbukas ng envelope
+      const idx = availableIdx();
+      if (!idx.length) return;
+      loadTrack(idx[0]); playCurrent();
+    }
+    bgMusic.addEventListener("ended", function () {
+      if (availableIdx().length < 2) { bgMusic.currentTime = 0; playCurrent(); } else stepTrack(1);
     });
+    bgMusic.addEventListener("error", function () {
+      if (!tracks[cur]) return;
+      tracks[cur].ok = false; refreshMusicUI();
+      if (availableIdx().length) stepTrack(1); else setMusicUI(false);
+    });
+    musicBtn.addEventListener("click", function () {
+      if (!bgMusic.paused) { bgMusic.pause(); setMusicUI(false); return; }
+      if (!bgMusic.src) { startPlaylist(); return; }
+      playCurrent();
+    });
+    el("nextBtn").addEventListener("click", function () { stepTrack(1); });
+    el("prevBtn").addEventListener("click", function () { stepTrack(-1); });
+    el("musicMore").addEventListener("click", function () {
+      const open = mc.classList.toggle("open");
+      this.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    setTracksFromConfig(cachedCfg() || {});
 
     /* ---------- opening envelope ---------- */
     const opening = el("opening"), openButton = el("openInvite");
     function openInvitation() {
       opening.classList.add("is-opening");
       // Nasa loob ng tap ng bisita, kaya papayagan ng browser ang tugtog
-      bgMusic.play().then(function () { setMusicUI(true); }).catch(function () {});
+      startPlaylist();
       setTimeout(function () { opening.classList.add("is-open"); document.body.style.overflow = "auto"; }, 2100);
     }
     document.body.style.overflow = "hidden";
@@ -905,6 +1026,8 @@
         "&location=" + encodeURIComponent(where);
       window.open(url, "_blank");
     });
+    initPhotos(document);
+    loadSiteData();
   </script>
 </body>
 </html>
