@@ -128,6 +128,34 @@
     .hero{padding-top:90px}
     .guide-card p+p{margin-top:10px}
     footer{text-transform:uppercase}
+
+    /* ===== Photos ===== */
+    .photo-frame.wide{max-width:640px}
+    .photo-frame .ph{display:grid;place-items:center;padding:16px;background:repeating-linear-gradient(45deg,#f6f0e3,#f6f0e3 10px,#f0e8d6 10px,#f0e8d6 20px);color:var(--muted);font:500 .72rem/1.7 "Montserrat",sans-serif;letter-spacing:.08em;text-align:center}
+    .photo-item .photo-caption{margin-top:14px}
+    .photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:640px;margin:28px auto 0}
+    .photo-pair .photo-frame{margin-top:0;padding:8px}
+    .photo-pair .photo-caption{font-size:1.05rem}
+    .photo-item.sq .photo-frame{max-width:360px}
+    .guide-card .photo-item{margin-bottom:16px}
+    .guide-card .photo-frame{margin-top:0;max-width:320px}
+    .story div[data-paras] p+p{margin-top:16px}
+    p:empty{display:none}
+    .card-actions{margin-top:22px}
+    /* ===== Closing photo ===== */
+    .closing{position:relative;min-height:70vh;display:grid;place-items:center;padding:100px 24px;color:#fffdf8;overflow:hidden;background:#3a3025}
+    .closing-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+    .closing::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,22,14,.30),rgba(30,22,14,.62))}
+    .closing .closing-inner{position:relative;z-index:2;max-width:640px}
+    .closing .eyebrow{color:#e8d4a6;margin-bottom:18px}
+    .closing h2{color:#fffdf8}
+    .closing p{font:1.3rem/1.7 "Cormorant Garamond",serif;color:#f4eee2}
+    .closing.no-photo{background:#fffdf8;color:var(--ink)}
+    .closing.no-photo::after{display:none}
+    .closing.no-photo .eyebrow{color:var(--gold)}
+    .closing.no-photo h2{color:var(--gold)}
+    .closing.no-photo p{color:var(--muted)}
+    .closing .ph-note{position:absolute;z-index:3;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border:1px dashed #a78343;background:rgba(255,253,248,.9);color:#756d60;font:500 .7rem "Montserrat",sans-serif;letter-spacing:.08em}
 </style>
 </head>
 <body>
@@ -155,7 +183,7 @@
     <!-- HOME -->
     <section class="hero" id="home">
       <div class="content">
-        <div class="eyebrow">Together with their families</div>
+        <div class="eyebrow" data-cfg="Intro">Together with their families</div>
         <h1 id="heroNames"><span class="initial">A</span>riel <span class="ampersand">&amp;</span> <span class="initial">K</span>ate</h1>
         <div class="divider"></div>
         <p class="invite" data-cfg="Tagline">Joyfully invite you to celebrate the beginning of their forever.</p>
@@ -181,18 +209,46 @@
       <div class="story-inner reveal">
         <div class="eyebrow">A celebration of love</div>
         <h2>Our Story</h2>
-        <p>From the moment our paths crossed, we knew this was something special. Through laughter, quiet moments, and shared dreams, we found a love worth celebrating for a lifetime.</p>
-        <p style="margin-top:16px">With grateful hearts, we invite you to witness the beginning of our forever.</p>
+        <div data-paras="OurStory">
+          <p>From the moment our paths crossed, we knew this was something special. Through laughter, quiet moments, and shared dreams, we found a love worth celebrating for a lifetime.</p>
+          <p>With grateful hearts, we invite you to witness the beginning of our forever.</p>
+        </div>
       </div>
     </section>
-    <section class="story">
+    <section class="story photo-only">
       <div class="story-inner reveal">
         <div class="eyebrow">Us</div>
         <h2>A Moment</h2>
-        <div class="photo-frame">
-          <img src="img1.jpg" alt="Ariel and Kate" loading="lazy" />
+        <div class="photo-item" data-photo="img1.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Ariel and Kate">
+          <div class="photo-frame"></div>
+          <p class="photo-caption" data-cfg="Caption1">Getting ready for forever</p>
         </div>
-        <p class="photo-caption">Getting ready for forever</p>
+      </div>
+    </section>
+    <section class="story story-alt photo-only">
+      <div class="story-inner reveal">
+        <div class="eyebrow">The two of us</div>
+        <h2>Meet the Couple</h2>
+        <div class="photo-pair">
+          <div class="photo-item" data-photo="img2.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Groom">
+            <div class="photo-frame"></div>
+            <p class="photo-caption" data-cfg="Groom">Ariel</p>
+          </div>
+          <div class="photo-item" data-photo="img3.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Bride">
+            <div class="photo-frame"></div>
+            <p class="photo-caption" data-cfg="Bride">Kate</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="story photo-only">
+      <div class="story-inner reveal">
+        <div class="eyebrow">Our promise</div>
+        <h2>The Rings</h2>
+        <div class="photo-item sq" data-photo="img4.jpg" data-ratio="1/1" data-size="1200 × 1200 px · square" data-alt="Wedding rings">
+          <div class="photo-frame"></div>
+          <p class="photo-caption" data-cfg="Caption4">A promise, worn forever</p>
+        </div>
       </div>
     </section>
     <section class="story story-alt">
@@ -200,51 +256,53 @@
         <div class="eyebrow">His Word</div>
         <h2>A Verse for Us</h2>
         <div class="verse-box">
-          <p>“Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs. Love does not delight in evil but rejoices with the truth. It always protects, always trusts, always hopes, always perseveres.”</p>
-          <cite>1 Corinthians 13:4–7</cite>
+          <p data-cfg="VerseText">“Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs. Love does not delight in evil but rejoices with the truth. It always protects, always trusts, always hopes, always perseveres.”</p>
+          <cite data-cfg="VerseRef">1 Corinthians 13:4–7</cite>
         </div>
       </div>
     </section>
 
-    <!-- DETAILS -->
+    <!-- DETAILS: CEREMONY -->
     <section class="story" id="details">
       <div class="story-inner reveal">
         <div class="eyebrow">The ceremony</div>
         <h2>Church Wedding</h2>
-        <div class="paper-card">
+        <div class="photo-item" data-photo="church.jpg" data-ratio="16/10" data-size="1600 × 1000 px · landscape" data-alt="Ceremony venue">
+          <div class="photo-frame wide"></div>
+        </div>
+        <div class="paper-card" style="margin-top:24px">
           <h3 data-cfg="_Names">Ariel &amp; Kate</h3>
-          <p data-lines="CeremonyVenue|CeremonySub|CeremonyCity" data-bold-first><strong>Locale Congregation of Baler</strong><br />Iglesia ni Cristo<br />Baler, Aurora</p>
+          <p data-lines="CeremonyVenue|CeremonySub|CeremonyAddress|CeremonyCity" data-bold-first><strong>Locale Congregation of Baler</strong><br />Iglesia ni Cristo<br />Baler, Aurora</p>
           <p style="margin-top:14px;font-size:1.05rem"><span data-cfg="_FullDate">Sunday, April 25, 2027</span><br /><span data-cfg="CeremonyTime">3:00 PM</span></p>
+          <div class="btn-row card-actions">
+            <a class="btn" id="churchMap" href="https://maps.google.com/?q=Locale+Congregation+of+Baler+Iglesia+ni+Cristo" target="_blank" rel="noopener">Church Map</a>
+            <a class="btn btn-filled" href="#" id="saveDate">Save the Date</a>
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- DETAILS: RECEPTION -->
     <section class="story story-alt">
       <div class="story-inner reveal">
         <div class="eyebrow">After the ceremony</div>
         <h2>Reception</h2>
         <p>Join us for an intimate celebration by the sea at<br /><strong data-cfg="ReceptionVenue">Sea Grace Resort</strong>, <span data-cfg="ReceptionCity">Baler, Aurora</span>.</p>
+        <div class="photo-item" data-photo="recep.jpg" data-ratio="16/10" data-size="1600 × 1000 px · landscape" data-alt="Reception venue">
+          <div class="photo-frame wide"></div>
+        </div>
+        <div class="paper-card" style="margin-top:24px">
+          <p data-lines="ReceptionVenue|ReceptionSub|ReceptionAddress|ReceptionCity" data-bold-first><strong>Sea Grace Resort</strong><br />Baler, Aurora</p>
+          <p data-lines="ReceptionTime" style="margin-top:12px;font-size:1.05rem"></p>
+          <div class="btn-row card-actions">
+            <a class="btn" id="receptionMap" href="https://maps.google.com/?q=Sea+Grace+Resort+Baler+Aurora" target="_blank" rel="noopener">Reception Map</a>
+          </div>
+        </div>
         <div class="paper-card" style="margin-top:28px">
           <h3 style="font-size:1.9rem">Program</h3>
           <ul class="program-list" id="programList">
             <li style="justify-content:center;color:var(--muted)">Loading program...</li>
           </ul>
-        </div>
-      </div>
-    </section>
-    <section class="story">
-      <div class="details-inner reveal">
-        <div class="eyebrow">Everything you need</div>
-        <h2>Wedding Details</h2>
-        <div class="info-grid">
-          <div class="info-item"><h4>Date &amp; Time</h4><p><span data-cfg="_FullDate">Sunday, April 25, 2027</span><br />Ceremony at <span data-cfg="CeremonyTime">3:00 PM</span></p></div>
-          <div class="info-item"><h4>Ceremony</h4><p data-lines="CeremonyVenue|CeremonySub|CeremonyCity">Locale Congregation of Baler<br />Iglesia ni Cristo<br />Baler, Aurora</p></div>
-          <div class="info-item"><h4>Reception</h4><p data-lines="ReceptionVenue|ReceptionCity">Sea Grace Resort<br />Baler, Aurora</p></div>
-          <div class="info-item"><h4>Dress Code</h4><p><span data-cfg="DressCode">Formal Attire Only</span><br /><span data-cfg="DressPalette">Dusty Blue &amp; Cream</span><br /><span style="font-size:0.95em;opacity:0.85">Strictly observed</span></p></div>
-        </div>
-        <div class="btn-row">
-          <a class="btn" id="churchMap" href="https://maps.google.com/?q=Locale+Congregation+of+Baler+Iglesia+ni+Cristo" target="_blank" rel="noopener">Church Map</a>
-          <a class="btn" id="receptionMap" href="https://maps.google.com/?q=Sea+Grace+Resort+Baler+Aurora" target="_blank" rel="noopener">Reception Map</a>
-          <a class="btn btn-filled" href="#" id="saveDate">Save the Date</a>
         </div>
       </div>
     </section>
@@ -277,6 +335,9 @@
             <p>We would love to be the first to share our moments with you.</p>
           </div>
           <div class="guide-card">
+            <div class="photo-item" data-photo="dresscode.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Dress code guide">
+              <div class="photo-frame"></div>
+            </div>
             <h4>Dress Code</h4>
             <p>This is a church wedding. <strong>Formal attire only</strong> is requested.</p>
             <p>Palette: <strong>Dusty Blue &amp; Cream</strong>. We kindly ask everyone to observe the dress code.</p>
@@ -321,11 +382,12 @@
         </div>
       </div>
     </section>
-    <section class="story story-alt">
-      <div class="story-inner reveal">
+    <section class="closing" id="closing">
+      <img class="closing-photo" id="closingPhoto" src="imglast.jpg" alt="" loading="lazy" />
+      <div class="closing-inner reveal">
         <div class="eyebrow">With love</div>
-        <h2>See you there</h2>
-        <p>Thank you for being part of our story.<br />We can’t wait to celebrate with you.</p>
+        <h2 data-cfg="ClosingTitle">See you there</h2>
+        <div data-paras="ClosingText"><p>Thank you for being part of our story.<br />We can’t wait to celebrate with you.</p></div>
       </div>
     </section>
   </main>
@@ -390,6 +452,42 @@
       return isNaN(ms) ? null : ms;
     }
 
+
+    /* ---------- photos (GitHub files) ---------- */
+    // Dagdagan ang link ng ?preview para makita ang mga lalagyan ng wala pang larawan
+    const PREVIEW = /[?&]preview/.test(location.search);
+    function initPhotos(root) {
+      (root || document).querySelectorAll(".photo-item[data-photo]").forEach(function (item) {
+        if (item.dataset.ready) return;
+        item.dataset.ready = "1";
+        const frame = item.querySelector(".photo-frame");
+        const ratio = item.getAttribute("data-ratio") || "3/4";
+        const img = new Image();
+        img.alt = item.getAttribute("data-alt") || "";
+        img.loading = "lazy";
+        img.style.aspectRatio = ratio;
+        img.onerror = function () {
+          if (PREVIEW) {
+            frame.innerHTML = "<div class='ph' style='aspect-ratio:" + ratio + "'>" + esc(item.getAttribute("data-photo")) + "<br />" + esc(item.getAttribute("data-size")) + "</div>";
+          } else {
+            item.remove();
+            document.querySelectorAll(".photo-only").forEach(function (sec) {
+              if (!sec.querySelector(".photo-item")) sec.style.display = "none";
+            });
+          }
+        };
+        img.src = item.getAttribute("data-photo");
+        frame.appendChild(img);
+      });
+    }
+    (function closingPhoto() {
+      const img = el("closingPhoto"), sec = el("closing");
+      img.onerror = function () {
+        img.remove(); sec.classList.add("no-photo");
+        if (PREVIEW) { const n = document.createElement("div"); n.className = "ph-note"; n.textContent = "imglast.jpg · 1920 × 1080 px · landscape"; sec.appendChild(n); }
+      };
+    })();
+
     /* ---------- apply Config ---------- */
     function applyConfig(cfg) {
       CFG = cfg || {};
@@ -408,6 +506,12 @@
       document.querySelectorAll("[data-cfg]").forEach(function (n) {
         const v = CFG[n.getAttribute("data-cfg")];
         if (v) n.textContent = v;
+      });
+      // mahabang text: bawat linya sa cell = isang paragraph
+      document.querySelectorAll("[data-paras]").forEach(function (n) {
+        const v = CFG[n.getAttribute("data-paras")];
+        if (!v) return;
+        n.innerHTML = String(v).split(/\n+/).filter(Boolean).map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("");
       });
       // multi-line blocks: data-lines="Key1|(Key2)|Key3"
       document.querySelectorAll("[data-lines]").forEach(function (n) {
@@ -446,9 +550,15 @@
       items.forEach(function (it) {
         if (!it.title && !it.body) return;
         const paras = String(it.body || "").split(/\n+/).filter(Boolean).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
-        html += "<div class='guide-card'><h4>" + esc(it.title) + "</h4>" + paras + "</div>";
+        const isDress = /dress/i.test(it.section) || /dress/i.test(it.title);
+        const photo = isDress
+          ? "<div class='photo-item' data-photo='dresscode.jpg' data-ratio='3/4' data-size='1200 × 1600 px · portrait' data-alt='Dress code guide'><div class='photo-frame'></div></div>"
+          : "";
+        const extra = (isDress && (CFG.DressCode || CFG.DressPalette))
+          ? "<p><strong>" + esc([CFG.DressCode, CFG.DressPalette].filter(Boolean).join(" · ")) + "</strong></p>" : "";
+        html += "<div class='guide-card'>" + photo + "<h4>" + esc(it.title) + "</h4>" + paras + extra + "</div>";
       });
-      if (html) grid.innerHTML = html;
+      if (html) { grid.innerHTML = html; initPhotos(grid); }
     }
 
     /* ---------- Program (eksaktong text ng Sheet) ---------- */
@@ -516,6 +626,7 @@
         }
       }
     }
+    initPhotos(document);
     loadSiteData();
 
     /* ---------- RSVP ---------- */
@@ -682,7 +793,7 @@
       e.preventDefault();
       const fmt = function (ms) { return new Date(ms).toISOString().replace(/[-:]|\.\d{3}/g, ""); };
       const names = CFG._Names || "Ariel & Kate";
-      const where = [CFG.CeremonyVenue || "Locale Congregation of Baler", CFG.CeremonyCity || "Baler, Aurora"].join(", ");
+      const where = [CFG.CeremonyVenue || "Locale Congregation of Baler", CFG.CeremonyAddress, CFG.CeremonyCity || "Baler, Aurora"].filter(Boolean).join(", ");
       const url = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
         "&text=" + encodeURIComponent(names + " Wedding") +
         "&dates=" + fmt(weddingDate) + "/" + fmt(weddingDate + 4 * 3600000) +
