@@ -1,10 +1,15 @@
 /* Service worker ng Ariel & Kate wedding website.
    - Network-first para sa mga page (laging pinakabagong bersyon kapag may internet; gumagana pa rin offline)
    - Stale-while-revalidate para sa mga larawan (mabilis at tipid sa data)
-   - HINDI hinahawakan: Apps Script (data/RSVP/reactions), audio, video, at ibang website.
+   - HINDI hinahawakan: Apps Script (data/RSVP/reactions), admin.html, audio, video, at ibang website.
    Kapag nagpalit ka ng index.html at hindi lumabas agad, palitan ang VERSION sa ibaba (hal. "ak-v2"). */
-const VERSION = "ak-v1";
-const SHELL = ["./", "./index.html", "./invite.html", "./manifest.json", "./icons/icon-192.png", "./icons/icon-512.png"];
+const VERSION = "ak-v2";
+// Core files + ilang mahahalagang larawan na nasa assets/ (okay lang kung wala pa ang iba; hindi ito makakasira)
+const SHELL = [
+  "./", "./index.html", "./invite.html", "./manifest.json",
+  "./icons/icon-192.png", "./icons/icon-512.png",
+  "./assets/img1.jpg", "./assets/church.jpg", "./assets/recep.jpg"
+];
 const IMG_CACHE = VERSION + "-img";
 const IMG_LIMIT = 150;
 
@@ -33,6 +38,7 @@ self.addEventListener("fetch", function (e) {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;                  // Apps Script, Google Fonts, YouTube: sa browser
+  if (/\/admin\.html$/i.test(url.pathname)) return;                  // HINDI kailanman ica-cache ang admin page
   if (req.headers.has("range")) return;                              // audio/video streaming
   if (/\.(mp3|mp4|webm|mov|m4v|ogg|wav)$/i.test(url.pathname)) return;
 

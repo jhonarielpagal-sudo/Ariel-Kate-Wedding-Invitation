@@ -346,6 +346,12 @@
     body.mode-married .only-married{display:block}
     body.mode-married .only-invite{display:none!important}
     .married-since{margin-top:18px;color:var(--muted);font:italic 1.2rem var(--f-body),serif}
+
+    .hint{display:block;margin:6px 0 0;color:var(--muted);font:italic 1rem/1.4 var(--f-body),serif;text-align:left}
+    .live-dot{display:inline-flex;align-items:center;gap:5px;margin-left:10px;color:#3d8b57;font:600 .56rem var(--f-label),sans-serif;letter-spacing:.18em;vertical-align:middle}
+    .live-dot::before{content:"";width:7px;height:7px;border-radius:50%;background:#3d8b57;animation:livePulse 1.6s infinite}
+    @keyframes livePulse{50%{opacity:.25}}
+    .wall-item.fresh{animation:fadeUp .55s ease;border-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -434,7 +440,7 @@
       <div class="story-inner reveal">
         <div class="eyebrow">Us</div>
         <h2>A Moment</h2>
-        <div class="photo-item" data-photo="img1.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Ariel and Kate">
+        <div class="photo-item" data-photo="assets/img1.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Ariel and Kate">
           <div class="photo-frame"></div>
           <p class="photo-caption" data-cfg="Caption1">Getting ready for forever</p>
         </div>
@@ -445,11 +451,11 @@
         <div class="eyebrow">The two of us</div>
         <h2>Meet the Couple</h2>
         <div class="photo-pair">
-          <div class="photo-item" data-photo="img2.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Groom">
+          <div class="photo-item" data-photo="assets/img2.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Groom">
             <div class="photo-frame"></div>
             <p class="photo-caption" data-cfg="Groom">Ariel</p>
           </div>
-          <div class="photo-item" data-photo="img3.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Bride">
+          <div class="photo-item" data-photo="assets/img3.jpg" data-ratio="3/4" data-size="1200 × 1600 px · portrait" data-alt="Bride">
             <div class="photo-frame"></div>
             <p class="photo-caption" data-cfg="Bride">Kate</p>
           </div>
@@ -460,7 +466,7 @@
       <div class="story-inner reveal">
         <div class="eyebrow">Our promise</div>
         <h2>The Rings</h2>
-        <div class="photo-item sq" data-photo="img4.jpg" data-ratio="1/1" data-size="1200 × 1200 px · square" data-alt="Wedding rings">
+        <div class="photo-item sq" data-photo="assets/img4.jpg" data-ratio="1/1" data-size="1200 × 1200 px · square" data-alt="Wedding rings">
           <div class="photo-frame"></div>
           <p class="photo-caption" data-cfg="Caption4">A promise, worn forever</p>
         </div>
@@ -482,7 +488,7 @@
       <div class="story-inner reveal">
         <div class="eyebrow">The ceremony</div>
         <h2>Church Wedding</h2>
-        <div class="photo-item" data-photo="church.jpg" data-ratio="16/10" data-size="1600 × 1000 px · landscape" data-alt="Ceremony venue">
+        <div class="photo-item" data-photo="assets/church.jpg" data-ratio="16/10" data-size="1600 × 1000 px · landscape" data-alt="Ceremony venue">
           <div class="photo-frame wide"></div>
         </div>
         <div class="paper-card" style="margin-top:24px">
@@ -503,7 +509,7 @@
         <div class="eyebrow">After the ceremony</div>
         <h2>Reception</h2>
         <p id="recepIntro">Reception details to be announced.</p>
-        <div class="photo-item" data-photo="recep.jpg" data-ratio="16/10" data-size="1600 × 1000 px · landscape" data-alt="Reception venue">
+        <div class="photo-item" data-photo="assets/recep.jpg" data-ratio="16/10" data-size="1600 × 1000 px · landscape" data-alt="Reception venue">
           <div class="photo-frame wide"></div>
         </div>
         <div class="paper-card" style="margin-top:24px">
@@ -534,7 +540,7 @@
     </section>
 
     <section class="closing" id="closing">
-      <img class="closing-photo" id="closingPhoto" src="imglast.jpg" alt="" loading="lazy" />
+      <img class="closing-photo" id="closingPhoto" src="assets/imglast.jpg" alt="" loading="lazy" />
       <div class="closing-inner reveal">
         <div class="eyebrow">With love</div>
         <h2 data-cfg="ClosingTitle">See you there</h2>
@@ -568,12 +574,13 @@
     <div class="view" id="view-messages">
       <section class="story">
         <div class="story-inner">
-          <div class="eyebrow">With love</div>
+          <div class="eyebrow">With love <span class="live-dot" title="This wall updates automatically">Live</span></div>
           <h2>Love Messages</h2>
           <p>Leave a greeting for the couple. Messages are shown publicly below.</p>
           <div class="form-box compose">
             <label for="wallName">Your full name *</label>
-            <input type="text" id="wallName" placeholder="Exactly as it appears on the invitation list" autocomplete="name" />
+            <input type="text" id="wallName" placeholder="Full Name (e.g., as written on your invitation)" autocomplete="name" />
+            <small class="hint">Please type your exact name as written on your invitation card or link.</small>
             <label for="wallText">Your message *</label>
             <textarea id="wallText" maxlength="500" placeholder="Write your greeting here..."></textarea>
             <div class="btn-row" style="justify-content:flex-start;margin-top:8px">
@@ -637,7 +644,8 @@
         <p style="margin-bottom:8px">Please type your <strong>full name exactly</strong> as it appears on the invitation list. Spelling must match for the reservation to be valid.</p>
         <div class="form-box">
           <label for="reserveName">Full Name *</label>
-          <input type="text" id="reserveName" placeholder="e.g. Jhon Ariel Pagal" autocomplete="name" />
+          <input type="text" id="reserveName" placeholder="Full Name (e.g., as written on your invitation)" autocomplete="name" />
+          <small class="hint">Please type your exact name as written on your invitation card or link.</small>
           <label for="reserveContact">Contact Number</label>
           <input type="tel" id="reserveContact" placeholder="e.g. 0917 123 4567" />
           <label for="reserveMessage">Message for the couple (optional)</label>
@@ -658,7 +666,8 @@
         <p>Type your full name to see your reservation details. Only your own information will be shown.</p>
         <div class="form-box">
           <label for="confirmName">Full Name</label>
-          <input type="text" id="confirmName" placeholder="e.g. Jhon Ariel Pagal" autocomplete="name" />
+          <input type="text" id="confirmName" placeholder="Full Name (e.g., as written on your invitation)" autocomplete="name" />
+          <small class="hint">Please type your exact name as written on your invitation card or link.</small>
           <div class="btn-row" style="justify-content:flex-start;margin-top:8px">
             <button class="btn btn-filled" id="viewConfirmBtn">View Confirmation</button>
           </div>
@@ -740,6 +749,13 @@
       });
     }
     function el(id) { return document.getElementById(id); }
+    // Mga larawan/audio na galing sa Config ("church.jpg", "ATY.mp3") ay awtomatikong hahanapin sa assets/ folder
+    function assetPath(f) {
+      f = String(f || "").trim();
+      if (!f) return "";
+      if (/^(https?:)?\/\//i.test(f) || f.charAt(0) === "/" || /^(assets|gallery|icons)\//i.test(f)) return f;
+      return "assets/" + f;
+    }
 
     /* ---------- theme from Config (colors, fonts, size) ---------- */
     const THEME_COLORS = { ColorGold: ["--gold"], ColorBackground: ["--bg"], ColorBackgroundAlt: ["--bg-alt"], ColorCard: ["--paper"],
@@ -918,7 +934,7 @@
       const img = el("closingPhoto"), sec = el("closing");
       img.onerror = function () {
         img.remove(); sec.classList.add("no-photo");
-        if (PREVIEW) { const n = document.createElement("div"); n.className = "ph-note"; n.textContent = "imglast.jpg · 1920 × 1080 px · landscape"; sec.appendChild(n); }
+        if (PREVIEW) { const n = document.createElement("div"); n.className = "ph-note"; n.textContent = "assets/imglast.jpg · 1920 × 1080 px · landscape"; sec.appendChild(n); }
       };
     })();
 
@@ -1022,7 +1038,7 @@
         const paras = String(it.body || "").split(/\n+/).filter(Boolean).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
         const isDress = /dress/i.test(it.section) || /dress/i.test(it.title);
         const photo = isDress
-          ? "<div class='photo-item' data-photo='dresscode.jpg' data-ratio='3/4' data-size='1200 × 1600 px · portrait' data-alt='Dress code guide'><div class='photo-frame'></div></div>"
+          ? "<div class='photo-item' data-photo='assets/dresscode.jpg' data-ratio='3/4' data-size='1200 × 1600 px · portrait' data-alt='Dress code guide'><div class='photo-frame'></div></div>"
           : "";
         const extra = "";
         html += "<div class='guide-card'>" + photo + "<h4>" + esc(it.title) + "</h4>" + paras + extra + "</div>";
@@ -1084,16 +1100,49 @@
       d.textContent += t + "\n";
       d.scrollTop = d.scrollHeight;
     }
+    /* ---------- local cache: lumalabas agad ang laman, tahimik na nag-u-update sa background ---------- */
+    const ALL_CACHE_KEY = "wedding_all_v2";
+    const SIG = {};
+    function renderOnce(key, sigVal, fn) {      // i-render lang kung nagbago (iwas kisap)
+      const sg = JSON.stringify(sigVal === undefined ? null : sigVal);
+      if (SIG[key] === sg) return;
+      SIG[key] = sg;
+      try { fn(); } catch (e) { console.error(key, e); debugNote(key + " ERROR: " + e.message); }
+    }
+    function renderAll(data) {
+      const cfg = data.config || {};
+      const albumSig = Object.keys(cfg).filter(function (k) { return /^(Album|Gallery|DefaultAlbum|SiteMode)/.test(k); }).sort().map(function (k) { return k + "=" + cfg[k]; });
+      renderOnce("config", cfg, function () { applyConfig(cfg); });
+      renderOnce("guidelines", data.guidelines, function () { renderGuidelines(data.guidelines); });
+      renderOnce("program", data.program, function () { renderProgram(data.program); });
+      renderOnce("entourage", [data.entourage, cfg.Groom, cfg.Bride], function () { renderEntourage(data.entourage); });
+      renderOnce("reactions", data.reactions, function () { REACT_COUNTS = data.reactions || {}; document.querySelectorAll(".react-bar").forEach(paintReact); });
+      const rs = data.rsvp || (/^(closed|close|no|off)$/i.test((cfg.RSVPStatus || "").trim()) ? { open: false, reason: "closed" } : { open: true });
+      renderOnce("rsvp", [rs, cfg.RSVPClosedMessage, cfg.RSVPShowSlots], function () { applyRsvp(rs); });
+      renderOnce("gallery", [data.gallery, albumSig], function () { renderGallery(data.gallery); });
+      renderOnce("messages", data.messages, function () { renderMessages(data.messages); });
+      renderOnce("faq", data.faq, function () { renderFaq(data.faq); });
+    }
+    function saveAllCache(data) {
+      const pack = function (d) { return JSON.stringify({ t: Date.now(), data: d }); };
+      try { localStorage.setItem(ALL_CACHE_KEY, pack(data)); }
+      catch (e) {   // puno ang storage: itabi muna ang config/program lang
+        try { localStorage.setItem(ALL_CACHE_KEY, pack({ success: true, config: data.config, guidelines: data.guidelines, program: data.program, entourage: data.entourage, rsvp: data.rsvp })); } catch (e2) {}
+      }
+    }
     async function loadSiteData() {
-      const cached = cachedCfg();
-      if (cached) { try { applyConfig(cached); } catch (e) { debugNote("cached applyConfig ERROR: " + e.message); } }
+      let cached = null;
+      try { cached = JSON.parse(localStorage.getItem(ALL_CACHE_KEY) || "null"); } catch (e) {}
+      if (cached && cached.data && cached.data.config) { renderAll(cached.data); debugNote("Rendered instantly from local cache (" + Math.round((Date.now() - cached.t) / 1000) + "s old)"); }
+      else { const c = cachedCfg(); if (c) { try { applyConfig(c); } catch (e) { debugNote("cached applyConfig ERROR: " + e.message); } } }
       let data = null;
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=all");
         data = await res.json();
-        debugNote("action=all success=" + data.success + "\nConfig keys found: " + Object.keys(data.config || {}).join(", ") + "\nGallery rows from sheet: " + (data.gallery ? data.gallery.length : "NOT RETURNED - redeploy Code.gs"));
+        debugNote("action=all success=" + data.success + "\nConfig keys found: " + Object.keys(data.config || {}).join(", ") + "\nGallery rows from sheet: " + (data.gallery ? data.gallery.length : "NOT RETURNED (redeploy Code.gs)"));
       } catch (e) { debugNote("action=all FAILED: " + e); data = null; }
       if (!data || !data.success) {
+        if (cached && cached.data) { markEnvelopeReady(); return; }       // offline: ayos na ang cache
         try {   // luma pa ring deployment na wala pang action=all
           const r = await Promise.all(["config", "guidelines", "program", "entourage"].map(function (act) {
             return fetch(APPS_SCRIPT_URL + "?action=" + act).then(function (x) { return x.json(); });
@@ -1108,20 +1157,14 @@
           return;
         }
       }
-      [["applyConfig", function () { applyConfig(data.config || {}); }],
-       ["renderGuidelines", function () { renderGuidelines(data.guidelines); }],
-       ["renderProgram", function () { renderProgram(data.program); }],
-       ["renderEntourage", function () { renderEntourage(data.entourage); }],
-       ["reactions", function () { REACT_COUNTS = data.reactions || {}; }],
-       ["applyRsvp", function () { applyRsvp(data.rsvp || (/^(closed|close|no|off)$/i.test((CFG.RSVPStatus || "").trim()) ? { open: false, reason: "closed" } : { open: true })); }],
-       ["renderGallery", function () { renderGallery(data.gallery); }],
-       ["renderMessages", function () { renderMessages(data.messages); }],
-       ["renderFaq", function () { renderFaq(data.faq); }]].forEach(function (st) {
-        try { st[1](); } catch (e) { console.error(st[0], e); debugNote(st[0] + " ERROR: " + e.message); }
-      });
+      saveAllCache(data);
+      renderAll(data);
     }
 
     /* ---------- RSVP ---------- */
+    function notFoundMsg(name) {
+      return "Sorry, the name '" + name + "' could not be found in our guest list. Please make sure you are typing your exact name as written on your invitation card/link.";
+    }
     async function checkSheetStatus(name) {
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=check&name=" + encodeURIComponent(name.trim()));
@@ -1139,7 +1182,7 @@
         const res = await fetch(url);
         return await res.json();
       } catch (e) {
-        return { success: false, message: "Network error. Please try again." };
+        return { success: false, message: "Unable to verify your reservation due to a connection issue. Please try again." };
       }
     }
     el("checkReserveBtn").addEventListener("click", async function () {
@@ -1147,20 +1190,20 @@
       const contact = el("reserveContact").value;
       const message = el("reserveMessage").value;
       const btn = this, msg = el("reserveMsg");
-      msg.className = "form-message"; msg.style.display = "none";
+      msg.className = "form-message"; msg.style.display = "";
       btn.disabled = true; btn.textContent = "Checking...";
       if (!name) {
-        msg.className = "form-message error"; msg.textContent = "Please enter your full name.";
+        msg.className = "form-message error"; msg.textContent = "Please enter your full name as it appears on your invitation.";
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
       const status = await checkSheetStatus(name);
       if (status.error) {
-        msg.className = "form-message error"; msg.textContent = "Network error. Please try again.";
+        msg.className = "form-message error"; msg.textContent = "Unable to verify your reservation due to a connection issue. Please try again.";
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
       if (!status.inList) {
         msg.className = "form-message error";
-        msg.textContent = "Name not found. Please type your full name exactly as it appears on the invitation list.";
+        msg.textContent = notFoundMsg(name);
         btn.disabled = false; btn.textContent = "Check & Reserve"; return;
       }
       if (status.found && !status.canUpdate) {
@@ -1187,27 +1230,29 @@
       btn.disabled = false; btn.textContent = "Check & Reserve";
     });
     el("viewConfirmBtn").addEventListener("click", async function () {
-      const name = el("confirmName").value.trim();
-      const btn = this, msg = el("confirmMsg"), box = el("confirmResult");
-      msg.className = "form-message"; msg.style.display = "none"; box.style.display = "none";
-      btn.disabled = true; btn.textContent = "Checking...";
-      if (!name) {
-        msg.className = "form-message error"; msg.textContent = "Please enter your full name.";
-        btn.disabled = false; btn.textContent = "View Confirmation"; return;
+      const btn = this, msg = el("confirmMsg"), box = el("confirmResult"), input = el("confirmName");
+      const name = input.value.trim();
+      const reset = function () { btn.disabled = false; btn.textContent = "View Confirmation"; };
+      const show = function (kind, text) { msg.className = "form-message " + kind; msg.style.display = ""; msg.textContent = text; };
+      msg.className = "form-message"; msg.textContent = ""; msg.style.display = ""; box.style.display = "none";
+      if (!name) { show("error", "Please enter your full name as it appears on your invitation."); input.focus(); return; }
+      btn.disabled = true; btn.textContent = "Checking...";          // iwas dobleng click
+      let status;
+      try { status = await checkSheetStatus(name); } catch (e) { status = { error: true }; }
+      if (!status || status.error || typeof status.inList === "undefined") {
+        show("error", "Unable to verify your reservation due to a connection issue. Please try again."); reset(); return;
       }
-      const status = await checkSheetStatus(name);
-      if (!status.inList) {
-        msg.className = "form-message error"; msg.textContent = "Name not found. Please type your full name exactly.";
-        btn.disabled = false; btn.textContent = "View Confirmation"; return;
-      }
+      if (!status.inList) { show("error", notFoundMsg(name)); reset(); return; }
       if (!status.found) {
-        msg.className = "form-message info";
-        msg.innerHTML = "No reservation found yet for <strong>" + esc(status.name) + "</strong>. Please use the Reserve section above first.";
-        btn.disabled = false; btn.textContent = "View Confirmation"; return;
+        show("info", RSVP_ST && RSVP_ST.open === false
+          ? "Your name is on the guest list, but RSVP is now closed and no reservation was recorded under your name. Please contact the couple."
+          : "Your name is on the guest list! However, we have not received an RSVP submission yet. Please submit your reservation using the form above.");
+        reset(); return;
       }
       box.style.display = "block";
-      box.innerHTML = "<h4>Your Reservation</h4><p><strong>" + esc(status.name) + "</strong></p><p class='role'>" + esc(status.role || "") + "</p><p style='margin-top:6px;font-size:.95rem;color:#756d60'>" + (status.reservedAt ? "Reserved on " + esc(new Date(status.reservedAt).toLocaleString()) : "") + "</p>";
-      btn.disabled = false; btn.textContent = "View Confirmation";
+      box.innerHTML = "<h4>Your Reservation</h4><p><strong>" + esc(status.name) + "</strong></p><p class='role'>" + esc(status.role || "") + "</p><p style='margin-top:6px;font-size:.95rem;color:#756d60'>" +
+        (status.reservedAt ? "Reserved on " + esc(new Date(status.reservedAt).toLocaleString()) : "") + "</p>";
+      reset();
     });
 
     /* ---------- countdown / Days Married ---------- */
@@ -1266,12 +1311,12 @@
 
     /* ---------- music playlist ---------- */
     const musicBtn = el("musicBtn"), bgMusic = el("bgMusic"), mc = el("musicControl");
-    const DEFAULT_TRACKS = ["ATY.mp3", "audio1.mp3", "audio2.mp3"];
+    const DEFAULT_TRACKS = ["assets/ATY.mp3", "assets/audio1.mp3", "assets/audio2.mp3"];
     let tracks = [], cur = 0;
     function trackTitle(file) { return file.split("/").pop().replace(/\.[^.]+$/, ""); }
     function setTracksFromConfig(cfg) {
       const list = DEFAULT_TRACKS.map(function (d, i) {
-        const f = ((cfg["Track" + (i + 1)] || d) + "").replace(/[^\w.\-\/]/g, "");
+        const f = assetPath(((cfg["Track" + (i + 1)] || d) + "").replace(/[^\w.\-\/]/g, ""));
         return { src: f, title: (cfg["Track" + (i + 1) + "Title"] || "").trim() || trackTitle(f), ok: null };
       });
       if (JSON.stringify(list.map(function (t) { return t.src; })) === JSON.stringify(tracks.map(function (t) { return t.src; }))) {
@@ -1485,6 +1530,7 @@
       positionTabInd();
       window.scrollTo(0, 0);
       if (t === "gallery") galleryFill();
+      if (t === "messages") pollMessages(false);
     }
     window.addEventListener("resize", positionTabInd);
     window.addEventListener("hashchange", showTab);
@@ -1821,6 +1867,7 @@
     function msgCard(m) {
       const d = document.createElement("div");
       d.className = "wall-item";
+      d.dataset.mid = m.id || "";
       const init = (m.name || "?").trim().charAt(0).toUpperCase() || "?";
       d.innerHTML = "<div class='wall-avatar'>" + esc(init) + "</div><div class='wall-body'><span class='wall-name'>" + esc(m.name || "Guest") +
         "</span><span class='wall-time'>" + esc(m.time || "") + "</span>" +
@@ -1835,10 +1882,42 @@
       (rows || []).forEach(function (m) { list.appendChild(msgCard(m)); });
       el("wallEmpty").style.display = (rows && rows.length) ? "none" : "";
     }
+    /* ---------- live auto-refresh ng Love Messages (20-30 segundo, humihinto kapag nakatago ang page) ---------- */
+    const POLL_MS = 25000;
+    let lastPoll = 0, polling = false;
+    function messagesActive() { return el("view-messages").classList.contains("active"); }
+    function mergeMessages(items, reactions) {
+      const list = el("wallList");
+      if (reactions) { REACT_COUNTS = reactions; document.querySelectorAll(".react-bar").forEach(paintReact); }
+      const keep = {};
+      items.forEach(function (m) { keep[m.id] = 1; });
+      list.querySelectorAll(".wall-item[data-mid]").forEach(function (c) { if (c.dataset.mid && !keep[c.dataset.mid]) c.remove(); });   // na-hide o na-delete
+      const have = {};
+      list.querySelectorAll(".wall-item[data-mid]").forEach(function (c) { have[c.dataset.mid] = 1; });
+      const fresh = items.filter(function (m) { return m.id && !have[m.id]; });
+      for (let i = fresh.length - 1; i >= 0; i--) {                       // bagong approved: lalabas sa itaas
+        const card = msgCard(fresh[i]); card.classList.add("fresh");
+        list.insertBefore(card, list.firstChild);
+      }
+      el("wallEmpty").style.display = list.children.length ? "none" : "";
+    }
+    async function pollMessages(force) {
+      if (document.hidden || polling || !messagesActive()) return;       // pause kapag hindi aktibo
+      if (!force && Date.now() - lastPoll < 8000) return;
+      polling = true; lastPoll = Date.now();
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=messages");
+        const d = await res.json();
+        if (d && d.success) mergeMessages(d.items || [], d.reactions);
+      } catch (e) { /* tahimik: susubukan ulit sa susunod */ }
+      polling = false;
+    }
+    setInterval(function () { pollMessages(false); }, POLL_MS);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) pollMessages(false); });
     el("wallSend").addEventListener("click", async function () {
       const btn = this, msg = el("wallMsg");
       const name = el("wallName").value.trim(), text = el("wallText").value.trim();
-      msg.className = "form-message"; msg.style.display = "none";
+      msg.className = "form-message"; msg.style.display = "";
       if (!name || !text) { msg.className = "form-message error"; msg.textContent = "Please enter your name and message."; return; }
       btn.disabled = true; btn.textContent = "Sending...";
       try {
@@ -1856,9 +1935,9 @@
           }
         } else {
           msg.className = "form-message error";
-          msg.textContent = /not found/i.test(r.message || "") ? "Name not found. Please type your full name exactly as on the invitation list." : (r.message || "Something went wrong.");
+          msg.textContent = /not found/i.test(r.message || "") ? notFoundMsg(name) : (r.message || "Something went wrong.");
         }
-      } catch (e) { msg.className = "form-message error"; msg.textContent = "Network error. Please try again."; }
+      } catch (e) { msg.className = "form-message error"; msg.textContent = "Unable to verify your reservation due to a connection issue. Please try again."; }
       btn.disabled = false; btn.textContent = "Send greeting";
     });
 
@@ -1901,7 +1980,7 @@
         const name = cfg["Gcash" + n + "Name"] || (n === 1 ? (cfg.Groom || "Ariel") : (cfg.Bride || "Kate"));
         const label = cfg["Gcash" + n + "Label"] || "GCash";
         const num = (cfg["Gcash" + n + "Number"] || "").trim();
-        const img = ((cfg["Gcash" + n + "Image"] || ("gcash" + n + ".jpg")) + "").replace(/[^\w.\-\/]/g, "");
+        const img = assetPath(((cfg["Gcash" + n + "Image"] || ("gcash" + n + ".jpg")) + "").replace(/[^\w.\-\/]/g, ""));
         el("qrName" + n).textContent = name;
         el("qrLabel" + n).textContent = label;
         el("qrNum" + n).textContent = num;

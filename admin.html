@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#fffdf8" />
+  <title>Admin · Ariel &amp; Kate</title>
+  <style>
+    :root{--gold:#a78343;--gold-d:#8a6a30;--paper:#fffdf8;--bg:#f6f2e9;--ink:#30271e;--muted:#7a7165;--line:#e6dcc9;--ok:#3d8b57;--bad:#b3402f;--warn:#b7791f}
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:40px}
+    [hidden]{display:none!important}
+    button,input,select,textarea{font:inherit;color:inherit}
+    /* gate */
+    .gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgba(40,30,18,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .gate-card{width:100%;max-width:340px;padding:30px 24px;background:var(--paper);border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.25);text-align:center}
+    .gate-card h1{margin:0 0 4px;font:400 1.5rem Georgia,serif;color:var(--gold-d)}
+    .gate-card p{margin:0 0 18px;color:var(--muted);font-size:.9rem}
+    .gate-card input{width:100%;padding:13px 14px;border:1px solid var(--line);background:#fff;text-align:center;letter-spacing:.3em;font-size:1.1rem}
+    .gate-card input:focus,.field input:focus,.field select:focus,.field textarea:focus,.search:focus{outline:2px solid color-mix(in srgb,var(--gold) 55%,transparent);outline-offset:1px}
+    .btn{display:inline-block;padding:11px 18px;border:1px solid var(--gold);background:var(--gold);color:#fff;font-weight:600;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+    .btn:hover{background:var(--gold-d)}
+    .btn:disabled{opacity:.55;cursor:default}
+    .btn.ghost{background:transparent;color:var(--gold-d)}
+    .btn.ghost:hover{background:color-mix(in srgb,var(--gold) 12%,transparent)}
+    .btn.danger{border-color:var(--bad);background:transparent;color:var(--bad)}
+    .btn.danger:hover{background:var(--bad);color:#fff}
+    .btn.ok{border-color:var(--ok);background:var(--ok)}
+    .btn.sm{padding:7px 12px;font-size:.7rem}
+    .gate-card .btn{width:100%;margin-top:12px}
+    .gate-err{margin-top:12px;color:var(--bad);font-size:.88rem;min-height:1.2em}
+    /* app shell */
+    header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px));background:color-mix(in srgb,var(--paper) 94%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    header .btn.sm{padding:7px 9px;font-size:.64rem;white-space:nowrap}
+    header h1{flex:1;margin:0;font:400 1.15rem Georgia,serif;color:var(--gold-d)}
+    header a{color:var(--muted);font-size:.8rem}
+    .tabs{display:flex;gap:6px;padding:12px 16px 0;overflow-x:auto}
+    .tab{flex:1;min-width:max-content;padding:11px 10px;border:1px solid var(--line);border-bottom:0;background:transparent;color:var(--muted);font-weight:600;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+    .tab.active{background:var(--paper);color:var(--gold-d);border-color:var(--gold);border-bottom:0}
+    .badge{display:inline-block;min-width:20px;margin-left:6px;padding:1px 7px;border-radius:20px;background:var(--bad);color:#fff;font-size:.68rem;text-align:center}
+    main{max-width:880px;margin:0 auto}
+    .panel{margin:0 16px;padding:18px 16px;background:var(--paper);border:1px solid var(--line)}
+    /* stats */
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
+    .stat{padding:14px 12px;border:1px solid var(--line);background:#fff}
+    .stat b{display:block;font:600 1.7rem/1.1 Georgia,serif;color:var(--gold-d)}
+    .stat span{color:var(--muted);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+    .stat.warn b{color:var(--warn)}
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .chip{padding:4px 10px;border:1px solid var(--line);background:#fff;font-size:.78rem;color:var(--muted)}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+    .search{flex:1;min-width:160px;padding:11px 12px;border:1px solid var(--line);background:#fff}
+    select.filter{padding:11px 10px;border:1px solid var(--line);background:#fff}
+    .list{display:grid;gap:8px}
+    .row{padding:12px 14px;border:1px solid var(--line);background:#fff}
+    .row .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+    .row b{font-weight:600}
+    .row .role{color:var(--gold-d);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+    .row .meta{margin-top:2px;color:var(--muted);font-size:.8rem}
+    .row .msg{margin-top:6px;white-space:pre-wrap;overflow-wrap:anywhere}
+    .tag{display:inline-block;margin-left:6px;padding:1px 7px;font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid}
+    .tag.diet{color:var(--warn);border-color:var(--warn)}
+    .tag.sp{color:var(--ok);border-color:var(--ok)}
+    .tag.pending{color:var(--warn);border-color:var(--warn)}
+    .tag.approved{color:var(--ok);border-color:var(--ok)}
+    .tag.hidden{color:var(--muted);border-color:var(--muted)}
+    .actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .empty{padding:26px 10px;text-align:center;color:var(--muted)}
+    /* settings */
+    fieldset{margin:0 0 18px;padding:14px 14px 4px;border:1px solid var(--line);background:#fff}
+    legend{padding:0 8px;color:var(--gold-d);font:600 .78rem system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+    .note{margin:0 0 10px;color:var(--muted);font-size:.8rem}
+    .field{margin-bottom:12px}
+    .field label{display:block;margin-bottom:4px;color:var(--muted);font-size:.74rem;letter-spacing:.04em}
+    .field input,.field select,.field textarea{width:100%;padding:10px 11px;border:1px solid var(--line);background:#fff}
+    .field textarea{min-height:70px;resize:vertical}
+    .field input.changed,.field select.changed,.field textarea.changed{border-color:var(--gold);background:#fffaf0}
+    .savebar{position:sticky;bottom:0;display:flex;gap:10px;align-items:center;padding:12px 0 4px;background:linear-gradient(transparent,var(--paper) 30%)}
+    .grid2{display:grid;gap:0 12px}
+    @media(min-width:560px){.grid2{grid-template-columns:1fr 1fr}}
+    #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:200;transform:translate(-50%,20px);max-width:90vw;padding:12px 18px;background:#2b2217;color:#fff;font-size:.88rem;opacity:0;pointer-events:none;transition:all .3s}
+    #toast.show{opacity:1;transform:translate(-50%,0)}
+    #toast.err{background:var(--bad)}
+    .live{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
+    .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);animation:p 1.6s infinite}
+    @keyframes p{50%{opacity:.25}}
+  </style>
+</head>
+<body>
+
+  <!-- Security gate -->
+  <div class="gate" id="gate">
+    <form class="gate-card" id="gateForm" autocomplete="off">
+      <h1>Admin access</h1>
+      <p>Enter the admin PIN to continue.</p>
+      <input type="password" id="pin" placeholder="••••" autocomplete="current-password" aria-label="Admin PIN" />
+      <div class="gate-err" id="gateErr" role="alert"></div>
+      <button class="btn" id="gateBtn" type="submit">Unlock</button>
+    </form>
+  </div>
+
+  <div id="app" hidden>
+    <header>
+      <h1>Admin <small style="color:var(--muted);font-size:.7rem;letter-spacing:.1em">A&amp;K</small></h1>
+      <span class="live" id="liveDot">Live</span>
+      <a href="index.html" target="_blank" rel="noopener" style="white-space:nowrap">Site</a>
+      <button class="btn ghost sm" id="refreshBtn" type="button">Refresh</button>
+      <button class="btn ghost sm" id="logoutBtn" type="button">Log out</button>
+    </header>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="rsvp" role="tab">RSVP Tracker</button>
+      <button class="tab" data-tab="messages" role="tab">Messages <span class="badge" id="pendBadge" hidden>0</span></button>
+      <button class="tab" data-tab="settings" role="tab">Settings</button>
+    </div>
+    <main>
+      <!-- RSVP TRACKER -->
+      <section class="panel" id="tab-rsvp">
+        <div class="stats" id="stats"></div>
+        <div class="chips" id="roleChips"></div>
+        <div class="controls">
+          <input class="search" id="search" type="search" placeholder="Search name, role, contact or message" />
+          <select class="filter" id="filter" aria-label="Filter">
+            <option value="all">All reservations</option>
+            <option value="diet">Dietary / allergy notes</option>
+            <option value="notes">With any note</option>
+            <option value="sponsors">Sponsors accepted</option>
+            <option value="missing">Not yet reserved</option>
+          </select>
+        </div>
+        <div class="list" id="rsvpList"></div>
+      </section>
+
+      <!-- MESSAGES -->
+      <section class="panel" id="tab-messages" hidden>
+        <div class="controls">
+          <select class="filter" id="msgFilter" aria-label="Message filter" style="flex:1">
+            <option value="pending">Pending approval</option>
+            <option value="approved">Approved (visible on website)</option>
+            <option value="hidden">Hidden</option>
+            <option value="all">All messages</option>
+          </select>
+        </div>
+        <div class="list" id="msgList"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="panel" id="tab-settings" hidden>
+        <form id="settingsForm"></form>
+      </section>
+    </main>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const API = "https://script.google.com/macros/s/AKfycbygPB7Jd68toZMbVlMJaD1AAOs_ntqHRXzfQREnQcd5BNWDf10Ti3FuXNmgmhi2XV8/exec";
+    const $ = function (id) { return document.getElementById(id); };
+    let PIN = "", DATA = null, TAB = "rsvp", loading = false;
+
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+    function toast(t, err) {
+      const n = $("toast"); n.textContent = t; n.className = "show" + (err ? " err" : "");
+      clearTimeout(toast.t); toast.t = setTimeout(function () { n.className = ""; }, 3200);
+    }
+    // POST (text/plain) para hindi lumabas ang PIN sa URL
+    async function api(action, extra) {
+      const res = await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(Object.assign({ action: action, pin: PIN }, extra || {})) });
+      return res.json();
+    }
+    function authError(r) {
+      if (r.reason === "locked") return "Too many wrong attempts. Please try again in 10 minutes.";
+      if (r.reason === "not_configured") return "The admin PIN is not set yet. In Apps Script: Project Settings > Script properties > add ADMIN_PIN.";
+      return "Incorrect PIN. Please try again.";
+    }
+
+    /* ---------- gate ---------- */
+    function lock(msg) {
+      sessionStorage.removeItem("admin_pin"); PIN = ""; DATA = null;
+      $("app").hidden = true; $("gate").hidden = false; $("pin").value = ""; $("gateErr").textContent = msg || "";
+      setTimeout(function () { $("pin").focus(); }, 50);
+    }
+    async function unlock(pin, silent) {
+      PIN = pin;
+      let r;
+      try { r = await api("admin_overview"); } catch (e) { if (!silent) $("gateErr").textContent = "Unable to connect. Please check your internet and try again."; return false; }
+      if (!r || !r.auth) { if (!silent) $("gateErr").textContent = authError(r || {}); else lock(""); return false; }
+      sessionStorage.setItem("admin_pin", pin);
+      $("gate").hidden = true; $("app").hidden = false;
+      DATA = r; renderAll();
+      return true;
+    }
+    $("gateForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const pin = $("pin").value.trim(), btn = $("gateBtn");
+      if (!pin) { $("gateErr").textContent = "Please enter the PIN."; return; }
+      btn.disabled = true; btn.textContent = "Checking..."; $("gateErr").textContent = "";
+      await unlock(pin, false);
+      btn.disabled = false; btn.textContent = "Unlock";
+    });
+    $("logoutBtn").addEventListener("click", function () { lock("You have been logged out."); });
+
+    async function refresh(quiet) {
+      if (loading || !PIN) return;
+      loading = true;
+      try {
+        const r = await api("admin_overview");
+        if (!r.auth) { lock(authError(r)); return; }
+        DATA = r; renderAll();
+        if (!quiet) toast("Updated");
+      } catch (e) { if (!quiet) toast("Connection issue. Please try again.", true); }
+      loading = false;
+    }
+    $("refreshBtn").addEventListener("click", function () { refresh(false); });
+    // Live tracker: kusang nag-a-update tuwing 30 segundo habang bukas at aktibo ang page
+    setInterval(function () { if (!document.hidden && !$("app").hidden && TAB !== "settings") refresh(true); }, 30000);
+
+    /* ---------- tabs ---------- */
+    document.querySelectorAll(".tab").forEach(function (b) {
+      b.addEventListener("click", function () {
+        TAB = b.dataset.tab;
+        document.querySelectorAll(".tab").forEach(function (x) { x.classList.toggle("active", x === b); });
+        ["rsvp", "messages", "settings"].forEach(function (t) { $("tab-" + t).hidden = t !== TAB; });
+      });
+    });
+
+    function renderAll() { renderRsvp(); renderMessages(); if (!document.activeElement || !$("settingsForm").contains(document.activeElement)) renderSettings(false); }
+
+    /* ---------- RSVP tracker ---------- */
+    function renderRsvp() {
+      const s = DATA.summary, r = DATA.rsvp || {};
+      const cap = r.limit ? (r.remaining + " left of " + r.limit) : "No limit";
+      $("stats").innerHTML =
+        '<div class="stat"><b>' + s.reserved + '</b><span>Confirmed / reserved</span></div>' +
+        '<div class="stat"><b>' + s.listed + '</b><span>On guest list</span></div>' +
+        '<div class="stat ' + (s.notReserved ? "warn" : "") + '"><b>' + s.notReserved + '</b><span>Not yet reserved</span></div>' +
+        '<div class="stat"><b>' + s.sponsorsAccepted + '</b><span>Sponsors accepted</span></div>' +
+        '<div class="stat"><b>' + s.withNotes + '</b><span>With notes</span></div>' +
+        '<div class="stat ' + (s.dietary ? "warn" : "") + '"><b>' + s.dietary + '</b><span>Dietary / allergy</span></div>' +
+        '<div class="stat"><b style="font-size:1.1rem">' + esc(cap) + '</b><span>Seat reservations</span></div>' +
+        '<div class="stat"><b style="font-size:1.1rem;color:' + (r.open ? "var(--ok)" : "var(--bad)") + '">' + (r.open ? "Open" : "Closed") + '</b><span>RSVP status' + (r.reason ? " (" + esc(r.reason) + ")" : "") + '</span></div>';
+      $("roleChips").innerHTML = Object.keys(s.byRole || {}).sort().map(function (k) { return '<span class="chip">' + esc(k) + ": <b>" + s.byRole[k] + "</b></span>"; }).join("");
+      renderRsvpList();
+    }
+    function renderRsvpList() {
+      const q = $("search").value.trim().toLowerCase(), f = $("filter").value, box = $("rsvpList");
+      let html = "";
+      if (f === "missing") {
+        const rows = (DATA.notReserved || []).filter(function (g) { return !q || (g.name + " " + g.role).toLowerCase().indexOf(q) > -1; });
+        html = rows.map(function (g) { return '<div class="row"><div class="top"><b>' + esc(g.name) + '</b><span class="role">' + esc(g.role) + "</span></div></div>"; }).join("");
+        box.innerHTML = html || '<div class="empty">Everyone on the guest list has reserved.</div>'; return;
+      }
+      const rows = (DATA.responses || []).filter(function (x) {
+        if (f === "diet" && !x.diet) return false;
+        if (f === "notes" && !x.message) return false;
+        if (f === "sponsors" && !/^sponsor accepted/i.test(x.remarks)) return false;
+        return !q || (x.name + " " + x.role + " " + x.contact + " " + x.message + " " + x.remarks).toLowerCase().indexOf(q) > -1;
+      }).reverse();
+      html = rows.map(function (x) {
+        return '<div class="row"><div class="top"><b>' + esc(x.name) + (x.diet ? '<span class="tag diet">dietary</span>' : "") + (/^sponsor accepted/i.test(x.remarks) ? '<span class="tag sp">sponsor</span>' : "") +
+          '</b><span class="role">' + esc(x.role) + '</span></div><div class="meta">' + esc(x.time) +
+          (x.contact ? ' · <a href="tel:' + esc(x.contact.replace(/[^\d+]/g, "")) + '">' + esc(x.contact) + "</a>" : "") + "</div>" +
+          (x.message ? '<div class="msg">' + esc(x.message) + "</div>" : "") + "</div>";
+      }).join("");
+      box.innerHTML = html || '<div class="empty">No matching reservations.</div>';
+    }
+    $("search").addEventListener("input", renderRsvpList);
+    $("filter").addEventListener("change", renderRsvpList);
+
+    /* ---------- messages moderation ---------- */
+    function renderMessages() {
+      const f = $("msgFilter").value, p = DATA.summary.pendingMessages;
+      $("pendBadge").hidden = !p; $("pendBadge").textContent = p;
+      const rows = (DATA.messages || []).filter(function (m) { return f === "all" || m.status === f; });
+      $("msgList").innerHTML = rows.map(function (m, i) {
+        const a = [];
+        if (m.status !== "approved") a.push('<button class="btn ok sm" data-op="approve" data-i="' + i + '">Approve</button>');
+        if (m.status !== "hidden") a.push('<button class="btn ghost sm" data-op="hide" data-i="' + i + '">Hide</button>');
+        a.push('<button class="btn danger sm" data-op="delete" data-i="' + i + '">Delete</button>');
+        return '<div class="row"><div class="top"><b>' + esc(m.name) + '<span class="tag ' + m.status + '">' + m.status + '</span></b><span class="role">' + esc(m.role) + '</span></div>' +
+          '<div class="meta">' + esc(m.time) + '</div><div class="msg">' + esc(m.message) + '</div><div class="actions">' + a.join("") + "</div></div>";
+      }).join("") || '<div class="empty">' + (f === "pending" ? "No messages waiting for approval." : "No messages here.") + "</div>";
+      $("msgList").dataset.f = f;
+    }
+    $("msgFilter").addEventListener("change", renderMessages);
+    $("msgList").addEventListener("click", async function (e) {
+      const b = e.target.closest("button[data-op]");
+      if (!b) return;
+      const f = $("msgFilter").value;
+      const m = (DATA.messages || []).filter(function (x) { return f === "all" || x.status === f; })[+b.dataset.i];
+      if (!m) return;
+      if (b.dataset.op === "delete" && !confirm("Delete this message permanently?\n\n" + m.name + ": " + m.message.slice(0, 120))) return;
+      b.disabled = true;
+      try {
+        const r = await api("admin_message_set", { row: m.row, id: m.id, op: b.dataset.op });
+        if (!r.success) { toast(r.message || "Could not update. Please refresh.", true); b.disabled = false; if (r.auth === false) lock(authError(r)); return; }
+        toast(b.dataset.op === "approve" ? "Approved. It is now on the website." : b.dataset.op === "hide" ? "Hidden from the website." : "Deleted.");
+        await refresh(true);
+      } catch (err) { toast("Connection issue. Please try again.", true); b.disabled = false; }
+    });
+
+    /* ---------- settings (Config) ---------- */
+    const SCHEMA = [
+      { t: "Website mode", n: "Pre-Wedding shows the invitation and RSVP. Post-Wedding shows the thank-you page with the Days Married tracker. Auto switches the day after the ceremony.",
+        f: [{ k: "SiteMode", l: "Mode", type: "select", o: [["invitation", "Pre-Wedding (invitation)"], ["married", "Post-Wedding (married)"], ["auto", "Auto (switch after the wedding day)"]] }] },
+      { t: "Event date & time", f: [{ k: "CeremonyDate", l: "Ceremony date", p: "April 25, 2027" }, { k: "CeremonyTime", l: "Ceremony time", p: "3:00 PM" }] },
+      { t: "Ceremony venue", g: 2, f: [{ k: "CeremonyVenue", l: "Venue name" }, { k: "CeremonySub", l: "Sub-line (optional)" }, { k: "CeremonyAddress", l: "Address (optional)" }, { k: "CeremonyCity", l: "City" }, { k: "CeremonyMap", l: "Google Maps link", p: "https://maps.google.com/...", url: 1 }] },
+      { t: "Reception venue", g: 2, f: [{ k: "ReceptionVenue", l: "Venue name" }, { k: "ReceptionSub", l: "Sub-line (optional)" }, { k: "ReceptionAddress", l: "Address (optional)" }, { k: "ReceptionCity", l: "City" }, { k: "ReceptionTime", l: "Reception time (optional)", p: "5:00 PM" }, { k: "ReceptionMap", l: "Google Maps link", p: "https://maps.google.com/...", url: 1 }] },
+      { t: "Background music", n: "Type the file name only. Files live in the assets/ folder (example: ATY.mp3). The first track plays when the envelope opens.", g: 2,
+        f: [{ k: "Track1", l: "Track 1 file", p: "ATY.mp3" }, { k: "Track1Title", l: "Track 1 title" }, { k: "Track2", l: "Track 2 file", p: "audio1.mp3" }, { k: "Track2Title", l: "Track 2 title" }, { k: "Track3", l: "Track 3 file", p: "audio2.mp3" }, { k: "Track3Title", l: "Track 3 title" }] },
+      { t: "RSVP", g: 2, f: [{ k: "RSVPStatus", l: "Status", type: "select", o: [["open", "Open"], ["closed", "Closed"]] }, { k: "RSVPLimit", l: "Seat limit (blank = no limit)", p: "100" }, { k: "RSVPDeadline", l: "Deadline", p: "April 1, 2027" }, { k: "RSVPShowSlots", l: "Show slots left to guests", type: "select", o: [["", "No"], ["yes", "Yes"]] }, { k: "RSVPClosedMessage", l: "Message when closed (optional)", type: "textarea", wide: 1 }] },
+      { t: "Love messages", f: [{ k: "ModerateMessages", l: "Approval", type: "select", o: [["yes", "Require my approval (recommended)"], ["no", "Publish automatically"]] }] }
+    ];
+    function fieldHtml(x) {
+      const v = (DATA.config && DATA.config[x.k]) || "";
+      const id = "cfg_" + x.k, common = ' id="' + id + '" data-k="' + x.k + '" data-orig="' + esc(v) + '"';
+      let inner;
+      if (x.type === "select") {
+        const opts = x.o.slice();
+        if (v && !opts.some(function (o) { return o[0] === v; })) opts.push([v, v + " (current)"]);
+        if (!v && !opts.some(function (o) { return o[0] === ""; })) opts.unshift(["", "Default (not set)"]);   // iwas hindi sinasadyang pagsulat sa Sheet
+        inner = "<select" + common + ">" + opts.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === v ? " selected" : "") + ">" + esc(o[1]) + "</option>"; }).join("") + "</select>";
+      } else if (x.type === "textarea") inner = "<textarea" + common + ">" + esc(v) + "</textarea>";
+      else inner = '<input type="text"' + common + ' value="' + esc(v) + '"' + (x.p ? ' placeholder="' + esc(x.p) + '"' : "") + " />";
+      return '<div class="field"' + (x.wide ? ' style="grid-column:1/-1"' : "") + '><label for="' + id + '">' + esc(x.l) + "</label>" + inner + "</div>";
+    }
+    function renderSettings(force) {
+      const form = $("settingsForm");
+      if (!force && form.dataset.ready && form.querySelector(".changed")) return;      // huwag buruhin ang hindi pa nase-save
+      form.dataset.ready = "1";
+      form.innerHTML = SCHEMA.map(function (sec) {
+        return "<fieldset><legend>" + esc(sec.t) + "</legend>" + (sec.n ? '<p class="note">' + esc(sec.n) + "</p>" : "") +
+          '<div class="' + (sec.g === 2 ? "grid2" : "") + '">' + sec.f.map(fieldHtml).join("") + "</div></fieldset>";
+      }).join("") +
+      '<fieldset><legend>Any other setting</legend><p class="note">For keys not listed above (example: Hashtag, PetalCount, GiftMessage). See the Config guide for the full list.</p><div class="grid2"><div class="field"><label for="xKey">Key</label><input id="xKey" type="text" placeholder="Hashtag" /></div><div class="field"><label for="xVal">Value</label><input id="xVal" type="text" placeholder="#ArielFoundHisKate" /></div></div></fieldset>' +
+      '<div class="savebar"><button class="btn" type="submit" id="saveBtn">Save changes</button><span class="note" id="saveNote" style="margin:0"></span></div>';
+    }
+    $("settingsForm").addEventListener("input", function (e) {
+      const t = e.target;
+      if (t.dataset && t.dataset.k) t.classList.toggle("changed", t.value !== t.dataset.orig);
+      const n = this.querySelectorAll(".changed").length;
+      $("saveNote").textContent = n ? n + " unsaved change" + (n === 1 ? "" : "s") : "";
+    });
+    $("settingsForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const updates = {};
+      this.querySelectorAll("[data-k]").forEach(function (n) { if (n.value !== n.dataset.orig) updates[n.dataset.k] = n.value.trim(); });
+      const xk = $("xKey").value.trim(), xv = $("xVal").value.trim();
+      if (xk) { if (!/^[A-Za-z][A-Za-z0-9]{0,39}$/.test(xk)) { toast("The key can only contain letters and numbers.", true); return; } updates[xk] = xv; }
+      for (const k in updates) { if (/Map$/.test(k) && updates[k] && !/^https?:\/\//i.test(updates[k])) { toast("The map link must start with https://", true); return; } }
+      if (!Object.keys(updates).length) { toast("No changes to save."); return; }
+      const btn = $("saveBtn"); btn.disabled = true; btn.textContent = "Saving...";
+      try {
+        const r = await api("admin_config_set", { updates: updates });
+        if (r.success) {
+          Object.keys(updates).forEach(function (k) { DATA.config[k] = updates[k]; });
+          renderSettings(true); renderRsvp();
+          toast("Saved " + r.saved + " setting" + (r.saved === 1 ? "" : "s") + ". The website updates on the next visit.");
+        } else { toast(r.auth === false ? authError(r) : (r.message || "Could not save."), true); if (r.auth === false) lock(authError(r)); btn.disabled = false; btn.textContent = "Save changes"; }
+      } catch (err) { toast("Connection issue. Please try again.", true); btn.disabled = false; btn.textContent = "Save changes"; }
+    });
+
+    /* ---------- start ---------- */
+    (function init() {
+      const saved = sessionStorage.getItem("admin_pin");
+      if (saved) unlock(saved, true); else $("pin").focus();
+    })();
+  </script>
+</body>
+</html>
