@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#fffdf8" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>Our invitation to you</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -227,6 +232,7 @@
       <div class="sp-role hidden" id="role"></div>
       <div class="btn-row" id="actions">
         <button class="btn btn-filled hidden" id="acceptBtn">I accept with joy</button>
+        <a class="btn btn-filled hidden" href="index.html#rsvp" id="reserveBtn">Reserve my seat</a>
         <a class="btn" href="index.html" id="viewBtn">View full invitation</a>
       </div>
       <div class="form-message" id="msg"></div>
@@ -335,7 +341,7 @@
     async function init() {
       $("viewBtn").href = FULL_INVITE_URL;
       try {
-        const res = await fetch(APPS_SCRIPT_URL + "?action=sponsor&name=" + encodeURIComponent(guestParam));
+        const res = await fetch(APPS_SCRIPT_URL + "?action=invite&name=" + encodeURIComponent(guestParam));
         const data = await res.json();
         if (!data.success) throw new Error("bad response");
         const cfg = data.config || {};
@@ -346,10 +352,17 @@
         guest = { name: data.name, role: data.role };
         $("dear").textContent = "Dear " + data.name + (data.partner ? " & " + data.partner : "") + ",";
         const vars = { Groom: cfg.Groom || "Ariel", Bride: cfg.Bride || "Kate", Name: data.name, Role: data.role };
-        const custom = data.message ? fill(data.message, vars) : (data.role ? "We would be honored if you would stand with us as " + data.role + "." : "");
+        const isGuest = /^guest$/i.test((data.role || "").trim());
+        const custom = data.message ? fill(data.message, vars)
+          : (isGuest || !data.role ? "We would be honored to have you celebrate with us on our special day." : "We would be honored if you would stand with us as " + data.role + ".");
         if (custom) $("honor").textContent = custom;
-        if (data.role) { $("role").textContent = data.role; $("role").classList.remove("hidden"); }
-        $("acceptBtn").classList.remove("hidden");
+        if (data.role && !isGuest) { $("role").textContent = data.role; $("role").classList.remove("hidden"); }
+        if (isGuest) {                          // guests: RSVP ang gagawin, hindi "accept"
+          if (data.rsvpOpen !== false) { $("reserveBtn").classList.remove("hidden"); $("viewBtn").textContent = "View full invitation"; }
+          else { $("viewBtn").classList.add("btn-filled"); }
+        } else {
+          $("acceptBtn").classList.remove("hidden");
+        }
         if (data.accepted) showAccepted(data.acceptedAt);
       } catch (e) {
         markEnvelopeReady();
@@ -382,6 +395,9 @@
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openInvitation(); }
     });
     init();
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+    }
   </script>
 </body>
 </html>

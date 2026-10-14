@@ -1,0 +1,24 @@
+{
+  "name": "Ariel & Kate — Wedding",
+  "short_name": "Ariel & Kate",
+  "description": "Wedding invitation, gallery, love messages, gift guide and RSVP of Ariel & Kate.",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fffdf8",
+  "theme_color": "#fffdf8",
+  "lang": "en",
+  "categories": ["lifestyle", "social"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Gallery", "url": "./index.html#gallery", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Love Messages", "url": "./index.html#messages", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "RSVP", "url": "./index.html#rsvp", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
