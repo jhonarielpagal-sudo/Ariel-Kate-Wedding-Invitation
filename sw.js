@@ -3,7 +3,7 @@
    - Stale-while-revalidate para sa mga larawan (mabilis at tipid sa data)
    - HINDI hinahawakan: Apps Script (data/RSVP/reactions), admin.html, audio, video, at ibang website.
    Kapag nagpalit ka ng index.html at hindi lumabas agad, palitan ang VERSION sa ibaba (hal. "ak-v2"). */
-const VERSION = "ak-v2";
+const VERSION = "ak-v3";
 // Core files + ilang mahahalagang larawan na nasa assets/ (okay lang kung wala pa ang iba; hindi ito makakasira)
 const SHELL = [
   "./", "./index.html", "./invite.html", "./manifest.json",

@@ -352,6 +352,20 @@
     .live-dot::before{content:"";width:7px;height:7px;border-radius:50%;background:#3d8b57;animation:livePulse 1.6s infinite}
     @keyframes livePulse{50%{opacity:.25}}
     .wall-item.fresh{animation:fadeUp .55s ease;border-color:var(--gold)}
+    /* ===== Attire guide modal ===== */
+    .am{position:fixed;inset:0;z-index:160;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(12,9,6,.84)}
+    .am[hidden]{display:none}
+    .am-card{position:relative;width:100%;max-width:520px;max-height:94vh;overflow:auto;padding:26px 14px 18px;background:var(--paper);border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+    .am-card h3{color:var(--accent);font:400 2rem/1.1 var(--f-script),cursive}
+    .am-x{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--muted);font-size:1.6rem;cursor:pointer}
+    .am-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0}
+    .am-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:180px;background:var(--bg-alt)}
+    .am-stage img{display:block;max-width:100%;max-height:60vh;object-fit:contain}
+    .am-nav{position:absolute;top:50%;margin-top:-20px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(40,30,18,.55);color:#fff;font-size:1.5rem;cursor:pointer}
+    .am-nav[hidden]{display:none}
+    #amPrev{left:6px}#amNext{right:6px}
+    .am-cap{margin-top:12px;color:var(--ink-soft);font:italic 1.2rem/1.5 var(--f-body),serif;white-space:pre-line}
+    .am-count{margin-top:6px;color:var(--muted);font:500 .66rem var(--f-label),sans-serif;letter-spacing:.14em}
 </style>
 </head>
 <body>
@@ -684,6 +698,7 @@
           <p><strong data-cfg="DressCode" data-tba>To be announced</strong></p>
           <div class="swatches" id="swatches"></div>
           <p data-cfg="DressPalette"></p>
+          <div class="btn-row" id="attireRow" hidden><button type="button" class="btn btn-filled" id="attireBtn">👗 View Attire Guide</button></div>
         </div>
       </section>
     <!-- GUIDELINES -->
@@ -725,6 +740,16 @@
     <div class="lb-stage" id="lbStage"></div>
     <div class="lb-caption" id="lbCaption" hidden></div>
     <div class="lb-react" id="lbReact" hidden></div>
+  </div>
+  <div class="am" id="attireModal" hidden role="dialog" aria-modal="true" aria-label="Attire guide">
+    <div class="am-card">
+      <button type="button" class="am-x" id="amClose" aria-label="Close">&times;</button>
+      <h3>Attire Guide</h3>
+      <div class="am-chips" id="amChips"></div>
+      <div class="am-stage"><button type="button" class="am-nav" id="amPrev" aria-label="Previous">&#8249;</button><img id="amImg" alt="" /><button type="button" class="am-nav" id="amNext" aria-label="Next">&#8250;</button></div>
+      <p class="am-cap" id="amCap" hidden></p>
+      <p class="am-count" id="amCount"></p>
+    </div>
   </div>
   <div class="fab-stack">
   <button type="button" class="petal-btn" id="petalBtn" aria-label="Toggle falling petals" title="Turn falling petals off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c4 3 6.5 6 6.5 9.2a6.5 6.5 0 0 1-13 0C5.5 9 8 6 12 3z"/><path d="M12 8v10"/></svg></button>
@@ -1022,7 +1047,7 @@
       setMap(el("churchMap"), CFG.CeremonyMap, "Church Map");
       setMap(el("receptionMap"), CFG.ReceptionMap, "Reception Map");
       const sd = el("saveDate"); if (sd) sd.style.display = weddingDate ? "" : "none";
-      [applyMode, applyGift, applyMotif, applyInfo].forEach(function (f) { try { f(CFG); } catch (e) { debugNote(f.name + " ERROR: " + e.message); } });
+      [applyMode, applyGift, applyMotif, applyAttire, applyInfo].forEach(function (f) { try { f(CFG); } catch (e) { debugNote(f.name + " ERROR: " + e.message); } });
       updateCountdown();
     }
 
@@ -1041,7 +1066,7 @@
           ? "<div class='photo-item' data-photo='assets/dresscode.jpg' data-ratio='3/4' data-size='1200 × 1600 px · portrait' data-alt='Dress code guide'><div class='photo-frame'></div></div>"
           : "";
         const extra = "";
-        html += "<div class='guide-card'>" + photo + "<h4>" + esc(it.title) + "</h4>" + paras + extra + "</div>";
+        html += "<div class='guide-card'><h4>" + esc(it.title) + "</h4>" + paras + extra + "</div>";
       });
       if (html) { grid.innerHTML = html; initPhotos(grid); }
     }
@@ -1313,6 +1338,22 @@
     const musicBtn = el("musicBtn"), bgMusic = el("bgMusic"), mc = el("musicControl");
     const DEFAULT_TRACKS = ["assets/ATY.mp3", "assets/audio1.mp3", "assets/audio2.mp3"];
     let tracks = [], cur = 0;
+    var msBound = false;
+    function updateMediaSession(t) {
+      if (!("mediaSession" in navigator) || !window.MediaMetadata || !t) return;
+      try {
+        const ms = navigator.mediaSession;
+        ms.metadata = new MediaMetadata({ title: t.title, artist: CFG._Names || "Ariel & Kate", album: "Our Wedding",
+          artwork: [{ src: "icons/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "icons/icon-512.png", sizes: "512x512", type: "image/png" }] });
+        if (!msBound) {
+          msBound = true;
+          ms.setActionHandler("play", function () { playCurrent(); });
+          ms.setActionHandler("pause", function () { bgMusic.pause(); setMusicUI(false); });
+          ms.setActionHandler("nexttrack", function () { stepTrack(1); });
+          ms.setActionHandler("previoustrack", function () { stepTrack(-1); });
+        }
+      } catch (e) {}
+    }
     function trackTitle(file) { return file.split("/").pop().replace(/\.[^.]+$/, ""); }
     function setTracksFromConfig(cfg) {
       const list = DEFAULT_TRACKS.map(function (d, i) {
@@ -1338,6 +1379,7 @@
       if (!mc || !tracks.length) return;
       mc.classList.toggle("single", availableIdx().length < 2);
       el("musicTitle").textContent = tracks[cur] ? tracks[cur].title : "";
+      if (bgMusic.src && tracks[cur]) updateMediaSession(tracks[cur]);
     }
     function setMusicUI(playing) {
       musicBtn.textContent = playing ? "❚❚" : "♪";
@@ -2019,7 +2061,7 @@
     function applyMotif(cfg) {
       const box = el("swatches"), sw = parseMotif(cfg.MotifColors);
       box.innerHTML = sw.map(function (c) {
-        return "<div class='swatch'><i style='background:" + esc(c.hex) + "'></i><span>" + esc(c.name) + "</span></div>";
+        return "<div class='swatch'><i style='background:" + esc(c.hex) + "'></i><span>" + esc(c.name || c.hex) + "</span></div>";
       }).join("");
       if (!sw.length && !cfg.DressPalette) box.innerHTML = "<p class='coming-soon'>Motif colors to be announced</p>";
     }
@@ -2063,6 +2105,41 @@
       FAQ_ROWS = (items || []).filter(function (x) { return x.q && (x.a || "").trim() && !/^to be announced$/i.test(x.a.trim()); });
       refreshTravel();
     }
+    /* ---------- attire guide modal (Config: AttireGuide = Category|file.jpg|Caption, isang linya bawat larawan) ---------- */
+    let ATTIRE = [], atCat = 0, atIdx = 0, atPrevOv = "";
+    function applyAttire(cfg) {
+      const cats = {}; ATTIRE = [];
+      String(cfg.AttireGuide || "").split(/\n+/).forEach(function (l) {
+        const p = l.split("|").map(function (x) { return x.trim(); });
+        if (!p[0] || !p[1]) return;
+        if (!cats[p[0]]) { cats[p[0]] = { name: p[0], items: [] }; ATTIRE.push(cats[p[0]]); }
+        cats[p[0]].items.push({ src: assetPath(p[1].replace(/[^\w.\-\/]/g, "")), cap: p[2] || "" });
+      });
+      el("attireRow").hidden = !ATTIRE.length;              // walang larawan sa Config = nakatago ang button
+      if (atCat >= ATTIRE.length) { atCat = 0; atIdx = 0; }
+    }
+    function renderAttire() {
+      const cat = ATTIRE[atCat];
+      if (!cat) return;
+      if (atIdx >= cat.items.length) atIdx = 0;
+      el("amChips").innerHTML = ATTIRE.length > 1 ? ATTIRE.map(function (c, i) { return "<button type='button' class='album-chip" + (i === atCat ? " active" : "") + "' data-c='" + i + "'>" + esc(c.name) + "</button>"; }).join("") : "";
+      const it = cat.items[atIdx];
+      el("amImg").src = it.src; el("amImg").alt = cat.name + " attire";
+      el("amCap").textContent = it.cap; el("amCap").hidden = !it.cap;
+      el("amCount").textContent = cat.items.length > 1 ? (atIdx + 1) + " / " + cat.items.length : "";
+      el("amPrev").hidden = el("amNext").hidden = cat.items.length < 2;
+    }
+    function closeAttire() { el("attireModal").hidden = true; document.body.style.overflow = atPrevOv || "auto"; }
+    el("attireBtn").addEventListener("click", function () { atPrevOv = document.body.style.overflow; document.body.style.overflow = "hidden"; el("attireModal").hidden = false; renderAttire(); });
+    el("amClose").addEventListener("click", closeAttire);
+    el("attireModal").addEventListener("click", function (e) { if (e.target === this) closeAttire(); });
+    el("amPrev").addEventListener("click", function () { const n = ATTIRE[atCat].items.length; atIdx = (atIdx - 1 + n) % n; renderAttire(); });
+    el("amNext").addEventListener("click", function () { const n = ATTIRE[atCat].items.length; atIdx = (atIdx + 1) % n; renderAttire(); });
+    el("amChips").addEventListener("click", function (e) { const b = e.target.closest("[data-c]"); if (b) { atCat = +b.dataset.c; atIdx = 0; renderAttire(); } });
+    document.addEventListener("keydown", function (e) {
+      if (el("attireModal").hidden) return;
+      if (e.key === "Escape") closeAttire(); else if (e.key === "ArrowLeft") el("amPrev").click(); else if (e.key === "ArrowRight") el("amNext").click();
+    });
     document.querySelectorAll("[data-cfg]").forEach(function () {});
     showTab();
     loadSiteData();

@@ -6,7 +6,12 @@
   <meta name="robots" content="noindex,nofollow,noarchive" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#fffdf8" />
-  <title>Admin · Ariel &amp; Kate</title>
+  <link rel="manifest" href="admin-manifest.json" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="A&amp;K Admin" />
+  <title>A&amp;K Admin</title>
   <style>
     :root{--gold:#a78343;--gold-d:#8a6a30;--paper:#fffdf8;--bg:#f6f2e9;--ink:#30271e;--muted:#7a7165;--line:#e6dcc9;--ok:#3d8b57;--bad:#b3402f;--warn:#b7791f}
     *{box-sizing:border-box}
@@ -88,7 +93,23 @@
     .live{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
     .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);animation:p 1.6s infinite}
     @keyframes p{50%{opacity:.25}}
-  </style>
+  .cp-grid{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px}
+    .cp{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+    .cp input[type=color]{width:42px;height:36px;padding:0;border:1px solid var(--line);background:none;cursor:pointer;flex:0 0 auto}
+    .cp input.changed{outline:2px solid var(--gold)}
+    .cp span{display:block;min-width:0;font-size:.74rem;line-height:1.3}
+    .cp code{display:block;color:var(--muted);font-size:.7rem}
+    .presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+    .tp{margin:4px 0 14px;padding:18px 14px;text-align:center;background:var(--ColorBackground);color:var(--ColorText);border:1px solid var(--ColorLine)}
+    .tp .tc{padding:16px 12px;background:var(--ColorCard);border:1px solid var(--ColorLine)}
+    .tp .l{color:var(--ColorGold);font:500 .62rem var(--FontLabel),sans-serif;letter-spacing:.3em;text-transform:uppercase}
+    .tp .n{color:var(--ColorAccent);font:400 2.2rem/1.1 var(--FontScript),cursive;margin:4px 0}
+    .tp h4{margin:2px 0 6px;color:var(--ColorGold);font:400 1.3rem var(--FontHeading),serif}
+    .tp p{margin:0 0 10px;color:var(--ColorMuted);font:1.05rem/1.4 var(--FontBody),serif}
+    .tp .b{display:inline-block;padding:8px 16px;background:var(--ColorGold);color:var(--ColorCard);font:500 .62rem var(--FontLabel),sans-serif;letter-spacing:.16em;text-transform:uppercase}
+    .tp .env{height:14px;margin-top:12px;background:var(--ColorEnvelope);border:1px solid var(--ColorLine)}
+    @media(max-width:420px){.cp-grid{grid-template-columns:1fr}}
+    </style>
 </head>
 <body>
 
@@ -262,7 +283,7 @@
         return '<div class="row"><div class="top"><b>' + esc(x.name) + (x.diet ? '<span class="tag diet">dietary</span>' : "") + (/^sponsor accepted/i.test(x.remarks) ? '<span class="tag sp">sponsor</span>' : "") +
           '</b><span class="role">' + esc(x.role) + '</span></div><div class="meta">' + esc(x.time) +
           (x.contact ? ' · <a href="tel:' + esc(x.contact.replace(/[^\d+]/g, "")) + '">' + esc(x.contact) + "</a>" : "") + "</div>" +
-          (x.message ? '<div class="msg">' + esc(x.message) + "</div>" : "") + "</div>";
+          (x.message ? '<div class="msg">' + esc(x.message) + "</div>" : "") + '<div class="actions"><button class="btn danger sm" type="button" data-del="' + x.row + '" data-nm="' + esc(x.name) + '">Delete</button></div></div>';
       }).join("");
       box.innerHTML = html || '<div class="empty">No matching reservations.</div>';
     }
@@ -303,6 +324,7 @@
 
     /* ---------- settings (Config) ---------- */
     const SCHEMA = [
+      { theme: 1 },
       { t: "Website mode", n: "Pre-Wedding shows the invitation and RSVP. Post-Wedding shows the thank-you page with the Days Married tracker. Auto switches the day after the ceremony.",
         f: [{ k: "SiteMode", l: "Mode", type: "select", o: [["invitation", "Pre-Wedding (invitation)"], ["married", "Post-Wedding (married)"], ["auto", "Auto (switch after the wedding day)"]] }] },
       { t: "Event date & time", f: [{ k: "CeremonyDate", l: "Ceremony date", p: "April 25, 2027" }, { k: "CeremonyTime", l: "Ceremony time", p: "3:00 PM" }] },
@@ -311,8 +333,57 @@
       { t: "Background music", n: "Type the file name only. Files live in the assets/ folder (example: ATY.mp3). The first track plays when the envelope opens.", g: 2,
         f: [{ k: "Track1", l: "Track 1 file", p: "ATY.mp3" }, { k: "Track1Title", l: "Track 1 title" }, { k: "Track2", l: "Track 2 file", p: "audio1.mp3" }, { k: "Track2Title", l: "Track 2 title" }, { k: "Track3", l: "Track 3 file", p: "audio2.mp3" }, { k: "Track3Title", l: "Track 3 title" }] },
       { t: "RSVP", g: 2, f: [{ k: "RSVPStatus", l: "Status", type: "select", o: [["open", "Open"], ["closed", "Closed"]] }, { k: "RSVPLimit", l: "Seat limit (blank = no limit)", p: "100" }, { k: "RSVPDeadline", l: "Deadline", p: "April 1, 2027" }, { k: "RSVPShowSlots", l: "Show slots left to guests", type: "select", o: [["", "No"], ["yes", "Yes"]] }, { k: "RSVPClosedMessage", l: "Message when closed (optional)", type: "textarea", wide: 1 }] },
+      { t: "Couple & intro", g: 2, f: [{ k: "Groom", l: "Groom name", p: "Ariel" }, { k: "Bride", l: "Bride name", p: "Kate" }, { k: "Intro", l: "Hero intro line" }, { k: "Tagline", l: "Hero tagline", type: "textarea", wide: 1 }, { k: "Hashtag", l: "Hashtag", p: "#ArielFoundHisKate" }, { k: "ShowPetals", l: "Falling petals", type: "select", o: [["yes", "On"], ["no", "Off"]] }] },
+      { t: "Custom messages", n: "One line per paragraph. Leave blank to use the default text.", f: [{ k: "OurStory", l: "Our Story", type: "textarea" }, { k: "GiftMessage", l: "Gift message", type: "textarea" }, { k: "ThankYouMessage", l: "Thank-you message (Post-Wedding)", type: "textarea" }, { k: "ClosingText", l: "Closing text", type: "textarea" }, { k: "UnpluggedNote", l: "Unplugged ceremony note (type none to hide)", type: "textarea" }, { k: "MarriedIntro", l: "Post-Wedding intro" }, { k: "MarriedTagline", l: "Post-Wedding tagline", type: "textarea" }] },
+      { t: "Dress code & attire guide", n: "Motif colors: #hex|Name, separated by semicolons or new lines. Attire guide: one line per photo, as Category|file.jpg|Caption (files live in assets/). Blank attire guide hides the button.", f: [{ k: "DressCode", l: "Dress code title" }, { k: "DressPalette", l: "Palette description", type: "textarea" }, { k: "MotifColors", l: "Motif colors", type: "textarea", p: "#a78343|Gold; #f2ede3|Ivory" }, { k: "AttireGuide", l: "Attire guide photos", type: "textarea", p: "Guests|dresscode.jpg|Guests attire" }] },
+      { t: "Gift / GCash", g: 2, f: [{ k: "Gcash1Name", l: "QR 1 name" }, { k: "Gcash1Number", l: "QR 1 number" }, { k: "Gcash1Image", l: "QR 1 image file", p: "gcash1.jpg" }, { k: "Gcash2Name", l: "QR 2 name" }, { k: "Gcash2Number", l: "QR 2 number" }, { k: "Gcash2Image", l: "QR 2 image file", p: "gcash2.jpg" }] },
+      { t: "Gallery", g: 2, f: [{ k: "Album1Count", l: "Prenup photo count" }, { k: "Album2Count", l: "Wedding Day photo count" }, { k: "Album3Count", l: "Sponsors & Family photo count" }, { k: "DefaultAlbum", l: "Default album", type: "select", o: [["", "Auto"], ["1", "Prenup"], ["2", "Wedding Day"], ["3", "Sponsors & Family"]] }] },
+      { t: "Travel & reminders", f: [{ k: "TravelInfo", l: "Travel & directions", type: "textarea" }, { k: "ParkingInfo", l: "Parking", type: "textarea" }, { k: "OtherReminders", l: "Other reminders", type: "textarea" }] },
       { t: "Love messages", f: [{ k: "ModerateMessages", l: "Approval", type: "select", o: [["yes", "Require my approval (recommended)"], ["no", "Publish automatically"]] }] }
     ];
+    const THEME_DEFAULTS = { ColorGold: "#a78343", ColorBackground: "#f8f5ee", ColorBackgroundAlt: "#f2ede3", ColorCard: "#fffdf8", ColorText: "#30271e", ColorTitle: "#4c4032", ColorAccent: "#9b6f4b", ColorMuted: "#756d60", ColorLine: "#e8dfcf", ColorEnvelope: "#eee5d5" };
+    const THEME_LABELS = { ColorGold: "Gold / highlight", ColorBackground: "Background", ColorBackgroundAlt: "Alt background", ColorCard: "Cards / paper", ColorText: "Body text", ColorTitle: "Title text", ColorAccent: "Accent", ColorMuted: "Muted text", ColorLine: "Lines", ColorEnvelope: "Envelope" };
+    const PRESETS = {
+      "Classic Gold": {},
+      "Blush Rose": { ColorGold: "#b5838d", ColorBackground: "#fbf3f2", ColorBackgroundAlt: "#f5e6e4", ColorCard: "#fffafa", ColorText: "#3d2c2e", ColorTitle: "#5a3d42", ColorAccent: "#a4575f", ColorMuted: "#7d6b6d", ColorLine: "#ecd5d3", ColorEnvelope: "#f3e0dd" },
+      "Sage Garden": { ColorGold: "#7d8f69", ColorBackground: "#f4f6f0", ColorBackgroundAlt: "#e8ede0", ColorCard: "#fbfcf8", ColorText: "#2b3326", ColorTitle: "#3e4a36", ColorAccent: "#5f7451", ColorMuted: "#6b7563", ColorLine: "#d9e0cf", ColorEnvelope: "#e4e9d9" },
+      "Navy & Gold": { ColorGold: "#b08d45", ColorBackground: "#f3f4f7", ColorBackgroundAlt: "#e6e9f0", ColorCard: "#fdfdfe", ColorText: "#1f2740", ColorTitle: "#1d2a4d", ColorAccent: "#2c3e75", ColorMuted: "#666d80", ColorLine: "#d8dce6", ColorEnvelope: "#dfe3ee" },
+      "Dusty Blue": { ColorGold: "#7f9bb3", ColorBackground: "#f3f6f9", ColorBackgroundAlt: "#e5ecf2", ColorCard: "#fcfdfe", ColorText: "#27323d", ColorTitle: "#364b5e", ColorAccent: "#58779a", ColorMuted: "#6b7885", ColorLine: "#d6e0e9", ColorEnvelope: "#dde7ef" }
+    };
+    const FONT_DEF = { FontScript: "Great Vibes", FontHeading: "Playfair Display", FontBody: "Cormorant Garamond", FontLabel: "Montserrat" };
+    const FONT_LIST = {
+      FontScript: ["Great Vibes", "Dancing Script", "Allura", "Parisienne", "Pinyon Script", "Alex Brush", "Sacramento", "Tangerine"],
+      FontHeading: ["Playfair Display", "Cormorant Garamond", "Cinzel", "Libre Baskerville", "Lora", "Marcellus", "DM Serif Display"],
+      FontBody: ["Cormorant Garamond", "EB Garamond", "Lora", "Crimson Text", "Libre Baskerville", "Montserrat", "Raleway"],
+      FontLabel: ["Montserrat", "Raleway", "Poppins", "Lato", "Josefin Sans", "Nunito Sans"]
+    };
+    const FONT_LABELS = { FontScript: "Script font (names)", FontHeading: "Heading font", FontBody: "Body font", FontLabel: "Label font" };
+    function cfgv(k) { return (DATA && DATA.config && DATA.config[k]) || ""; }
+    function loadGF(name) {
+      const id = "gf-" + name.replace(/\W+/g, ""); if (document.getElementById(id)) return;
+      const l = document.createElement("link"); l.id = id; l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=" + encodeURIComponent(name).replace(/%20/g, "+") + "&display=swap";
+      document.head.appendChild(l);
+    }
+    function themeHtml() {
+      const cols = Object.keys(THEME_DEFAULTS).map(function (k) {
+        const raw = cfgv(k), v = /^#[0-9a-f]{6}$/i.test(raw) ? raw.toLowerCase() : THEME_DEFAULTS[k];
+        return '<label class="cp"><input type="color" id="cfg_' + k + '" data-k="' + k + '" data-orig="' + v + '" value="' + v + '" /><span><b>' + esc(THEME_LABELS[k]) + '</b><code>' + v + "</code></span></label>";
+      }).join("");
+      const fonts = Object.keys(FONT_LIST).map(function (k) {
+        return fieldHtml({ k: k, l: FONT_LABELS[k], type: "select", o: [["", "Default (" + FONT_DEF[k] + ")"]].concat(FONT_LIST[k].map(function (n) { return [n, n]; })) });
+      }).join("");
+      const pre = Object.keys(PRESETS).map(function (n) { return '<button type="button" class="btn ghost sm" data-preset="' + esc(n) + '">' + esc(n) + "</button>"; }).join("") +
+        '<button type="button" class="btn ghost sm" data-resetcolors="1">Reset all colors</button>';
+      return '<fieldset><legend>Visual theme builder</legend><p class="note">Pick colors and fonts, check the live preview, then press Save changes. Presets only fill in the pickers; nothing is saved until you save.</p>' +
+        '<div class="presets">' + pre + '</div><div class="tp" id="themePrev"><div class="tc"><div class="l">You are invited</div><div class="n">Ariel &amp; Kate</div><h4>Reserve Your Seat</h4><p>Sample body text for your guests to read.</p><span class="b">Reserve</span><div class="env"></div></div></div>' +
+        '<div class="cp-grid">' + cols + '</div><div class="grid2">' + fonts + "</div></fieldset>";
+    }
+    function updateThemePreview() {
+      const p = $("themePrev"); if (!p) return;
+      document.querySelectorAll("#settingsForm input[type=color][data-k]").forEach(function (n) { p.style.setProperty("--" + n.dataset.k, n.value); n.nextElementSibling.querySelector("code").textContent = n.value; });
+      Object.keys(FONT_DEF).forEach(function (k) { const s = $("cfg_" + k); if (!s) return; const f = s.value || FONT_DEF[k]; loadGF(f); p.style.setProperty("--" + k, '"' + f + '"'); });
+    }
     function fieldHtml(x) {
       const v = (DATA.config && DATA.config[x.k]) || "";
       const id = "cfg_" + x.k, common = ' id="' + id + '" data-k="' + x.k + '" data-orig="' + esc(v) + '"';
@@ -331,6 +402,7 @@
       if (!force && form.dataset.ready && form.querySelector(".changed")) return;      // huwag buruhin ang hindi pa nase-save
       form.dataset.ready = "1";
       form.innerHTML = SCHEMA.map(function (sec) {
+        if (sec.theme) return themeHtml();
         return "<fieldset><legend>" + esc(sec.t) + "</legend>" + (sec.n ? '<p class="note">' + esc(sec.n) + "</p>" : "") +
           '<div class="' + (sec.g === 2 ? "grid2" : "") + '">' + sec.f.map(fieldHtml).join("") + "</div></fieldset>";
       }).join("") +
@@ -340,13 +412,14 @@
     $("settingsForm").addEventListener("input", function (e) {
       const t = e.target;
       if (t.dataset && t.dataset.k) t.classList.toggle("changed", t.value !== t.dataset.orig);
+      updateThemePreview();
       const n = this.querySelectorAll(".changed").length;
       $("saveNote").textContent = n ? n + " unsaved change" + (n === 1 ? "" : "s") : "";
     });
     $("settingsForm").addEventListener("submit", async function (e) {
       e.preventDefault();
       const updates = {};
-      this.querySelectorAll("[data-k]").forEach(function (n) { if (n.value !== n.dataset.orig) updates[n.dataset.k] = n.value.trim(); });
+      this.querySelectorAll("[data-k]").forEach(function (n) { if (n.value !== n.dataset.orig) { let v = n.value.trim(); if (n.type === "color" && v.toLowerCase() === (THEME_DEFAULTS[n.dataset.k] || "").toLowerCase()) v = ""; updates[n.dataset.k] = v; } });
       const xk = $("xKey").value.trim(), xv = $("xVal").value.trim();
       if (xk) { if (!/^[A-Za-z][A-Za-z0-9]{0,39}$/.test(xk)) { toast("The key can only contain letters and numbers.", true); return; } updates[xk] = xv; }
       for (const k in updates) { if (/Map$/.test(k) && updates[k] && !/^https?:\/\//i.test(updates[k])) { toast("The map link must start with https://", true); return; } }
@@ -360,6 +433,30 @@
           toast("Saved " + r.saved + " setting" + (r.saved === 1 ? "" : "s") + ". The website updates on the next visit.");
         } else { toast(r.auth === false ? authError(r) : (r.message || "Could not save."), true); if (r.auth === false) lock(authError(r)); btn.disabled = false; btn.textContent = "Save changes"; }
       } catch (err) { toast("Connection issue. Please try again.", true); btn.disabled = false; btn.textContent = "Save changes"; }
+    });
+
+    function setPreset(map) {
+      Object.keys(THEME_DEFAULTS).forEach(function (k) { const n = $("cfg_" + k); if (!n) return; n.value = map[k] || THEME_DEFAULTS[k]; n.classList.toggle("changed", n.value !== n.dataset.orig); });
+      updateThemePreview();
+      const c = $("settingsForm").querySelectorAll(".changed").length; $("saveNote").textContent = c ? c + " unsaved change" + (c === 1 ? "" : "s") : "";
+    }
+    $("settingsForm").addEventListener("click", function (e) {
+      const b = e.target.closest("button[data-preset],button[data-resetcolors]"); if (!b) return;
+      setPreset(b.dataset.preset ? PRESETS[b.dataset.preset] : {});
+    });
+    // theme preview follows the form after each render
+    new MutationObserver(updateThemePreview).observe($("settingsForm"), { childList: true });
+
+    /* ---------- delete reservation ---------- */
+    $("rsvpList").addEventListener("click", async function (e) {
+      const b = e.target.closest("button[data-del]"); if (!b) return;
+      if (!confirm("Delete this reservation permanently?\n\n" + b.dataset.nm + "\n\nThis guest will be able to reserve again.")) return;
+      b.disabled = true;
+      try {
+        const r = await api("admin_rsvp_delete", { row: +b.dataset.del, name: b.dataset.nm });
+        if (!r.success) { toast(r.message || "Could not delete. Please refresh.", true); b.disabled = false; if (r.auth === false) lock(authError(r)); return; }
+        toast("Reservation deleted."); await refresh(true);
+      } catch (err) { toast("Connection issue. Please try again.", true); b.disabled = false; }
     });
 
     /* ---------- start ---------- */
