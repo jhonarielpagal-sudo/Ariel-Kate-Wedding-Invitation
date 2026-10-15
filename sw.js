@@ -3,7 +3,7 @@
    - Stale-while-revalidate para sa mga larawan (mabilis at tipid sa data)
    - HINDI hinahawakan: Apps Script (data/RSVP/reactions), admin.html, audio, video, at ibang website.
    Kapag nagpalit ka ng index.html at hindi lumabas agad, palitan ang VERSION sa ibaba (hal. "ak-v2"). */
-const VERSION = "ak-v3";
+const VERSION = "ak-v4";
 // Core files + ilang mahahalagang larawan na nasa assets/ (okay lang kung wala pa ang iba; hindi ito makakasira)
 const SHELL = [
   "./", "./index.html", "./invite.html", "./manifest.json",
@@ -38,7 +38,7 @@ self.addEventListener("fetch", function (e) {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;                  // Apps Script, Google Fonts, YouTube: sa browser
-  if (/\/admin\.html$/i.test(url.pathname)) return;                  // HINDI kailanman ica-cache ang admin page
+  if (/\/admin(\.html|-manifest\.json)$/i.test(url.pathname)) return;   // admin page + manifest: diretso sa network, hindi ica-cache
   if (req.headers.has("range")) return;                              // audio/video streaming
   if (/\.(mp3|mp4|webm|mov|m4v|ogg|wav)$/i.test(url.pathname)) return;
 

@@ -459,6 +459,20 @@
       } catch (err) { toast("Connection issue. Please try again.", true); b.disabled = false; }
     });
 
+    /* ---------- isolation: walang naka-cache na kopya ng admin sa main app's service worker ---------- */
+    (function cleanCaches() {
+      if (!("caches" in window)) return;
+      caches.keys().then(function (keys) {
+        keys.forEach(function (k) {
+          caches.open(k).then(function (c) {
+            c.keys().then(function (reqs) {
+              reqs.forEach(function (r) { if (/\/admin(\.html|-manifest\.json)(\?|$)/i.test(new URL(r.url).pathname)) c.delete(r); });
+            });
+          });
+        });
+      }).catch(function () {});
+    })();
+
     /* ---------- start ---------- */
     (function init() {
       const saved = sessionStorage.getItem("admin_pin");
