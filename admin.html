@@ -7,7 +7,8 @@
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#fffdf8" />
   <link rel="manifest" href="admin-manifest.json" />
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" href="icons/admin-apple-touch.png" />
+  <link rel="icon" type="image/png" href="icons/admin-192.png" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="A&amp;K Admin" />
@@ -93,7 +94,11 @@
     .live{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
     .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);animation:p 1.6s infinite}
     @keyframes p{50%{opacity:.25}}
-  .cp-grid{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px}
+  .ph{display:flex;gap:12px}
+    .ph img{width:96px;height:96px;object-fit:cover;background:#eee;display:block}
+    .row.c{display:flex;gap:10px}
+    .row.c img{width:48px;height:48px;object-fit:cover;background:#eee;flex:0 0 auto}
+    .cp-grid{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px}
     .cp{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);background:#fff;cursor:pointer}
     .cp input[type=color]{width:42px;height:36px;padding:0;border:1px solid var(--line);background:none;cursor:pointer;flex:0 0 auto}
     .cp input.changed{outline:2px solid var(--gold)}
@@ -130,11 +135,14 @@
       <span class="live" id="liveDot">Live</span>
       <a href="index.html" target="_blank" rel="noopener" style="white-space:nowrap">Site</a>
       <button class="btn ghost sm" id="refreshBtn" type="button">Refresh</button>
+      <button class="btn ghost sm" id="installAdmin" type="button" hidden>Install</button>
       <button class="btn ghost sm" id="logoutBtn" type="button">Log out</button>
     </header>
     <div class="tabs" role="tablist">
       <button class="tab active" data-tab="rsvp" role="tab">RSVP Tracker</button>
       <button class="tab" data-tab="messages" role="tab">Messages <span class="badge" id="pendBadge" hidden>0</span></button>
+      <button class="tab" data-tab="photos" role="tab">Photos <span class="badge" id="pendPhotos" hidden>0</span></button>
+      <button class="tab" data-tab="comments" role="tab">Comments <span class="badge" id="pendComments" hidden>0</span></button>
       <button class="tab" data-tab="settings" role="tab">Settings</button>
     </div>
     <main>
@@ -168,6 +176,16 @@
         <div class="list" id="msgList"></div>
       </section>
 
+      <!-- PHOTOS -->
+      <section class="panel" id="tab-photos" hidden>
+        <div class="controls"><select class="filter" id="photoFilter" aria-label="Photo filter" style="flex:1"><option value="pending">Pending approval</option><option value="approved">Approved (visible on website)</option><option value="hidden">Hidden</option><option value="all">All photos</option></select></div>
+        <div class="list" id="photoList"></div>
+      </section>
+      <!-- COMMENTS -->
+      <section class="panel" id="tab-comments" hidden>
+        <div class="controls"><select class="filter" id="commentFilter" aria-label="Comment filter" style="flex:1"><option value="all">All comments</option><option value="pending">Pending approval</option><option value="approved">Approved (visible on website)</option><option value="hidden">Hidden</option></select></div>
+        <div class="list" id="commentList"></div>
+      </section>
       <!-- SETTINGS -->
       <section class="panel" id="tab-settings" hidden>
         <form id="settingsForm"></form>
@@ -243,11 +261,11 @@
       b.addEventListener("click", function () {
         TAB = b.dataset.tab;
         document.querySelectorAll(".tab").forEach(function (x) { x.classList.toggle("active", x === b); });
-        ["rsvp", "messages", "settings"].forEach(function (t) { $("tab-" + t).hidden = t !== TAB; });
+        ["rsvp", "messages", "photos", "comments", "settings"].forEach(function (t) { $("tab-" + t).hidden = t !== TAB; });
       });
     });
 
-    function renderAll() { renderRsvp(); renderMessages(); if (!document.activeElement || !$("settingsForm").contains(document.activeElement)) renderSettings(false); }
+    function renderAll() { renderRsvp(); renderMessages(); renderPhotos(); renderComments(); if (!document.activeElement || !$("settingsForm").contains(document.activeElement)) renderSettings(false); }
 
     /* ---------- RSVP tracker ---------- */
     function renderRsvp() {
@@ -262,6 +280,11 @@
         '<div class="stat ' + (s.dietary ? "warn" : "") + '"><b>' + s.dietary + '</b><span>Dietary / allergy</span></div>' +
         '<div class="stat"><b style="font-size:1.1rem">' + esc(cap) + '</b><span>Seat reservations</span></div>' +
         '<div class="stat"><b style="font-size:1.1rem;color:' + (r.open ? "var(--ok)" : "var(--bad)") + '">' + (r.open ? "Open" : "Closed") + '</b><span>RSVP status' + (r.reason ? " (" + esc(r.reason) + ")" : "") + '</span></div>';
+      const g = DATA.engage || {};
+      $("stats").innerHTML += '<div class="stat"><b>' + (g.msgReacts || 0) + '</b><span>Message reactions</span></div>' +
+        '<div class="stat"><b>' + (g.photoLikes || 0) + '</b><span>Guest photo likes (' + (g.photos || 0) + ' photos)</span></div>' +
+        '<div class="stat"><b>' + (g.comments || 0) + '</b><span>Photo comments</span></div>' +
+        '<div class="stat"><b>' + (g.commentLikes || 0) + '</b><span>Comment likes</span></div>';
       $("roleChips").innerHTML = Object.keys(s.byRole || {}).sort().map(function (k) { return '<span class="chip">' + esc(k) + ": <b>" + s.byRole[k] + "</b></span>"; }).join("");
       renderRsvpList();
     }
@@ -301,7 +324,7 @@
         if (m.status !== "hidden") a.push('<button class="btn ghost sm" data-op="hide" data-i="' + i + '">Hide</button>');
         a.push('<button class="btn danger sm" data-op="delete" data-i="' + i + '">Delete</button>');
         return '<div class="row"><div class="top"><b>' + esc(m.name) + '<span class="tag ' + m.status + '">' + m.status + '</span></b><span class="role">' + esc(m.role) + '</span></div>' +
-          '<div class="meta">' + esc(m.time) + '</div><div class="msg">' + esc(m.message) + '</div><div class="actions">' + a.join("") + "</div></div>";
+          '<div class="meta">' + esc(m.time) + ' · ❤️ ' + (m.reacts ? m.reacts.love : 0) + ' · all reactions ' + (m.reacts ? m.reacts.total : 0) + '</div><div class="msg">' + esc(m.message) + '</div><div class="actions">' + a.join("") + "</div></div>";
       }).join("") || '<div class="empty">' + (f === "pending" ? "No messages waiting for approval." : "No messages here.") + "</div>";
       $("msgList").dataset.f = f;
     }
@@ -322,6 +345,52 @@
       } catch (err) { toast("Connection issue. Please try again.", true); b.disabled = false; }
     });
 
+    /* ---------- guest photos + comments moderation ---------- */
+    function modButtons(st, i) {
+      const b = [];
+      if (st !== "approved") b.push('<button class="btn ok sm" data-op="approve" data-i="' + i + '">Approve</button>');
+      if (st !== "hidden") b.push('<button class="btn ghost sm" data-op="hide" data-i="' + i + '">Hide</button>');
+      b.push('<button class="btn danger sm" data-op="delete" data-i="' + i + '">Delete</button>');
+      return b.join("");
+    }
+    function renderPhotos() {
+      const f = $("photoFilter").value, e = DATA.engage || {};
+      $("pendPhotos").hidden = !e.pendingPhotos; $("pendPhotos").textContent = e.pendingPhotos || 0;
+      const rows = (DATA.snaps || []).filter(function (x) { return f === "all" || x.status === f; });
+      $("photoList").innerHTML = rows.map(function (x, i) {
+        return '<div class="row ph"><a href="' + esc(x.url) + '" target="_blank" rel="noopener"><img loading="lazy" src="' + esc(x.thumb) + '" alt="" /></a><div style="flex:1;min-width:0"><div class="top"><b>' + esc(x.name) + '<span class="tag ' + x.status + '">' + x.status + '</span></b></div>' +
+          '<div class="meta">' + esc(x.time) + ' · \u2764\ufe0f ' + x.likes + ' · \uD83D\uDCAC ' + x.comments + '</div>' + (x.caption ? '<div class="msg">' + esc(x.caption) + '</div>' : '') +
+          '<div class="actions">' + modButtons(x.status, i) + '</div></div></div>';
+      }).join("") || '<div class="empty">' + (f === "pending" ? "No photos waiting for approval." : "No photos here.") + "</div>";
+    }
+    function renderComments() {
+      const f = $("commentFilter").value, e = DATA.engage || {};
+      $("pendComments").hidden = !e.pendingComments; $("pendComments").textContent = e.pendingComments || 0;
+      const rows = (DATA.comments || []).filter(function (x) { return f === "all" || x.status === f; });
+      $("commentList").innerHTML = rows.map(function (x, i) {
+        return '<div class="row c"><img loading="lazy" src="' + esc(x.thumb) + '" alt="" /><div style="flex:1;min-width:0"><div class="top"><b>' + esc(x.name) + '<span class="tag ' + x.status + '">' + x.status + '</span></b></div>' +
+          '<div class="meta">' + esc(x.time) + ' · \u2764\ufe0f ' + x.likes + '</div><div class="msg">' + esc(x.text) + '</div><div class="actions">' + modButtons(x.status, i) + '</div></div></div>';
+      }).join("") || '<div class="empty">No comments here.</div>';
+    }
+    function bindMod(listId, filterId, key, action, label, render) {
+      $(filterId).addEventListener("change", render);
+      $(listId).addEventListener("click", async function (e) {
+        const b = e.target.closest("button[data-op]"); if (!b) return;
+        const f = $(filterId).value, x = (DATA[key] || []).filter(function (y) { return f === "all" || y.status === f; })[+b.dataset.i];
+        if (!x) return;
+        if (b.dataset.op === "delete" && !confirm("Delete this " + label + " permanently?")) return;
+        b.disabled = true;
+        try {
+          const r = await api(action, { row: x.row, id: x.id, op: b.dataset.op });
+          if (!r.success) { toast(r.message || "Could not update. Please refresh.", true); b.disabled = false; if (r.auth === false) lock(authError(r)); return; }
+          toast(b.dataset.op === "approve" ? "Approved. It is now on the website." : b.dataset.op === "hide" ? "Hidden from the website." : "Deleted.");
+          await refresh(true);
+        } catch (err) { toast("Connection issue. Please try again.", true); b.disabled = false; }
+      });
+    }
+    bindMod("photoList", "photoFilter", "snaps", "admin_snap_set", "photo (and its comments)", renderPhotos);
+    bindMod("commentList", "commentFilter", "comments", "admin_comment_set", "comment", renderComments);
+
     /* ---------- settings (Config) ---------- */
     const SCHEMA = [
       { theme: 1 },
@@ -339,7 +408,11 @@
       { t: "Gift / GCash", g: 2, f: [{ k: "Gcash1Name", l: "QR 1 name" }, { k: "Gcash1Number", l: "QR 1 number" }, { k: "Gcash1Image", l: "QR 1 image file", p: "gcash1.jpg" }, { k: "Gcash2Name", l: "QR 2 name" }, { k: "Gcash2Number", l: "QR 2 number" }, { k: "Gcash2Image", l: "QR 2 image file", p: "gcash2.jpg" }] },
       { t: "Gallery", g: 2, f: [{ k: "Album1Count", l: "Prenup photo count" }, { k: "Album2Count", l: "Wedding Day photo count" }, { k: "Album3Count", l: "Sponsors & Family photo count" }, { k: "DefaultAlbum", l: "Default album", type: "select", o: [["", "Auto"], ["1", "Prenup"], ["2", "Wedding Day"], ["3", "Sponsors & Family"]] }] },
       { t: "Travel & reminders", f: [{ k: "TravelInfo", l: "Travel & directions", type: "textarea" }, { k: "ParkingInfo", l: "Parking", type: "textarea" }, { k: "OtherReminders", l: "Other reminders", type: "textarea" }] },
-      { t: "Love messages", f: [{ k: "ModerateMessages", l: "Approval", type: "select", o: [["yes", "Require my approval (recommended)"], ["no", "Publish automatically"]] }] }
+      { t: "Moderation (auto-publish or pending)", n: "Require approval = new items stay Pending until you approve them. Publish automatically = they appear right away (you can still Hide or Delete).", g: 2, f: [
+        { k: "ModerateMessages", l: "Love messages", type: "select", o: [["yes", "Require my approval (recommended)"], ["no", "Publish automatically"]] },
+        { k: "ModeratePhotos", l: "Guest photos", type: "select", o: [["yes", "Require my approval (recommended)"], ["no", "Publish automatically"]] },
+        { k: "ModerateComments", l: "Photo comments", type: "select", o: [["yes", "Require my approval (recommended)"], ["no", "Publish automatically"]] },
+        { k: "SnapLimit", l: "Max photos per guest", p: "10" }] }
     ];
     const THEME_DEFAULTS = { ColorGold: "#a78343", ColorBackground: "#f8f5ee", ColorBackgroundAlt: "#f2ede3", ColorCard: "#fffdf8", ColorText: "#30271e", ColorTitle: "#4c4032", ColorAccent: "#9b6f4b", ColorMuted: "#756d60", ColorLine: "#e8dfcf", ColorEnvelope: "#eee5d5" };
     const THEME_LABELS = { ColorGold: "Gold / highlight", ColorBackground: "Background", ColorBackgroundAlt: "Alt background", ColorCard: "Cards / paper", ColorText: "Body text", ColorTitle: "Title text", ColorAccent: "Accent", ColorMuted: "Muted text", ColorLine: "Lines", ColorEnvelope: "Envelope" };
@@ -472,6 +545,18 @@
         });
       }).catch(function () {});
     })();
+
+    /* ---------- admin PWA: sariling service worker + install button ---------- */
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+      navigator.serviceWorker.register("admin-sw.js", { scope: "./admin.html" }).catch(function () {});
+    }
+    let adminInstall = null;
+    window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); adminInstall = e; $("installAdmin").hidden = false; });
+    window.addEventListener("appinstalled", function () { adminInstall = null; $("installAdmin").hidden = true; });
+    $("installAdmin").addEventListener("click", function () {
+      if (!adminInstall) return;
+      adminInstall.prompt(); adminInstall.userChoice.finally(function () { adminInstall = null; $("installAdmin").hidden = true; });
+    });
 
     /* ---------- start ---------- */
     (function init() {

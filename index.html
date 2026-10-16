@@ -366,6 +366,26 @@
     #amPrev{left:6px}#amNext{right:6px}
     .am-cap{margin-top:12px;color:var(--ink-soft);font:italic 1.2rem/1.5 var(--f-body),serif;white-space:pre-line}
     .am-count{margin-top:6px;color:var(--muted);font:500 .66rem var(--f-label),sans-serif;letter-spacing:.14em}
+    /* ===== Guest snapshots + comments ===== */
+    .snap-panel{max-width:520px;margin:0 auto 18px;padding:0 14px;text-align:center}
+    .snap-panel[hidden]{display:none}
+    .snap-prev{display:block;max-width:100%;max-height:220px;margin:0 auto 14px;object-fit:contain}
+    .snap-prev[hidden]{display:none}
+    .lb-react{gap:6px;align-items:center}
+    .lb-comments{max-height:46vh;overflow:auto;padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.45);color:#f4eee2;text-align:left}
+    .lb-comments[hidden]{display:none}
+    .cm{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+    .cm>b{font:600 1rem var(--f-body),serif}
+    .cm small{margin-left:8px;color:#bbb;font:500 .6rem var(--f-label),sans-serif}
+    .cm-t{margin-top:2px;font:1.1rem/1.4 var(--f-body),serif;overflow-wrap:anywhere;white-space:pre-line}
+    .cm .react-btn{border-color:rgba(255,255,255,.28)}
+    .cm .react-btn b{color:#e8e0d0}
+    .cm .react-btn.on{background:rgba(255,255,255,.18);border-color:#fff}
+    .cm-empty{color:#bbb;font:italic 1.05rem var(--f-body),serif}
+    .cm-form{display:grid;gap:6px;margin-top:10px}
+    .cm-form input{padding:10px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font:1rem var(--f-body),serif;outline:none}
+    .cm-form .btn{padding:10px;color:#fff;border-color:#fff}
+    .cm-msg{color:#e8d4a6;font:.85rem/1.4 var(--f-label),sans-serif}
 </style>
 </head>
 <body>
@@ -573,6 +593,21 @@
         </div>
       </section>
       <div class="album-tabs" id="albumTabs" role="tablist" aria-label="Albums"></div>
+      <div class="snap-panel" id="snapPanel" hidden>
+        <div class="btn-row" style="margin-top:0"><button type="button" class="btn btn-filled" id="snapOpen">📸 Share Your Snapshots</button></div>
+        <div class="form-box" id="snapForm" hidden>
+          <label for="snapName">Your full name *</label>
+          <input type="text" id="snapName" placeholder="Full Name (e.g., as written on your invitation)" autocomplete="name" />
+          <small class="hint">Only guests on our list can share. Your name will be shown with your photo.</small>
+          <label for="snapCaption">Caption (optional)</label>
+          <input type="text" id="snapCaption" maxlength="120" placeholder="Say something about this photo..." />
+          <label for="snapFile">Photo *</label>
+          <input type="file" id="snapFile" accept="image/*" />
+          <img class="snap-prev" id="snapPrev" alt="Preview" hidden />
+          <div class="btn-row" style="justify-content:flex-start;margin-top:8px"><button type="button" class="btn btn-filled" id="snapSend">Upload photo</button></div>
+          <div class="form-message" id="snapMsg"></div>
+        </div>
+      </div>
       <div class="gallery-wrap">
         <div class="gallery-grid" id="galleryGrid"></div>
         <div id="gallerySentinel" style="height:1px"></div>
@@ -740,6 +775,7 @@
     <div class="lb-stage" id="lbStage"></div>
     <div class="lb-caption" id="lbCaption" hidden></div>
     <div class="lb-react" id="lbReact" hidden></div>
+    <div class="lb-comments" id="lbComments" hidden></div>
   </div>
   <div class="am" id="attireModal" hidden role="dialog" aria-modal="true" aria-label="Attire guide">
     <div class="am-card">
@@ -1626,7 +1662,8 @@
       lbCap.hidden = !it.caption;               // walang caption = walang caption box
       lbReact.innerHTML = "";
       lbReact.hidden = !it.rid;
-      if (it.rid) lbReact.appendChild(reactBar(it.rid));
+      if (it.rid) lbReact.appendChild(reactBar(it.rid, it.heartOnly ? ["love"] : null));
+      renderLbComments(it);
       lbCount.textContent = lbItems.length > 1 ? (lbIdx + 1) + " / " + lbItems.length : "";
       lb.classList.toggle("single", lbItems.length < 2);
       [1, -1].forEach(function (d) {   // paunang load ng katabing larawan
@@ -1648,7 +1685,7 @@
     el("lbNext").addEventListener("click", function () { lbStep(1); });
     lb.addEventListener("click", function (e) { if (e.target === lb || e.target === lbStage || e.target.classList.contains("lb-slide")) closeLightbox(); });
     document.addEventListener("keydown", function (e) {
-      if (lb.hidden) return;
+      if (lb.hidden || /INPUT|TEXTAREA/.test((e.target || {}).tagName || "")) return;
       if (e.key === "Escape") closeLightbox();
       else if (e.key === "ArrowLeft") lbStep(-1);
       else if (e.key === "ArrowRight") lbStep(1);
@@ -1656,7 +1693,7 @@
     (function swipe() {          // sumusunod ang larawan sa daliri, tapos lilipat
       let x0 = null, y0 = 0, cur = null, moving = false;
       lb.addEventListener("touchstart", function (e) {
-        if (e.target.closest && e.target.closest("video,iframe,.lb-react,.lb-btn")) { x0 = null; return; }
+        if (e.target.closest && e.target.closest("video,iframe,.lb-react,.lb-btn,.lb-comments")) { x0 = null; return; }
         x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; cur = lbStage.querySelector(".lb-slide"); moving = false;
       }, { passive: true });
       lb.addEventListener("touchmove", function (e) {
@@ -1683,7 +1720,7 @@
     function reactIdx(k) { for (let i = 0; i < REACTIONS.length; i++) if (REACTIONS[i][0] === k) return i; return -1; }
     function paintReact(bar) {
       const id = bar.getAttribute("data-rid"), c = REACT_COUNTS[id] || [0, 0, 0, 0], mine = myReacts()[id];
-      bar.querySelectorAll(".react-btn").forEach(function (b, i) {
+      bar.querySelectorAll(".react-btn").forEach(function (b, _n) { const i = reactIdx(b.dataset.k);
         const on = mine === REACTIONS[i][0];
         b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
         b.querySelector("b").textContent = c[i] > 0 ? String(c[i]) : "";
@@ -1698,12 +1735,12 @@
       }
       document.querySelectorAll('.react-bar[data-rid="' + id + '"]').forEach(paintReact);
     }
-    function reactBar(id) {
+    function reactBar(id, only) {
       const bar = document.createElement("div");
       bar.className = "react-bar"; bar.setAttribute("data-rid", id);
-      REACTIONS.forEach(function (r) {
+      REACTIONS.filter(function (r) { return !only || only.indexOf(r[0]) > -1; }).forEach(function (r) {
         const b = document.createElement("button");
-        b.type = "button"; b.className = "react-btn"; b.title = r[2]; b.setAttribute("aria-label", r[2]);
+        b.type = "button"; b.className = "react-btn"; b.dataset.k = r[0]; b.title = r[2]; b.setAttribute("aria-label", r[2]);
         b.innerHTML = "<span>" + r[1] + "</span><b></b>";
         b.addEventListener("click", function (e) { e.stopPropagation(); toggleReact(id, r[0]); });
         bar.appendChild(b);
@@ -1787,7 +1824,7 @@
       el("galleryCount").textContent = ok.length ? (ph + " photo" + (ph === 1 ? "" : "s") + (vd ? " · " + vd + " video" + (vd === 1 ? "" : "s") : "")) : "";
       el("galleryEmpty").hidden = ok.length > 0;                  // "Photos coming soon!" kapag walang laman ang album
       const al = ALBUMS[curAlbum];
-      el("galleryEmptySub").textContent = "We will upload the " + (al ? al.name : "") + " photos soon.";
+      el("galleryEmptySub").textContent = curAlbum === 3 ? "No snapshots yet. Be the first to share one!" : "We will upload the " + (al ? al.name : "") + " photos soon.";
     }
     const PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.35)"/><path d="M10 8l6 4-6 4z"/></svg>';
     function makeTile(it) {
@@ -1849,7 +1886,9 @@
     }
     function showAlbum(i) {
       curAlbum = i;
-      GALLERY = ALBUMS[i] ? ALBUMS[i].items : [];
+      GALLERY = i === 3 ? SNAP_ITEMS : (ALBUMS[i] ? ALBUMS[i].items : []);
+      el("snapPanel").hidden = i !== 3;
+      if (i === 3) loadSnaps();
       el("albumTabs").querySelectorAll(".album-chip").forEach(function (c, k) {
         c.classList.toggle("active", k === i); c.setAttribute("aria-selected", k === i ? "true" : "false");
       });
@@ -1893,6 +1932,12 @@
         b.addEventListener("click", function () { if (i !== curAlbum) showAlbum(i); });
         tabs.appendChild(b);
       });
+      (function () {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "album-chip"; b.setAttribute("role", "tab"); b.textContent = (CFG.Album4Name || "Guest Snapshots").trim();
+        b.addEventListener("click", function () { if (curAlbum !== 3) showAlbum(3); });
+        tabs.appendChild(b);
+      })();
       const want = parseInt(CFG.DefaultAlbum, 10);
       showAlbum(want >= 1 && want <= 3 ? want - 1 : (MARRIED ? 1 : curAlbum || 0));
       if (/[?&]debug/.test(location.search)) {
@@ -2140,6 +2185,115 @@
       if (el("attireModal").hidden) return;
       if (e.key === "Escape") closeAttire(); else if (e.key === "ArrowLeft") el("amPrev").click(); else if (e.key === "ArrowRight") el("amNext").click();
     });
+    /* ---------- Guest Snapshots (Google Drive) + photo comments ---------- */
+    let SNAP_ITEMS = [], SNAP_COMMENTS = {}, snapImg = "", cmtOpen = false;
+    function myName() { try { return localStorage.getItem("my_guest_name") || ""; } catch (e) { return ""; } }
+    function setMyName(n) { try { localStorage.setItem("my_guest_name", n); } catch (e) {} }
+    function snapItem(p) {
+      return { type: "photo", direct: true, src: p.url, thumb: p.thumb, caption: (p.caption ? p.caption + "\n" : "") + "\uD83D\uDCF8 " + p.name, rid: "p" + p.id, snapId: p.id, heartOnly: true, bad: false, tried: [] };
+    }
+    function repaintSnapGrid() {
+      GALLERY = SNAP_ITEMS;
+      const grid = el("galleryGrid"); grid.innerHTML = ""; galleryPos = 0;
+      updateGalleryCount();
+      if (GALLERY.length) galleryMore();
+      galleryFill();
+    }
+    async function loadSnaps() {
+      try {
+        const r = await (await fetch(APPS_SCRIPT_URL + "?action=snaps")).json();
+        if (!r || !r.success) return;
+        SNAP_ITEMS = (r.photos || []).map(snapItem);
+        SNAP_COMMENTS = r.comments || {};
+        if (r.reactions) { REACT_COUNTS = r.reactions; document.querySelectorAll(".react-bar").forEach(paintReact); }
+        if (curAlbum === 3) repaintSnapGrid();
+      } catch (e) { debugNote("snaps FAILED: " + e); }
+    }
+    function snapMsg(kind, t) { const m = el("snapMsg"); m.className = "form-message " + kind; m.style.display = ""; m.textContent = t; }
+    function compressImage(file) {          // 1200px, JPG ~82% (mga 200-400KB) bago i-upload
+      return new Promise(function (res, rej) {
+        const url = URL.createObjectURL(file), im = new Image();
+        im.onload = function () {
+          const k = Math.min(1, 1200 / Math.max(im.naturalWidth, im.naturalHeight));
+          const c = document.createElement("canvas"); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+          c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+          URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg", 0.82));
+        };
+        im.onerror = function () { URL.revokeObjectURL(url); rej(new Error("bad image")); };
+        im.src = url;
+      });
+    }
+    el("snapOpen").addEventListener("click", function () {
+      const f = el("snapForm"); f.hidden = !f.hidden;
+      if (!f.hidden && !el("snapName").value) el("snapName").value = myName();
+    });
+    el("snapFile").addEventListener("change", async function () {
+      const f = this.files && this.files[0]; snapImg = ""; el("snapPrev").hidden = true;
+      if (!f) return;
+      try { snapImg = await compressImage(f); el("snapPrev").src = snapImg; el("snapPrev").hidden = false; el("snapMsg").className = "form-message"; }
+      catch (e) { snapMsg("error", "We could not read that photo. Please choose a JPG or PNG image."); }
+    });
+    el("snapSend").addEventListener("click", async function () {
+      const btn = this, name = el("snapName").value.trim();
+      if (!name) { snapMsg("error", "Please enter your full name as it appears on your invitation."); return; }
+      if (!snapImg) { snapMsg("error", "Please choose a photo first."); return; }
+      btn.disabled = true; btn.textContent = "Uploading...";
+      try {
+        const res = await fetch(APPS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "snapupload", name: name, caption: el("snapCaption").value.trim(), image: snapImg }) });
+        const r = await res.json();
+        if (r.success) {
+          setMyName(r.name); snapImg = ""; el("snapFile").value = ""; el("snapPrev").hidden = true; el("snapCaption").value = "";
+          snapMsg("success", r.pending ? "Thank you, " + r.name + "! Your photo was received and will appear once it is approved." : "Thank you, " + r.name + "! Your photo is now on the Snapshots wall.");
+          loadSnaps();
+        } else snapMsg("error", /not found in guest/i.test(r.message || "") ? notFoundMsg(name) : (r.message || "Something went wrong."));
+      } catch (e) { snapMsg("error", "Unable to upload due to a connection issue. Please try again."); }
+      btn.disabled = false; btn.textContent = "Upload photo";
+    });
+    function renderLbComments(it) {
+      const box = el("lbComments"); cmtOpen = false; box.hidden = true; box.innerHTML = "";
+      if (!it.snapId) return;
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.className = "react-btn"; btn.title = "Comments"; btn.setAttribute("aria-label", "Comments");
+      btn.innerHTML = "<span>\uD83D\uDCAC</span><b>" + ((SNAP_COMMENTS[it.snapId] || []).length || "") + "</b>";
+      btn.addEventListener("click", function (e) { e.stopPropagation(); cmtOpen = !cmtOpen; box.hidden = !cmtOpen; if (cmtOpen) paintComments(it, btn); });
+      lbReact.appendChild(btn);
+    }
+    function paintComments(it, btn) {
+      const box = el("lbComments"), list = SNAP_COMMENTS[it.snapId] || [];
+      box.innerHTML = "";
+      const wrap = document.createElement("div");
+      if (!list.length) wrap.innerHTML = "<p class='cm-empty'>No comments yet. Be the first!</p>";
+      list.forEach(function (c) {
+        const d = document.createElement("div"); d.className = "cm";
+        d.innerHTML = "<b>" + esc(c.name) + "</b><small>" + esc(c.time) + "</small><div class='cm-t'>" + esc(c.text) + "</div>";
+        if (c.id) d.appendChild(reactBar(c.id, ["love"]));
+        wrap.appendChild(d);
+      });
+      box.appendChild(wrap);
+      const form = document.createElement("div"); form.className = "cm-form";
+      form.innerHTML = "<input type='text' class='cn' placeholder='Your full name (as on your invitation)' autocomplete='name' /><input type='text' class='ct' maxlength='300' placeholder='Write a comment...' /><button type='button' class='btn'>Post comment</button><div class='cm-msg'></div>";
+      form.querySelector(".cn").value = myName();
+      const post = form.querySelector(".btn"), msg = form.querySelector(".cm-msg");
+      post.addEventListener("click", async function () {
+        const name = form.querySelector(".cn").value.trim(), text = form.querySelector(".ct").value.trim();
+        if (!name || !text) { msg.textContent = "Please enter your name and comment."; return; }
+        post.disabled = true; post.textContent = "Posting...";
+        try {
+          const r = await (await fetch(APPS_SCRIPT_URL + "?action=comment&name=" + encodeURIComponent(name) + "&photo=" + encodeURIComponent(it.snapId) + "&text=" + encodeURIComponent(text))).json();
+          if (r.success) {
+            setMyName(r.name);
+            if (!r.pending && !r.duplicate) { (SNAP_COMMENTS[it.snapId] = SNAP_COMMENTS[it.snapId] || []).push({ id: r.id, name: r.name, text: text, time: r.time }); btn.querySelector("b").textContent = SNAP_COMMENTS[it.snapId].length; }
+            paintComments(it, btn);
+            if (r.pending) box.querySelector(".cm-msg").textContent = "Thank you! Your comment will appear once it is approved.";
+            return;
+          }
+          msg.textContent = /not found in guest/i.test(r.message || "") ? notFoundMsg(name) : (r.message || "Something went wrong.");
+        } catch (e) { msg.textContent = "Connection issue. Please try again."; }
+        post.disabled = false; post.textContent = "Post comment";
+      });
+      box.appendChild(form);
+    }
     document.querySelectorAll("[data-cfg]").forEach(function () {});
     showTab();
     loadSiteData();
