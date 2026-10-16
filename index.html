@@ -2186,7 +2186,7 @@
       if (e.key === "Escape") closeAttire(); else if (e.key === "ArrowLeft") el("amPrev").click(); else if (e.key === "ArrowRight") el("amNext").click();
     });
     /* ---------- Guest Snapshots (Google Drive) + photo comments ---------- */
-    let SNAP_ITEMS = [], SNAP_COMMENTS = {}, snapImg = "", cmtOpen = false;
+    let SNAP_ITEMS = [], SNAP_COMMENTS = {}, snapImg = "", snapUid = "", cmtOpen = false;
     function myName() { try { return localStorage.getItem("my_guest_name") || ""; } catch (e) { return ""; } }
     function setMyName(n) { try { localStorage.setItem("my_guest_name", n); } catch (e) {} }
     function snapItem(p) {
@@ -2230,7 +2230,7 @@
     el("snapFile").addEventListener("change", async function () {
       const f = this.files && this.files[0]; snapImg = ""; el("snapPrev").hidden = true;
       if (!f) return;
-      try { snapImg = await compressImage(f); el("snapPrev").src = snapImg; el("snapPrev").hidden = false; el("snapMsg").className = "form-message"; }
+      try { snapUid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); snapImg = await compressImage(f); el("snapPrev").src = snapImg; el("snapPrev").hidden = false; el("snapMsg").className = "form-message"; }
       catch (e) { snapMsg("error", "We could not read that photo. Please choose a JPG or PNG image."); }
     });
     el("snapSend").addEventListener("click", async function () {
@@ -2240,7 +2240,7 @@
       btn.disabled = true; btn.textContent = "Uploading...";
       try {
         const res = await fetch(APPS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "snapupload", name: name, caption: el("snapCaption").value.trim(), image: snapImg }) });
+          body: JSON.stringify({ action: "snapupload", uid: snapUid, name: name, caption: el("snapCaption").value.trim(), image: snapImg }) });
         const r = await res.json();
         if (r.success) {
           setMyName(r.name); snapImg = ""; el("snapFile").value = ""; el("snapPrev").hidden = true; el("snapCaption").value = "";
